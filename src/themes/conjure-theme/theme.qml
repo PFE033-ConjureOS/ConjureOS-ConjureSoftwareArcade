@@ -1,5 +1,3 @@
-
-
 import QtQuick 2.0
 
 FocusScope {
@@ -8,7 +6,6 @@ FocusScope {
     property var currentCollection: api.collections.get(currentCollectionIndex)
     property var currentGame: currentCollection.games.get(gameView.currentIndex)
 
-    // decrease (and possibly loop) the collection index
     Keys.onLeftPressed: {
         if (currentCollectionIndex <= 0)
             currentCollectionIndex = api.collections.count - 1;
@@ -16,7 +13,6 @@ FocusScope {
             currentCollectionIndex--;
     }
 
-    // increase (and possibly loop) the collection index
     Keys.onRightPressed: {
         if (currentCollectionIndex >= api.collections.count - 1)
             currentCollectionIndex = 0;
@@ -75,21 +71,14 @@ FocusScope {
 
             Text {
                 text: modelData.title
-                // orange if this item is the currently selected one, white otherwise
                 color: ListView.isCurrentItem ? "orange" : "white"
                 font.family: globalFonts.condensed
-                // bigger if selected
                 font.pixelSize: ListView.isCurrentItem ? vpx(24) : vpx(20)
-                // bold if selected (hint: isCurrentItem is already a true/false value)
                 font.bold: ListView.isCurrentItem
 
-                // the size of the whole text box,
-                // a bit taller than the text size for a nice padding
                 width: ListView.view.width
                 height: vpx(36)
-                // align the text vertically in the middle of the text area
                 verticalAlignment: Text.AlignVCenter
-                // if the text is too long, end it with ellipsis (three dots)
                 elide: Text.ElideRight
 
                 Keys.onReturnPressed: modelData.launch()
@@ -121,7 +110,9 @@ FocusScope {
             horizontalAlignment: Image.AlignRight
 
             source: currentGame.assets.boxFront
-            sourceSize { width: 1024; height: 1024 }
+            sourceSize {
+                width: 1024; height: 1024
+            }
             asynchronous: true
         }
 
@@ -129,20 +120,16 @@ FocusScope {
             id: title
 
             text: currentGame.title
-            // white, big bold sans-serif font
             color: "white"
             font.family: globalFonts.sans
             font.pixelSize: vpx(42)
             font.bold: true
 
             horizontalAlignment: Text.AlignRight
-            // if it's too long, end it with an ellipsis
             elide: Text.ElideRight
 
-            // 40px below the box art
             anchors.top: cover.bottom
             anchors.topMargin: vpx(40)
-            // left and right edges same as the image
             anchors.left: cover.left
             anchors.right: cover.right
         }
@@ -154,7 +141,6 @@ FocusScope {
             anchors.right: title.right
 
             spacing: vpx(10)
-
 
             Text {
                 text: currentGame.developer
@@ -168,10 +154,8 @@ FocusScope {
                 color: "white"
                 font.pixelSize: vpx(18)
                 font.family: globalFonts.sans
-                visible: currentGame.year > 0 // !!
+                visible: currentGame.year > 0
             }
-
-
         }
 
         Text {

@@ -36,18 +36,19 @@ FocusScope {
     }
 
 
-    readonly property var bezierStandard: [ 0.4,0, 0.2,1, 1,1 ]
+    readonly property var bezierStandard: [0.4, 0, 0.2, 1, 1, 1]
     Behavior on height {
         PropertyAnimation {
             duration: 200
-            easing { type: Easing.Bezier; bezierCurve: bezierStandard }
+            easing {
+                type: Easing.Bezier; bezierCurve: bezierStandard
+            }
         }
     }
 
 
     PrimaryMenuItem {
         id: head
-
 
         anchors.top: parent.top
 
@@ -101,6 +102,8 @@ FocusScope {
 
     states: State {
         name: "open"
-        PropertyChanges { target: root; height: head.height + submenu.height }
+        PropertyChanges {
+            target: root; height: head.height + submenu.height
+        }
     }
 }
