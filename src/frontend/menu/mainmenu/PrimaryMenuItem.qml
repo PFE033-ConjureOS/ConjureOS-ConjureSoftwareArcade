@@ -19,7 +19,7 @@ import QtQuick 2.8
 
 GenericMenuItem {
     z: 1000
-    activeColor: "#555"
+    activeColor: "blue"
     inactiveColor: "#333"
     textSizePx: vpx(50)
 }

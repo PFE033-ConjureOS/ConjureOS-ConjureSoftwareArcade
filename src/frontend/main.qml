@@ -26,7 +26,7 @@ Window {
     width: 1280
     height: 720
     title: "Pegasus"
-    color: "#000"
+    color: "#003"
 
     visibility: Internal.settings.fullscreen
                 ? Window.FullScreen : Window.AutomaticVisibility

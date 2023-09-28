@@ -48,6 +48,7 @@ FocusScope {
     PrimaryMenuItem {
         id: head
 
+
         anchors.top: parent.top
 
         focus: true
