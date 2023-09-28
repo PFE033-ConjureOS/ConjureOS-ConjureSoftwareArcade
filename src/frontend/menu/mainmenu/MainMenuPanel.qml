@@ -54,7 +54,7 @@ FocusScope {
     }
 
     Rectangle {
-        color: "#333"
+        color: "red"
         anchors.fill: parent
     }
 
