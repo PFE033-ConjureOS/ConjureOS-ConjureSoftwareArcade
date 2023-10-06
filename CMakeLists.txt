@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(pegasus-frontend
-    DESCRIPTION "Cross platform, customizable graphical frontend for launching games"
+project(conjure-os
+    DESCRIPTION "Arcade software for acarde game based on pegasus frontend a Cross platform, customizable graphical frontend for launching games"
     HOMEPAGE_URL "https://pegasus-frontend.org/"
     LANGUAGES CXX
 )

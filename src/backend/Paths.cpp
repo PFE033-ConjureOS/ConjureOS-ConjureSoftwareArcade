@@ -39,8 +39,8 @@ using QSP = QStandardPaths;
 
 void remove_orgname(QString& str)
 {
-    const QRegularExpression replace_regex(QStringLiteral("(/pegasus-frontend){2}$"));
-    str.replace(replace_regex, QStringLiteral("/pegasus-frontend"));
+    const QRegularExpression replace_regex(QStringLiteral("(/conjure-os){2}$"));
+    str.replace(replace_regex, QStringLiteral("/conjure-os"));
 }
 
 void create_dir_if_not_exists(const QString& dir_path)
@@ -53,7 +53,7 @@ QString get_appconfig_dir()
 {
 #ifdef Q_OS_ANDROID
     const QString dir_path = QSP::writableLocation(QSP::GenericDataLocation)
-                           + QStringLiteral("/pegasus-frontend");
+                           + QStringLiteral("/conjure-os");
 #else
     QString dir_path = AppSettings::general.portable
         ? paths::app_dir_path() + QStringLiteral("/config")
@@ -126,8 +126,8 @@ const QStringList& configDirs()
             paths << QSP::standardLocations(QSP::AppDataLocation);
 
             // do not add the organization name to the search path
-            const QRegularExpression regex(QStringLiteral("(/pegasus-frontend){2}$"));
-            paths.replaceInStrings(regex, QStringLiteral("/pegasus-frontend"));
+            const QRegularExpression regex(QStringLiteral("(/conjure-os){2}$"));
+            paths.replaceInStrings(regex, QStringLiteral("/conjure-os"));
         }
 
 #ifdef Q_OS_ANDROID

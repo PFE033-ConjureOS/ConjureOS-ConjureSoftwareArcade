@@ -25,7 +25,7 @@ Window {
     visible: true
     width: 1280
     height: 720
-    title: "Pegasus"
+    title: "ConjureOS"
     color: "#003"
 
     visibility: Internal.settings.fullscreen

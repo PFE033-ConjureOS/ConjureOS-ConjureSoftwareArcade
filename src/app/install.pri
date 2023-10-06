@@ -47,9 +47,9 @@ unix:!macx {
     }
 }
 win32 {
-    QMAKE_TARGET_PRODUCT = "pegasus-frontend"
+    QMAKE_TARGET_PRODUCT = "ConjureOS"
     QMAKE_TARGET_COMPANY = "pegasus-frontend.org"
-    QMAKE_TARGET_DESCRIPTION = "Pegasus emulator frontend"
+    QMAKE_TARGET_DESCRIPTION = "ConjureOS frontend"
     QMAKE_TARGET_COPYRIGHT = "Copyright (c) 2017-2020 Matyas Mustoha"
     RC_ICONS = platform/windows/app_icon.ico
     OTHER_FILES += $${RC_ICONS}
@@ -58,7 +58,7 @@ win32 {
 }
 macx {
     ICON = platform/macos/pegasus-fe.icns
-    QMAKE_APPLICATION_BUNDLE_NAME = Pegasus
+    QMAKE_APPLICATION_BUNDLE_NAME = ConjureOS
     QMAKE_TARGET_BUNDLE_PREFIX = org.pegasus-frontend
     QMAKE_INFO_PLIST = platform/macos/Info.plist.in
 

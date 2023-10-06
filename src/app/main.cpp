@@ -60,10 +60,10 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     QGuiApplication app(argc, argv);
-    app.setApplicationName(QStringLiteral("pegasus-frontend"));
+    app.setApplicationName(QStringLiteral("conjure-os"));
     app.setApplicationVersion(QStringLiteral(GIT_REVISION));
-    app.setOrganizationName(QStringLiteral("pegasus-frontend"));
-    app.setOrganizationDomain(QStringLiteral("pegasus-frontend.org"));
+    app.setOrganizationName(QStringLiteral("conjure"));
+    app.setOrganizationDomain(QStringLiteral("conjure.etsmtl.ca"));
     app.setWindowIcon(QIcon(QStringLiteral(":/icon.png")));
 
     if (!request_runtime_permissions())
