@@ -36,6 +36,10 @@ FocusScope {
         subscreen.source = url;
         subscreen.focus = true;
         root.state = "sub";
+
+        genericMessage.setSource("dialogs/GenericOkDialog.qml",
+            { "title": qsTr("Attenttion"), "message": "Zone interdite!" });
+        genericMessage.focus = true;
     }
 
     anchors.fill: parent

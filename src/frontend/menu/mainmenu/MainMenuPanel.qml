@@ -27,14 +27,21 @@ FocusScope {
     visible: x < parent.width && 0 < x + width
     enabled: focus
 
-    signal close
-    signal showSettingsScreen
-    signal showHelpScreen
+        signal
+    close
+        signal
+    showSettingsScreen
+        signal
+    showHelpScreen
 
-    signal requestShutdown
-    signal requestSuspend
-    signal requestReboot
-    signal requestQuit
+        signal
+    requestShutdown
+        signal
+    requestSuspend
+        signal
+    requestReboot
+        signal
+    requestQuit
 
     Keys.onPressed: {
         if (event.isAutoRepeat)
@@ -88,73 +95,7 @@ FocusScope {
 
             KeyNavigation.down: scopeQuit
         }
-        RollableMenuItem {
-            id: scopeQuit
-            name: qsTr("Quit") + api.tr
 
-            enabled: callable
-            visible: callable
-            readonly property bool callable: mbQuitShutdown.callable
-                || mbQuitReboot.callable
-                || mbQuitExit.callable
-
-            Component.onCompleted: {
-                const first_callable = [mbQuitShutdown, mbQuitSuspend, mbQuitReboot, mbQuitExit].find(e => e.callable);
-                if (first_callable) {
-                    first_callable.focus = true;
-                    scopeQuit.focus = true;
-                } else {
-                    mbHelp.focus = true;
-                }
-            }
-
-            entries: [
-                SecondaryMenuItem {
-                    id: mbQuitShutdown
-                    text: qsTr("Shutdown") + api.tr
-                    onActivated: requestShutdown()
-
-                    readonly property bool callable: Internal.meta.allowShutdown
-                    enabled: callable
-                    visible: callable
-
-                    KeyNavigation.down: mbQuitSuspend
-                },
-                SecondaryMenuItem {
-                    id: mbQuitSuspend
-                    text: qsTr("Suspend") + api.tr
-                    onActivated: { close(); requestSuspend() }
-
-                    readonly property bool callable: Internal.meta.allowSuspend
-                    enabled: callable
-                    visible: callable
-
-                    KeyNavigation.down: mbQuitReboot
-                },
-                SecondaryMenuItem {
-                    id: mbQuitReboot
-                    text: qsTr("Reboot") + api.tr
-                    onActivated: requestReboot()
-
-                    readonly property bool callable: Internal.meta.allowReboot
-                    enabled: callable
-                    visible: callable
-
-                    KeyNavigation.down: mbQuitExit
-                },
-                SecondaryMenuItem {
-                    id: mbQuitExit
-                    text: qsTr("Exit Pegasus") + api.tr
-                    onActivated: requestQuit()
-
-                    readonly property bool callable: Internal.meta.allowAppClose
-                    enabled: callable
-                    visible: callable
-
-                    KeyNavigation.down: mbQuitShutdown
-                }
-            ]
-        }
     }
 
     PegasusUtils.HorizontalSwipeArea {
