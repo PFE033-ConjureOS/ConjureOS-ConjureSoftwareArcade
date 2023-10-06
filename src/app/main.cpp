@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("conjure-os"));
     app.setApplicationVersion(QStringLiteral(GIT_REVISION));
-    app.setOrganizationName(QStringLiteral("conjure-os")); // TODO Update?
-    app.setOrganizationDomain(QStringLiteral("pegasus-frontend.org")); // TODO Update?
+    app.setOrganizationName(QStringLiteral("conjure"));
+    app.setOrganizationDomain(QStringLiteral("conjure.etsmtl.ca"));
     app.setWindowIcon(QIcon(QStringLiteral(":/icon.png")));
 
     if (!request_runtime_permissions())
