@@ -86,6 +86,7 @@ FocusScope {
 
         // onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
         onShowSettingsScreen: root.showNotAllowDialog()
+
         onShowHelpScreen: root.openScreen("menu/help/HelpScreen.qml")
 
         onClose: root.triggerClose()
@@ -103,7 +104,7 @@ FocusScope {
         height: parent.height
         anchors.left: menuPanel.right
 
-        enabled: focus
+        enabled: true
         onFocusChanged: if (item) item.focus = focus;
         onLoaded: item.focus = focus
 
@@ -145,40 +146,4 @@ FocusScope {
         }
     ]
 
-    // fancy easing curves, a la material design
-    readonly property var bezierDecelerate: [ 0,0, 0.2,1, 1,1 ]
-    readonly property var bezierSharp: [ 0.4,0, 0.6,1, 1,1 ]
-    readonly property var bezierStandard: [ 0.4,0, 0.2,1, 1,1 ]
-
-    transitions: [
-        Transition {
-            from: ""; to: "menu"
-            AnchorAnimation {
-                duration: 225
-                easing { type: Easing.Bezier; bezierCurve: bezierDecelerate }
-            }
-        },
-        Transition {
-            from: "menu"; to: ""
-            AnchorAnimation {
-                duration: 200
-                easing { type: Easing.Bezier; bezierCurve: bezierSharp }
-            }
-            onRunningChanged: if (!running) subscreen.source = ""
-        },
-        Transition {
-            from: "menu"; to: "sub"
-            AnchorAnimation {
-                duration: 425
-                easing { type: Easing.Bezier; bezierCurve: bezierStandard }
-            }
-        },
-        Transition {
-            from: "sub"; to: "menu"
-            AnchorAnimation {
-                duration: 425
-                easing { type: Easing.Bezier; bezierCurve: bezierStandard }
-            }
-        }
-    ]
 }

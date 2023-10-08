@@ -52,7 +52,7 @@ FocusScope {
     }
 
     Rectangle {
-        color: "orange"
+        color: "#00000067"
         anchors.fill: parent
     }
 
@@ -61,6 +61,8 @@ FocusScope {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: vpx(30)
 
+        Component.onCompleted: mbHelp.focus = true;
+
         PrimaryMenuItem {
             id: mbSettings
             text: qsTr("Settings") + api.tr
@@ -68,9 +70,10 @@ FocusScope {
                 focus = true;
                 root.showSettingsScreen();
             }
+            enabled: true
             selected: focus
 
-            enabled: Internal.meta.allowSettings
+            // enabled: Internal.meta.allowSettings
             visible: enabled
 
             KeyNavigation.down: mbHelp
@@ -82,11 +85,12 @@ FocusScope {
                 focus = true;
                 root.showHelpScreen();
             }
+            enabled: true
             selected: focus
+            visible: enabled
 
             KeyNavigation.down: mbSettings
         }
-
     }
 
     PegasusUtils.HorizontalSwipeArea {

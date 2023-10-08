@@ -20,6 +20,7 @@ import QtQuick 2.8
 import QtQuick.Window 2.2
 
 
+
 Window {
     id: appWindow
     visible: true
@@ -27,6 +28,8 @@ Window {
     height: 720
     title: "ConjureOS"
     color: "#003"
+
+    onActiveFocusItemChanged:print("activeFocusItem", activeFocusItem);
 
     visibility: Internal.settings.fullscreen
                 ? Window.FullScreen : Window.AutomaticVisibility
@@ -130,6 +133,7 @@ Window {
             onLoaded: item.focus = focus
             onFocusChanged: if (item) item.focus = focus
             enabled: focus
+
         }
         Connections {
             target: mainMenu.item
