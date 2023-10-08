@@ -136,6 +136,10 @@ Window {
 
             function onClose() { theme.focus = true; }
 
+            function onShowNotAllowDialog() {
+                genericMessage.source = "dialogs/SettingsNotAllowDialog.qml"
+                genericMessage.focus = true;
+            }
             function onRequestShutdown() {
                 powerDialog.source = "dialogs/ShutdownDialog.qml"
                 powerDialog.focus = true;
@@ -151,6 +155,7 @@ Window {
                 theme.source = "";
                 Internal.system.quit();
             }
+
         }
         PegasusUtils.HorizontalSwipeArea {
             id: menuSwipe

@@ -42,8 +42,6 @@ FocusScope {
         }
     }
 
-
-
     Shade {
         id: shade
         onCancel: root.cancel()

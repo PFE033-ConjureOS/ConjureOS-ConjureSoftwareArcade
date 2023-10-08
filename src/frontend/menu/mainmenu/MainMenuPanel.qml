@@ -25,23 +25,15 @@ FocusScope {
     width: vpx(350)
     height: parent.height
     visible: x < parent.width && 0 < x + width
-    enabled: focus
+    enabled: focus;
 
-        signal
-    close
-        signal
-    showSettingsScreen
-        signal
-    showHelpScreen
-
-        signal
-    requestShutdown
-        signal
-    requestSuspend
-        signal
-    requestReboot
-        signal
-    requestQuit
+    signal close
+    signal showSettingsScreen
+    signal showHelpScreen
+    signal requestShutdown
+    signal requestSuspend
+    signal requestReboot
+    signal requestQuit
 
     Keys.onPressed: {
         if (event.isAutoRepeat)
@@ -53,7 +45,6 @@ FocusScope {
         }
     }
 
-
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
@@ -61,7 +52,7 @@ FocusScope {
     }
 
     Rectangle {
-        color: "red"
+        color: "orange"
         anchors.fill: parent
     }
 
@@ -93,7 +84,7 @@ FocusScope {
             }
             selected: focus
 
-            KeyNavigation.down: scopeQuit
+            KeyNavigation.down: mbSettings
         }
 
     }

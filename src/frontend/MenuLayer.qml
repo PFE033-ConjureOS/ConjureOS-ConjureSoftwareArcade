@@ -23,6 +23,7 @@ FocusScope {
     id: root
 
     signal close()
+    signal showNotAllowDialog()
     signal requestShutdown()
     signal requestSuspend()
     signal requestReboot()
@@ -36,10 +37,6 @@ FocusScope {
         subscreen.source = url;
         subscreen.focus = true;
         root.state = "sub";
-
-        genericMessage.setSource("dialogs/GenericOkDialog.qml",
-            { "title": qsTr("Attenttion"), "message": "Zone interdite!" });
-        genericMessage.focus = true;
     }
 
     anchors.fill: parent
@@ -87,7 +84,8 @@ FocusScope {
 
         focus: true
 
-        onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
+        // onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
+        onShowSettingsScreen: root.showNotAllowDialog()
         onShowHelpScreen: root.openScreen("menu/help/HelpScreen.qml")
 
         onClose: root.triggerClose()
@@ -122,7 +120,6 @@ FocusScope {
             root.state = "menu";
         }
     }
-
 
     states: [
         State {
