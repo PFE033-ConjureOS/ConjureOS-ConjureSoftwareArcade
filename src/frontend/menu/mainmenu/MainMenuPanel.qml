@@ -61,7 +61,7 @@ FocusScope {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: vpx(30)
 
-        Component.onCompleted: mbHelp.focus = true;
+        Component.onCompleted: mbSettings.focus = true;
 
         PrimaryMenuItem {
             id: mbSettings

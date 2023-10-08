@@ -23,16 +23,20 @@ FocusScope {
     id: root
 
     signal close()
-    signal showNotAllowDialog()
+
     signal requestShutdown()
+
     signal requestSuspend()
+
     signal requestReboot()
+
     signal requestQuit()
 
     function triggerClose() {
         root.state = "";
         root.close();
     }
+
     function openScreen(url) {
         subscreen.source = url;
         subscreen.focus = true;
@@ -56,7 +60,11 @@ FocusScope {
         color: "yellow"
         opacity: root.focus ? 0.75 : 0
         visible: opacity > 0.001 && width > 0
-        Behavior on opacity { NumberAnimation { duration: 300 } }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 300
+            }
+        }
 
         Text {
             id: revision
@@ -85,7 +93,16 @@ FocusScope {
         focus: true
 
         // onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
-        onShowSettingsScreen: root.showNotAllowDialog()
+
+        onShowSettingsScreen: {
+            passwordSettingsDialog.source = "dialogs/PasswordDialog.qml"
+            passwordSettingsDialog.focus = true
+        }
+
+        // onShowSettingsScreen: {
+        //     genericMessage.source = "dialogs/PasswordDialog.qml"
+        //     genericMessage.focus = true;
+        // }
 
         onShowHelpScreen: root.openScreen("menu/help/HelpScreen.qml")
 
@@ -116,7 +133,25 @@ FocusScope {
     }
     Connections {
         target: subscreen.item
+
         function onClose() {
+            menuPanel.focus = true;
+            root.state = "menu";
+        }
+    }
+
+    Loader {
+        id: passwordSettingsDialog
+        anchors.fill: parent
+    }
+    Connections {
+        target: passwordSettingsDialog.item
+
+        function onAccept() {
+            root.openScreen("menu/settings/SettingsScreen.qml")
+        }
+
+        function onCancel() {
             menuPanel.focus = true;
             root.state = "menu";
         }
@@ -145,5 +180,52 @@ FocusScope {
             }
         }
     ]
+    // fancy easing curves, a la material design
+    readonly property var bezierDecelerate: [0, 0, 0.2, 1, 1, 1]
+    readonly property var bezierSharp: [0.4, 0, 0.6, 1, 1, 1]
+    readonly property var bezierStandard: [0.4, 0, 0.2, 1, 1, 1]
 
+    transitions: [
+        Transition {
+            from: "";
+            to: "menu"
+            AnchorAnimation {
+                duration: 225
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierDecelerate
+                }
+            }
+        },
+        Transition {
+            from: "menu";
+            to: ""
+            AnchorAnimation {
+                duration: 200
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierSharp
+                }
+            }
+            onRunningChanged: if (!running) subscreen.source = ""
+        },
+        Transition {
+            from: "menu";
+            to: "sub"
+            AnchorAnimation {
+                duration: 425
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierStandard
+                }
+            }
+        },
+        Transition {
+            from: "sub";
+            to: "menu"
+            AnchorAnimation {
+                duration: 425
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierStandard
+                }
+            }
+        }
+    ]
 }

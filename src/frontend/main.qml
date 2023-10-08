@@ -29,7 +29,7 @@ Window {
     title: "ConjureOS"
     color: "#003"
 
-    onActiveFocusItemChanged:print("activeFocusItem", activeFocusItem);
+    // onActiveFocusItemChanged:print("activeFocusItem", activeFocusItem);
 
     visibility: Internal.settings.fullscreen
                 ? Window.FullScreen : Window.AutomaticVisibility
@@ -140,10 +140,6 @@ Window {
 
             function onClose() { theme.focus = true; }
 
-            function onShowNotAllowDialog() {
-                genericMessage.source = "dialogs/SettingsNotAllowDialog.qml"
-                genericMessage.focus = true;
-            }
             function onRequestShutdown() {
                 powerDialog.source = "dialogs/ShutdownDialog.qml"
                 powerDialog.focus = true;
@@ -195,15 +191,6 @@ Window {
         function onCancel() { content.focus = true; }
     }
 
-
-    Loader {
-        id: genericMessage
-        anchors.fill: parent
-    }
-    Connections {
-        target: genericMessage.item
-        function onClose() { content.focus = true; }
-    }
 
 
     Connections {
