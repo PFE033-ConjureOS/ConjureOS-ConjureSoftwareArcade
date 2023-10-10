@@ -23,15 +23,13 @@ import QtQuick.Window 2.2
 FocusScope {
     id: root
 
-        signal
-    close
+    signal close
 
     function openScreen(url) {
         subscreen.source = url;
         subscreen.focus = true;
         root.state = "sub";
     }
-
     function openModal(url) {
         modal.source = url;
         modal.focus = true;
@@ -70,7 +68,6 @@ FocusScope {
     }
     Connections {
         target: modal.item
-
         function onClose() {
             main.focus = true;
             root.state = "";
@@ -92,7 +89,6 @@ FocusScope {
     }
     Connections {
         target: subscreen.item
-
         function onClose() {
             main.focus = true;
             root.state = "";
@@ -116,29 +112,23 @@ FocusScope {
     ]
 
     // fancy easing curves, a la material design
-    readonly property var bezierDecelerate: [0, 0, 0.2, 1, 1, 1]
-    readonly property var bezierSharp: [0.4, 0, 0.6, 1, 1, 1]
-    readonly property var bezierStandard: [0.4, 0, 0.2, 1, 1, 1]
+    readonly property var bezierDecelerate: [ 0,0, 0.2,1, 1,1 ]
+    readonly property var bezierSharp: [ 0.4,0, 0.6,1, 1,1 ]
+    readonly property var bezierStandard: [ 0.4,0, 0.2,1, 1,1 ]
 
     transitions: [
         Transition {
-            from: "";
-            to: "sub"
+            from: ""; to: "sub"
             AnchorAnimation {
                 duration: 425
-                easing {
-                    type: Easing.Bezier; bezierCurve: bezierStandard
-                }
+                easing { type: Easing.Bezier; bezierCurve: bezierStandard }
             }
         },
         Transition {
-            from: "sub";
-            to: ""
+            from: "sub"; to: ""
             AnchorAnimation {
                 duration: 400
-                easing {
-                    type: Easing.Bezier; bezierCurve: bezierSharp
-                }
+                easing { type: Easing.Bezier; bezierCurve: bezierSharp }
             }
             onRunningChanged: if (!running) subscreen.source = ""
         }

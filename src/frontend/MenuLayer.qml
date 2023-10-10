@@ -92,17 +92,10 @@ FocusScope {
 
         focus: true
 
-        // onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
-
         onShowSettingsScreen: {
             passwordSettingsDialog.source = "dialogs/PasswordDialog.qml"
             passwordSettingsDialog.focus = true
         }
-
-        // onShowSettingsScreen: {
-        //     genericMessage.source = "dialogs/PasswordDialog.qml"
-        //     genericMessage.focus = true;
-        // }
 
         onShowHelpScreen: root.openScreen("menu/help/HelpScreen.qml")
 

@@ -44,6 +44,7 @@ FocusScope {
     }
 
 
+
     Shade {
         id: shade
         onCancel: root.close()
@@ -62,11 +63,7 @@ FocusScope {
         anchors.centerIn: parent
         scale: 0.5
 
-        Behavior on scale {
-            NumberAnimation {
-                duration: 125
-            }
-        }
+        Behavior on scale { NumberAnimation { duration: 125 } }
 
         // title bar
         Rectangle {
@@ -156,12 +153,8 @@ FocusScope {
     states: [
         State {
             name: "open"
-            PropertyChanges {
-                target: shade; opacity: 0.8
-            }
-            PropertyChanges {
-                target: dialogBox; scale: 1
-            }
+            PropertyChanges { target: shade; opacity: 0.8 }
+            PropertyChanges { target: dialogBox; scale: 1 }
         }
     ]
 }
