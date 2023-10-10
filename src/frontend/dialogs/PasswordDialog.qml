@@ -13,6 +13,7 @@ FocusScope {
     property string temppassword: ""
 
     signal accept()
+
     signal cancel()
 
     anchors.fill: parent
@@ -22,17 +23,25 @@ FocusScope {
     onActiveFocusChanged: state = activeFocus ? "open" : ""
     Component.onCompleted: passwordField.focus = true
 
-    function validation(){
-        if(passwordField.text === "HardcodedPassword"){
+    function reset(){
+        message = "Entrer le mot de passe:"
+        root.cancel();
+    }
+
+    function validation() {
+        if (passwordField.text === "HardcodedPassword") {
+            passwordField.text = ""
             accept()
+            message = "Entrer le mot de passe:"
+        } else {
+            message = "Mot de passe incorrect. Entrer le mot de passe:"
         }
-        return
     }
 
     Keys.onPressed: {
         if (api.keys.isCancel(event) && !event.isAutoRepeat) {
             event.accepted = true;
-            root.cancel();
+            reset()
         }
     }
 
@@ -45,11 +54,11 @@ FocusScope {
 
     Shade {
         id: shade
-        onCancel: root.cancel()
+        onCancel:  reset()
     }
 
-    title: qsTr("Attention") + api.tr
-    message: qsTr("Zone Interdite") + api.tr
+    title: qsTr("Zone interdite") + api.tr
+    message: qsTr("Entrer le mot de passe:") + api.tr
 
     Column {
         id: dialogBox
@@ -112,7 +121,6 @@ FocusScope {
                 }
             }
         }
-
 
 
         //password field
@@ -187,7 +195,7 @@ FocusScope {
                 Keys.onPressed: {
                     if (api.keys.isAccept(event) && !event.isAutoRepeat) {
                         event.accepted = true;
-                        root.cancel();
+                        reset()
                     }
                 }
 
@@ -206,7 +214,8 @@ FocusScope {
                     id: cancelMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: root.cancel()
+
+                    onClicked:  reset()
                 }
             }
         }
