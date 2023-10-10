@@ -10,10 +10,7 @@ FocusScope {
     property int textSize: vpx(18)
     property int titleTextSize: vpx(20)
 
-    property string temppassword: ""
-
     signal accept()
-
     signal cancel()
 
     anchors.fill: parent
@@ -23,16 +20,19 @@ FocusScope {
     onActiveFocusChanged: state = activeFocus ? "open" : ""
     Component.onCompleted: passwordField.focus = true
 
-    function reset(){
+    function reset() {
         message = "Entrer le mot de passe:"
         root.cancel();
     }
 
-    function validation() {
-        if (passwordField.text === "HardcodedPassword") {
+    // signal validation(psswrd: string)
+
+    function validation(psswrd: string) {
+
+        if (psswrd === "Conjure") {
             passwordField.text = ""
-            accept()
             message = "Entrer le mot de passe:"
+            accept()
         } else {
             message = "Mot de passe incorrect. Entrer le mot de passe:"
         }
@@ -54,7 +54,7 @@ FocusScope {
 
     Shade {
         id: shade
-        onCancel:  reset()
+        onCancel: reset()
     }
 
     title: qsTr("Zone interdite") + api.tr
@@ -137,11 +137,9 @@ FocusScope {
             Keys.onPressed: {
                 if (api.keys.isAccept(event) && !event.isAutoRepeat) {
                     event.accepted = true;
-                    validation()
+                    validation(passwordField.text)
                 }
             }
-
-
         }
 
         // button row
@@ -159,7 +157,7 @@ FocusScope {
                 Keys.onPressed: {
                     if (api.keys.isAccept(event) && !event.isAutoRepeat) {
                         event.accepted = true;
-                        validation()
+                        validation(passwordField.text)
                     }
                 }
 
@@ -178,7 +176,7 @@ FocusScope {
                     id: okMouseArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: validation()
+                    onClicked: validation(passwordField.text)
                 }
             }
 
@@ -215,7 +213,7 @@ FocusScope {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked:  reset()
+                    onClicked: reset()
                 }
             }
         }
@@ -232,5 +230,4 @@ FocusScope {
             }
         }
     ]
-
 }
