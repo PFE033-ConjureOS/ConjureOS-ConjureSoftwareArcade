@@ -25,20 +25,22 @@ FocusScope {
 
         property real contentWidth: width - vpx(100)
 
-        color: "purple"
+        color: "#00008b"
 
         width: parent.width * 0.3
         anchors.top: parent.top
         anchors.bottom: parent.bottom
 
-        Image {
-            id: collectionLogo
+        Text {
+            id: collectionDisplay
 
+            color: "orange"
             width: parent.contentWidth
-
-            fillMode: Image.PreserveAspectFit
-            source: "assets/logos/" + currentCollection.shortName + ".svg"
-            asynchronous: true
+            text: currentCollection.shortName
+            fontSizeMode: Text.HorizontalFit ;
+            minimumPixelSize: 10;
+            font.pixelSize: 72
+            font.capitalization: Font.Capitalize
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -53,7 +55,7 @@ FocusScope {
 
             width: parent.contentWidth
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: collectionLogo.bottom
+            anchors.top: collectionDisplay.bottom
             anchors.bottom: parent.bottom
             anchors.margins: vpx(50)
 
