@@ -37,10 +37,11 @@ FocusScope {
             color: "orange"
             width: parent.contentWidth
             text: currentCollection.shortName
-            fontSizeMode: Text.HorizontalFit ;
+            fontSizeMode: Text.HorizontalFit;
             minimumPixelSize: 10;
             font.pixelSize: 72
             font.capitalization: Font.Capitalize
+            font.family: globalFonts.condensedBold
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -136,28 +137,51 @@ FocusScope {
             anchors.right: cover.right
         }
 
-        Row {
-            id: shortInfo
+        Text {
+            id: developerText
+            text: currentGame.developer
+            color: "white"
+            font.pixelSize: vpx(18)
+            font.family: globalFonts.sans
 
             anchors.top: title.bottom
             anchors.right: title.right
+            anchors.left: title.left
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
 
-            spacing: vpx(10)
+        Text {
+            id: gameRelease
+            text: currentGame.release
+            color: "white"
+            font.pixelSize: vpx(18)
+            font.family: globalFonts.sans
+            visible: currentGame.release > 0
 
-            Text {
-                text: currentGame.developer
-                color: "white"
-                font.pixelSize: vpx(18)
-                font.family: globalFonts.sans
-            }
+            anchors.topMargin: vpx(30)
+            anchors.top: developerText.bottom
+            anchors.right: title.right
+            anchors.left: title.left
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
+        Text {
+            id: genre
 
-            Text {
-                text: currentGame.year
-                color: "white"
-                font.pixelSize: vpx(18)
-                font.family: globalFonts.sans
-                visible: currentGame.year > 0
-            }
+            text: currentGame.genre
+            color: "white"
+            font.pixelSize: vpx(15)
+            font.family: globalFonts.sans
+
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
+
+            anchors.top: gameRelease.bottom
+            anchors.topMargin: vpx(10)
+            anchors.left: cover.left
+            anchors.right: cover.right
         }
 
         Text {
@@ -172,13 +196,15 @@ FocusScope {
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
 
-            anchors.top: shortInfo.bottom
-            anchors.topMargin: vpx(40)
+            anchors.top: genre.bottom
+            anchors.topMargin: vpx(30)
             anchors.bottom: parent.bottom
             anchors.bottomMargin: vpx(50)
             anchors.left: cover.left
             anchors.right: cover.right
         }
+
+
 
         Image {
             id: conjureName
