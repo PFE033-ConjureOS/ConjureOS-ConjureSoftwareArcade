@@ -1,11 +1,11 @@
 import zipfile
 import os
 import shutil
+import sys
 
 file_extension = ".conj"
 extractedConj_dir = "./"
 extractedGame_dir = "./game"
-directory = "./"
 conjure_default_library_dir = "C:/ProgramData/ConjureGames"
 
 
@@ -31,7 +31,7 @@ def read_game_meta_data_collection_name_in_conj(conj):
         return collection_name
 
 
-def getConjFile():
+def getConjFile(directory):
     files = os.listdir(directory)
     count = 0
     conj_file = ""
@@ -75,11 +75,11 @@ def check_collection_value_and_update(dir_path, collection_name):
     return updated
 
 
-def unzipConj():
+def unzipConj(conj_file_path):
     if not os.path.exists(conjure_default_library_dir):
         os.makedirs(conjure_default_library_dir)
 
-    conj_file = getConjFile()
+    conj_file = getConjFile(conj_file_path)
 
     if conj_file == "":
         print(f".conj file not define.")
@@ -110,8 +110,16 @@ def unzipGameFile(dir_path):
 
 
 def main():
-    print("----Decompressing script  for Conjure Arcade library games----")
-    dir_path = unzipConj()
+    conj_file_path = "./"
+    if len(sys.argv) == 1:
+        print("Search for *.conj in current directory : " + os.getcwd())
+    elif len(sys.argv) == 2:
+        conj_file_path = sys.argv[1]
+    else:
+        print(f"Usage: python {os.path.basename(__file__)}.py [conj_file_path]")
+
+    print("----Decompressing script for Conjure Arcade library games----")
+    dir_path = unzipConj(conj_file_path)
     unzipGameFile(dir_path)
 
 
