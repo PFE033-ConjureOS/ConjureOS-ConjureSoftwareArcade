@@ -4,9 +4,13 @@ import shutil
 import sys
 
 file_extension = ".conj"
-extractedConj_dir = "./"
-extractedGame_dir = "./game"
-conjure_default_library_dir = "C:/Program Files (x86)/ConjureGames"
+
+curdir = os.path.expanduser('~/Documents')
+conjure_library_dir = 'ConjureGames'
+conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
+
+if not os.path.exists(conjure_default_library_dir):
+    os.mkdir(conjure_default_library_dir)
 
 
 def read_game_meta_data_collection_name_in_conj(conj):
@@ -76,9 +80,6 @@ def check_collection_value_and_update(dir_path, collection_name):
 
 
 def unzipConj(conj_file_path):
-    if not os.path.exists(conjure_default_library_dir):
-        os.makedirs(conjure_default_library_dir)
-
     conj_file = getConjFile(conj_file_path)
 
     if conj_file == "":
