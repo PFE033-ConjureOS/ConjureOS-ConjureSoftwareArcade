@@ -6,7 +6,7 @@ import sys
 file_extension = ".conj"
 extractedConj_dir = "./"
 extractedGame_dir = "./game"
-conjure_default_library_dir = "C:/ProgramData/ConjureGames"
+conjure_default_library_dir = "C:/Program Files (x86)/ConjureGames"
 
 
 def read_game_meta_data_collection_name_in_conj(conj):
