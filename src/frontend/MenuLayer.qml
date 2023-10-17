@@ -25,11 +25,8 @@ FocusScope {
     signal close()
 
     signal requestShutdown()
-
     signal requestSuspend()
-
     signal requestReboot()
-
     signal requestQuit()
 
     function triggerClose() {
