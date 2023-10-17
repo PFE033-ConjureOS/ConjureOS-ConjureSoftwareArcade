@@ -70,10 +70,9 @@ FocusScope {
                 focus = true;
                 root.showSettingsScreen();
             }
-            enabled: true
             selected: focus
 
-            // enabled: Internal.meta.allowSettings
+            enabled: Internal.meta.allowSettings
             visible: enabled
 
             KeyNavigation.down: mbHelp
