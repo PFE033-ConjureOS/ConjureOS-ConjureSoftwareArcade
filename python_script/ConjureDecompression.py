@@ -8,6 +8,8 @@ file_extension = ".conj"
 curdir = os.path.expanduser('~/Documents')
 conjure_library_dir = 'ConjureGames'
 conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
+extracted_metadata_filename = 'metadata.txt'
+compress_game_data_filename = 'game'
 
 if not os.path.exists(conjure_default_library_dir):
     os.mkdir(conjure_default_library_dir)
@@ -18,10 +20,10 @@ def read_game_meta_data_collection_name_in_conj(conj):
     default_collection = "MemberGames"
 
     with zipfile.ZipFile(conj, 'r') as zip_ref:
-        zip_ref.extract("metadata.txt", path='temp')
+        zip_ref.extract(extracted_metadata_filename, path='temp')
         collection_name = default_collection
         found = False
-        with open("./temp/metadata.txt", "r") as file:
+        with open(f"./temp/{extracted_metadata_filename}", "r") as file:
             for line in file:
                 if line.startswith(f"{search_word}:"):
                     collection_name = line.strip()
@@ -35,7 +37,7 @@ def read_game_meta_data_collection_name_in_conj(conj):
         return collection_name
 
 
-def getConjFile(directory):
+def get_conj_file(directory):
     files = os.listdir(directory)
     count = 0
     conj_file = ""
@@ -60,7 +62,7 @@ def check_collection_value_and_update(dir_path, collection_name):
     search_word = "collection"
     new_lines = []
 
-    with open(f"{dir_path}/metadata.txt", "r") as file:
+    with open(f"{dir_path}/{extracted_metadata_filename}", "r") as file:
         updated = False
         for line in file:
             if line.strip().startswith(f"{search_word}:"):
@@ -73,14 +75,14 @@ def check_collection_value_and_update(dir_path, collection_name):
         print("Add collection line in metadata")
         new_lines.append(f"{search_word}: {collection_name}\n")
 
-    with open(f"{dir_path}/metadata.txt", "w") as output:
+    with open(f"{dir_path}/{extracted_metadata_filename}", "w") as output:
         output.writelines(new_lines)
 
     return updated
 
 
-def unzipConj(conj_file_path):
-    conj_file = getConjFile(conj_file_path)
+def unzip_conj(conj_file_path):
+    conj_file = get_conj_file(conj_file_path)
 
     if conj_file == "":
         print(f".conj file not define.")
@@ -102,11 +104,11 @@ def unzipConj(conj_file_path):
     return dir_path
 
 
-def unzipGameFile(dir_path):
-    with zipfile.ZipFile(dir_path + "/game.zip", 'r') as zip_ref:
-        zip_ref.extractall(f"{dir_path}/game")
+def unzip_game_file(dir_path):
+    with zipfile.ZipFile(dir_path + f"/{compress_game_data_filename}.xip", 'r') as zip_ref:
+        zip_ref.extractall(f"{dir_path}/{compress_game_data_filename}")
 
-    os.remove(dir_path + "/game.zip")
+    os.remove(dir_path + f"/{compress_game_data_filename}.zip")
     print(f"Successfully extracted game contents")
 
 
@@ -120,8 +122,8 @@ def main():
         print(f"Usage: python {os.path.basename(__file__)}.py [conj_file_path]")
 
     print("----Decompressing script for Conjure Arcade library games----")
-    dir_path = unzipConj(conj_file_path)
-    unzipGameFile(dir_path)
+    dir_path = unzip_conj(conj_file_path)
+    unzip_game_file(dir_path)
 
 
 if __name__ == "__main__":
