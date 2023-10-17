@@ -29,8 +29,6 @@ Window {
     title: "ConjureOS"
     color: "#003"
 
-    // onActiveFocusItemChanged:print("activeFocusItem", activeFocusItem);
-
     visibility: Internal.settings.fullscreen
                 ? Window.FullScreen : Window.AutomaticVisibility
 
@@ -146,7 +144,7 @@ Window {
             }
             function onRequestSuspend() {
                 Internal.system.suspend()
-            }                        
+            }
             function onRequestReboot() {
                 powerDialog.source = "dialogs/RebootDialog.qml"
                 powerDialog.focus = true;
