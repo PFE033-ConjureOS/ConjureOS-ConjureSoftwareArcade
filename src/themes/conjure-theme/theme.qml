@@ -25,20 +25,22 @@ FocusScope {
 
         property real contentWidth: width - vpx(100)
 
-        color: "purple"
+        color: "#00008b"
 
         width: parent.width * 0.3
         anchors.top: parent.top
         anchors.bottom: parent.bottom
 
-        Image {
-            id: collectionLogo
+        Text {
+            id: collectionDisplay
 
+            color: "orange"
             width: parent.contentWidth
-
-            fillMode: Image.PreserveAspectFit
-            source: "assets/logos/" + currentCollection.shortName + ".svg"
-            asynchronous: true
+            text: currentCollection.shortName
+            fontSizeMode: Text.HorizontalFit;
+            minimumPixelSize: 10;
+            font.pixelSize: 72
+            font.capitalization: Font.Capitalize
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -53,7 +55,7 @@ FocusScope {
 
             width: parent.contentWidth
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: collectionLogo.bottom
+            anchors.top: collectionDisplay.bottom
             anchors.bottom: parent.bottom
             anchors.margins: vpx(50)
 
@@ -97,7 +99,7 @@ FocusScope {
         anchors.bottom: parent.bottom
 
         Image {
-            id: cover
+            id: banner
 
             anchors.top: parent.top
             anchors.right: parent.right
@@ -109,7 +111,7 @@ FocusScope {
             fillMode: Image.PreserveAspectFit
             horizontalAlignment: Image.AlignRight
 
-            source: currentGame.assets.boxFront
+            source: currentGame.assets.banner
             sourceSize {
                 width: 1024; height: 1024
             }
@@ -128,34 +130,57 @@ FocusScope {
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
 
-            anchors.top: cover.bottom
+            anchors.top: banner.bottom
             anchors.topMargin: vpx(40)
-            anchors.left: cover.left
-            anchors.right: cover.right
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
 
-        Row {
-            id: shortInfo
+        Text {
+            id: developerText
+            text: currentGame.developer
+            color: "white"
+            font.pixelSize: vpx(18)
+            font.family: globalFonts.sans
 
             anchors.top: title.bottom
             anchors.right: title.right
+            anchors.left: title.left
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
 
-            spacing: vpx(10)
+        Text {
+            id: gameRelease
+            text: currentGame.release
+            color: "white"
+            font.pixelSize: vpx(18)
+            font.family: globalFonts.sans
+            visible: currentGame.release > 0
 
-            Text {
-                text: currentGame.developer
-                color: "white"
-                font.pixelSize: vpx(18)
-                font.family: globalFonts.sans
-            }
+            anchors.topMargin: vpx(30)
+            anchors.top: developerText.bottom
+            anchors.right: title.right
+            anchors.left: title.left
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
+        Text {
+            id: genre
 
-            Text {
-                text: currentGame.year
-                color: "white"
-                font.pixelSize: vpx(18)
-                font.family: globalFonts.sans
-                visible: currentGame.year > 0
-            }
+            text: currentGame.genre
+            color: "white"
+            font.pixelSize: vpx(15)
+            font.family: globalFonts.sans
+
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
+
+            anchors.top: gameRelease.bottom
+            anchors.topMargin: vpx(10)
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
 
         Text {
@@ -168,15 +193,17 @@ FocusScope {
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignRight
-            elide: Text.ElideRight
 
-            anchors.top: shortInfo.bottom
-            anchors.topMargin: vpx(40)
+
+            anchors.top: genre.bottom
+            anchors.topMargin: vpx(30)
             anchors.bottom: parent.bottom
             anchors.bottomMargin: vpx(50)
-            anchors.left: cover.left
-            anchors.right: cover.right
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
+
+
 
         Image {
             id: conjureName

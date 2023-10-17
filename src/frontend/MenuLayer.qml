@@ -54,7 +54,7 @@ FocusScope {
         anchors.bottom: parent.bottom
         anchors.right: menuPanel.left
 
-        color: "yellow"
+        color: "#000000"
         opacity: root.focus ? 0.75 : 0
         visible: opacity > 0.001 && width > 0
         Behavior on opacity {
@@ -67,7 +67,7 @@ FocusScope {
             id: revision
 
             text: Internal.meta.gitRevision + ", " + Internal.meta.gitDate
-            color: "#eee"
+            color: "#696969"
             font.pixelSize: vpx(12)
             font.family: global.fonts.mono
 

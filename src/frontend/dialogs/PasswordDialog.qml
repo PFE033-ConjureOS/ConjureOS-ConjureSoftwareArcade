@@ -25,8 +25,6 @@ FocusScope {
         root.cancel();
     }
 
-    // signal validation(psswrd: string)
-
     function validation(psswrd: string) {
 
         if (psswrd === "Conjure") {
