@@ -41,7 +41,6 @@ FocusScope {
             minimumPixelSize: 10;
             font.pixelSize: 72
             font.capitalization: Font.Capitalize
-            font.family: globalFonts.condensedBold
 
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: parent.top
@@ -100,7 +99,7 @@ FocusScope {
         anchors.bottom: parent.bottom
 
         Image {
-            id: cover
+            id: banner
 
             anchors.top: parent.top
             anchors.right: parent.right
@@ -112,7 +111,7 @@ FocusScope {
             fillMode: Image.PreserveAspectFit
             horizontalAlignment: Image.AlignRight
 
-            source: currentGame.assets.boxFront
+            source: currentGame.assets.banner
             sourceSize {
                 width: 1024; height: 1024
             }
@@ -131,10 +130,10 @@ FocusScope {
             horizontalAlignment: Text.AlignRight
             elide: Text.ElideRight
 
-            anchors.top: cover.bottom
+            anchors.top: banner.bottom
             anchors.topMargin: vpx(40)
-            anchors.left: cover.left
-            anchors.right: cover.right
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
 
         Text {
@@ -180,8 +179,8 @@ FocusScope {
 
             anchors.top: gameRelease.bottom
             anchors.topMargin: vpx(10)
-            anchors.left: cover.left
-            anchors.right: cover.right
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
 
         Text {
@@ -194,14 +193,14 @@ FocusScope {
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignRight
-            elide: Text.ElideRight
+
 
             anchors.top: genre.bottom
             anchors.topMargin: vpx(30)
             anchors.bottom: parent.bottom
             anchors.bottomMargin: vpx(50)
-            anchors.left: cover.left
-            anchors.right: cover.right
+            anchors.left: banner.left
+            anchors.right: banner.right
         }
 
 
