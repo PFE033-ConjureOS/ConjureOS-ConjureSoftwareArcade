@@ -23,6 +23,7 @@ FocusScope {
     id: root
 
     signal close()
+
     signal requestShutdown()
     signal requestSuspend()
     signal requestReboot()
@@ -32,14 +33,11 @@ FocusScope {
         root.state = "";
         root.close();
     }
+
     function openScreen(url) {
         subscreen.source = url;
         subscreen.focus = true;
         root.state = "sub";
-
-        genericMessage.setSource("dialogs/GenericOkDialog.qml",
-            { "title": qsTr("Attenttion"), "message": "Zone interdite!" });
-        genericMessage.focus = true;
     }
 
     anchors.fill: parent
@@ -59,7 +57,11 @@ FocusScope {
         color: "yellow"
         opacity: root.focus ? 0.75 : 0
         visible: opacity > 0.001 && width > 0
-        Behavior on opacity { NumberAnimation { duration: 300 } }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 300
+            }
+        }
 
         Text {
             id: revision
@@ -87,7 +89,11 @@ FocusScope {
 
         focus: true
 
-        onShowSettingsScreen: root.openScreen("menu/settings/SettingsScreen.qml")
+        onShowSettingsScreen: {
+            passwordSettingsDialog.source = "dialogs/PasswordDialog.qml"
+            passwordSettingsDialog.focus = true
+        }
+
         onShowHelpScreen: root.openScreen("menu/help/HelpScreen.qml")
 
         onClose: root.triggerClose()
@@ -105,7 +111,7 @@ FocusScope {
         height: parent.height
         anchors.left: menuPanel.right
 
-        enabled: focus
+        enabled: true
         onFocusChanged: if (item) item.focus = focus;
         onLoaded: item.focus = focus
 
@@ -117,12 +123,29 @@ FocusScope {
     }
     Connections {
         target: subscreen.item
+
         function onClose() {
             menuPanel.focus = true;
             root.state = "menu";
         }
     }
 
+    Loader {
+        id: passwordSettingsDialog
+        anchors.fill: parent
+    }
+    Connections {
+        target: passwordSettingsDialog.item
+
+        function onAccept() {
+            root.openScreen("menu/settings/SettingsScreen.qml")
+        }
+
+        function onCancel() {
+            menuPanel.focus = true;
+            root.state = "menu";
+        }
+    }
 
     states: [
         State {
@@ -147,40 +170,51 @@ FocusScope {
             }
         }
     ]
-
     // fancy easing curves, a la material design
-    readonly property var bezierDecelerate: [ 0,0, 0.2,1, 1,1 ]
-    readonly property var bezierSharp: [ 0.4,0, 0.6,1, 1,1 ]
-    readonly property var bezierStandard: [ 0.4,0, 0.2,1, 1,1 ]
+    readonly property var bezierDecelerate: [0, 0, 0.2, 1, 1, 1]
+    readonly property var bezierSharp: [0.4, 0, 0.6, 1, 1, 1]
+    readonly property var bezierStandard: [0.4, 0, 0.2, 1, 1, 1]
 
     transitions: [
         Transition {
-            from: ""; to: "menu"
+            from: "";
+            to: "menu"
             AnchorAnimation {
                 duration: 225
-                easing { type: Easing.Bezier; bezierCurve: bezierDecelerate }
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierDecelerate
+                }
             }
         },
         Transition {
-            from: "menu"; to: ""
+            from: "menu";
+            to: ""
             AnchorAnimation {
                 duration: 200
-                easing { type: Easing.Bezier; bezierCurve: bezierSharp }
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierSharp
+                }
             }
             onRunningChanged: if (!running) subscreen.source = ""
         },
         Transition {
-            from: "menu"; to: "sub"
+            from: "menu";
+            to: "sub"
             AnchorAnimation {
                 duration: 425
-                easing { type: Easing.Bezier; bezierCurve: bezierStandard }
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierStandard
+                }
             }
         },
         Transition {
-            from: "sub"; to: "menu"
+            from: "sub";
+            to: "menu"
             AnchorAnimation {
                 duration: 425
-                easing { type: Easing.Bezier; bezierCurve: bezierStandard }
+                easing {
+                    type: Easing.Bezier; bezierCurve: bezierStandard
+                }
             }
         }
     ]

@@ -25,23 +25,15 @@ FocusScope {
     width: vpx(350)
     height: parent.height
     visible: x < parent.width && 0 < x + width
-    enabled: focus
+    enabled: focus;
 
-        signal
-    close
-        signal
-    showSettingsScreen
-        signal
-    showHelpScreen
-
-        signal
-    requestShutdown
-        signal
-    requestSuspend
-        signal
-    requestReboot
-        signal
-    requestQuit
+    signal close
+    signal showSettingsScreen
+    signal showHelpScreen
+    signal requestShutdown
+    signal requestSuspend
+    signal requestReboot
+    signal requestQuit
 
     Keys.onPressed: {
         if (event.isAutoRepeat)
@@ -53,7 +45,6 @@ FocusScope {
         }
     }
 
-
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
@@ -61,7 +52,7 @@ FocusScope {
     }
 
     Rectangle {
-        color: "red"
+        color: "#00000067"
         anchors.fill: parent
     }
 
@@ -69,6 +60,8 @@ FocusScope {
         width: parent.width
         anchors.bottom: parent.bottom
         anchors.bottomMargin: vpx(30)
+
+        Component.onCompleted: mbSettings.focus = true;
 
         PrimaryMenuItem {
             id: mbSettings
@@ -91,11 +84,12 @@ FocusScope {
                 focus = true;
                 root.showHelpScreen();
             }
+            enabled: true
             selected: focus
+            visible: enabled
 
-            KeyNavigation.down: scopeQuit
+            KeyNavigation.down: mbSettings
         }
-
     }
 
     PegasusUtils.HorizontalSwipeArea {
