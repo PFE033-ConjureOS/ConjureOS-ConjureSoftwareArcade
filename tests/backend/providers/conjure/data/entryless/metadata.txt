@@ -1,5 +1,0 @@
-collection: My Games
-file: test.ext
-
-game: test
-file: test.ext

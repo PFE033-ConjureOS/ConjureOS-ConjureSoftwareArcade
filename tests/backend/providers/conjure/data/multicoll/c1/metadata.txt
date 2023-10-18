@@ -1,3 +1,0 @@
-collection: C1
-file: :/multicoll/games/game.ext
-
