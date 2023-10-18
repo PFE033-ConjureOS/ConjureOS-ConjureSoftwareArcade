@@ -7,7 +7,9 @@ SUBDIRS += \
     favorites \
     logiqx \
     playtime \
+    conjure \
 
 win32: SUBDIRS += \
     launchbox \
     playnite \
+
