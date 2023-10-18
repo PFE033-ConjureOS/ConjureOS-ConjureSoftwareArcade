@@ -105,7 +105,7 @@ def unzip_conj(conj_file_path):
 
 
 def unzip_game_file(dir_path):
-    with zipfile.ZipFile(dir_path + f"/{compress_game_data_filename}.xip", 'r') as zip_ref:
+    with zipfile.ZipFile(dir_path + f"/{compress_game_data_filename}.zip", 'r') as zip_ref:
         zip_ref.extractall(f"{dir_path}/{compress_game_data_filename}")
 
     os.remove(dir_path + f"/{compress_game_data_filename}.zip")
