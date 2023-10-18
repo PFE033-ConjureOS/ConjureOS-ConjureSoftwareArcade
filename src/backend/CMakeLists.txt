@@ -22,6 +22,14 @@ add_library(pegasus-backend
     ProcessLauncher.h
     ScriptRunner.cpp
     ScriptRunner.h
+        providers/conjure/ConjureMetadata.cpp
+        providers/conjure/ConjureMetadata.h
+        providers/conjure/ConjureProvider.cpp
+        providers/conjure/ConjureProvider.h
+        providers/conjure/ConjureFilter.h
+        providers/conjure/ConjureFilter.h
+        providers/conjure/ConjureFilter.cpp
+        providers/conjure/ConjureFilter.cpp
 )
 
 add_subdirectory(imggen)
