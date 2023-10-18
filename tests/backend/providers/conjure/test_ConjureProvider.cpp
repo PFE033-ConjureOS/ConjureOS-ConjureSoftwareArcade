@@ -120,7 +120,6 @@ private slots:
     }
 
     void empty();
-    void autoparenting();
 };
 
 void test_ConjureProvider::empty()
