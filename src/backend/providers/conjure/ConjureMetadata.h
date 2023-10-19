@@ -55,7 +55,6 @@ namespace providers {
 
             const HashMap<QString, CollAttrib> m_coll_attribs;
             const HashMap<QString, GameAttrib> m_game_attribs;
-            //const HashMap<QString, GameFileAttrib> gamefile_attribs;
 
             const QRegularExpression rx_asset_key;
             const QRegularExpression rx_count_range;

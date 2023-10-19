@@ -16,7 +16,7 @@
 
 
 namespace {
-// Find all dirs and subdirectories, but ignore 'media'
+    // Find all dirs and subdirectories, but ignore 'media'
     std::vector<QString> all_valid_direct_subdirs(const QString &filter_dir) {
         Q_ASSERT(!filter_dir.isEmpty());
 
@@ -29,7 +29,7 @@ namespace {
         while (dirs_it.hasNext())
             result.emplace_back(dirs_it.next());
 
-        const QString media_dir = filter_dir + QStringLiteral("/media");
+        const QString media_dir = filter_dir + QStringLiteral("/medias");
         VEC_REMOVE_VALUE(result, media_dir);
 
         return result;

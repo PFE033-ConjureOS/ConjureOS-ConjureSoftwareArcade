@@ -23,11 +23,9 @@
 namespace {
     bool is_conjure_metadata_file(const QString &filename) {
         // TODO:  maybe enforce metadata.conjure.txt ?
-        return filename == QLatin1String("metadata.pegasus.txt")
-               || filename == QLatin1String("metadata.conjure.txt")
+        return filename == QLatin1String("metadata.conjure.txt")
                || filename == QLatin1String("metadata.txt")
-               || filename.endsWith(QLatin1String(".metadata.pegasus.txt"))
-               || filename.endsWith(QLatin1String(".mmetadataetadata.conjure.txt"))
+               || filename.endsWith(QLatin1String(".metadata.conjure.txt"))
                || filename.endsWith(QLatin1String("..txt"));
     }
 
