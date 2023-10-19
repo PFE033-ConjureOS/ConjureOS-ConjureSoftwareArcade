@@ -27,17 +27,18 @@ namespace {
                || filename == QLatin1String("metadata.conjure.txt")
                || filename == QLatin1String("metadata.txt")
                || filename.endsWith(QLatin1String(".metadata.pegasus.txt"))
-               || filename.endsWith(QLatin1String(".metadata.conjure.txt"))
-               || filename.endsWith(QLatin1String(".metadata.txt"));
+               || filename.endsWith(QLatin1String(".mmetadataetadata.conjure.txt"))
+               || filename.endsWith(QLatin1String("..txt"));
     }
 
     std::vector<QString> find_metafiles_in(const QString &dir_path) {
         constexpr auto dir_filters = QDir::Files | QDir::NoDotAndDotDot;
-        constexpr auto dir_flags = QDirIterator::FollowSymlinks;
+        constexpr auto dir_flags = QDirIterator::FollowSymlinks | QDirIterator::Subdirectories;
 
         std::vector<QString> result;
-
         QDirIterator dir_it(dir_path, dir_filters, dir_flags);
+
+        Log::info("find_metafiles_in", LOGMSG("'%1'").arg(dir_it.hasNext()));
         while (dir_it.hasNext()) {
             dir_it.next();
             if (is_conjure_metadata_file(dir_it.fileName())) {
@@ -46,6 +47,30 @@ namespace {
             }
         }
 
+        return result;
+    }
+
+    std::vector<QString> find_all_metafiles(const QStringList &gamedirs) {
+        const QString global_metafile_dir = paths::writableConfigDir() + QLatin1String("/metafiles");
+        std::vector<QString> result = find_metafiles_in(global_metafile_dir);
+
+        result.reserve(result.size() + gamedirs.size());
+
+        for (const QString &dir_path: gamedirs) {
+            std::vector<QString> local_metafiles = find_metafiles_in(dir_path);
+            result.insert(result.end(),
+                          std::make_move_iterator(local_metafiles.begin()),
+                          std::make_move_iterator(local_metafiles.end()));
+        }
+
+        const QString conjure_root =
+                QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+        std::vector<QString> local_metafiles2 = find_metafiles_in(conjure_root);
+        result.insert(result.end(),
+                      std::make_move_iterator(local_metafiles2.begin()),
+                      std::make_move_iterator(local_metafiles2.end()));
+
+        VEC_REMOVE_DUPLICATES(result);
         return result;
     }
 
@@ -63,7 +88,9 @@ namespace providers {
             const QString conjure_root =
                     QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
 
-            std::vector<QString> metafile_paths = find_metafiles_in(conjure_root);
+
+            const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());
+
             if (metafile_paths.empty()) {
                 Log::info(display_name(), LOGMSG("No metadata files found"));
                 return *this;
