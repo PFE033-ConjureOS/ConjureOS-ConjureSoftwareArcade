@@ -98,13 +98,14 @@ FocusScope {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
 
+
+
         Image {
             id: banner
 
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.left: parent.left
-            anchors.margins: vpx(50)
+            anchors.margins: vpx(10)
             anchors.bottom: parent.verticalCenter
             anchors.bottomMargin: 0
 
@@ -115,6 +116,25 @@ FocusScope {
             sourceSize {
                 width: 1024; height: 1024
             }
+            asynchronous: true
+        }
+
+        Image {
+            id: cartridge
+
+            fillMode: Image.PreserveAspectFit
+            horizontalAlignment: Image.AlignLeft
+
+            source: currentGame.assets.cartridge
+            sourceSize {
+                width: 1024; height: 576
+            }
+            anchors.margins: vpx(50)
+            anchors.top: parent.top
+            anchors.right: banner.left
+            anchors.left: parent.left
+            anchors.bottom: banner.bottom
+
             asynchronous: true
         }
 
@@ -202,7 +222,6 @@ FocusScope {
             anchors.left: banner.left
             anchors.right: banner.right
         }
-
 
 
         Image {
