@@ -148,4 +148,18 @@ Game& Game::setCollections(std::vector<model::Collection*>&& collections)
 bool sort_games(const model::Game* const a, const model::Game* const b) {
    return QString::localeAwareCompare(a->sortBy(), b->sortBy()) < 0;
 }
+    Game &Game::setId(QUuid uuid) {
+        m_data.id = uuid;
+        return *this;
+    }
+
+    Game &Game::setVersion(QString QString) {
+        m_data.version = QString;
+        return *this;
+    }
+
+    Game &Game::setLeaderboard(bool value){
+        m_data.hasLeaderboard= value;
+        return *this;
+    }
 } // namespace model

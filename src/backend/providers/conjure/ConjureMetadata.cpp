@@ -18,6 +18,7 @@
 #include "utils/PathTools.h"
 
 #include <QUrl>
+#include <QUuid>
 
 namespace {
     constexpr size_t ISSUE_LOG_LIMIT = 100;
@@ -51,7 +52,9 @@ namespace providers {
         };
 
         enum class GameAttrib : unsigned char {
+            ID,
             FILES,
+            VERSION,
             DEVELOPERS,
             PUBLISHERS,
             GENRES,
@@ -60,7 +63,11 @@ namespace providers {
             SHORT_DESC,
             LONG_DESC,
             RELEASE,
+            MODIFICATION,
             RATING,
+            LEADERBOARD,
+            THUMBNAIL,
+            IMAGE,
             LAUNCH_CMD,
             LAUNCH_WORKDIR,
             SORT_BY,
@@ -93,8 +100,11 @@ namespace providers {
                           {QStringLiteral("sort_by"),           CollAttrib::SORT_BY},
                           {QStringLiteral("sort-by"),           CollAttrib::SORT_BY},
                   }, m_game_attribs{
+                        {QStringLiteral("id"),        GameAttrib::ID},
+                        {QStringLiteral("ID"),        GameAttrib::ID},
                         {QStringLiteral("file"),        GameAttrib::FILES},
                         {QStringLiteral("files"),       GameAttrib::FILES},
+                        {QStringLiteral("version"),       GameAttrib::VERSION},
                         {QStringLiteral("launch"),      GameAttrib::LAUNCH_CMD},
                         {QStringLiteral("command"),     GameAttrib::LAUNCH_CMD},
                         {QStringLiteral("workdir"),     GameAttrib::LAUNCH_WORKDIR},
@@ -111,7 +121,13 @@ namespace providers {
                         {QStringLiteral("summary"),     GameAttrib::SHORT_DESC},
                         {QStringLiteral("description"), GameAttrib::LONG_DESC},
                         {QStringLiteral("release"),     GameAttrib::RELEASE},
+                        {QStringLiteral("modification"),     GameAttrib::MODIFICATION},
                         {QStringLiteral("rating"),      GameAttrib::RATING},
+                        {QStringLiteral("leaderboard"),      GameAttrib::LEADERBOARD},
+                        {QStringLiteral("thumbnailPath"),      GameAttrib::THUMBNAIL},
+                        {QStringLiteral("thumbnail"),      GameAttrib::THUMBNAIL},
+                        {QStringLiteral("imagePath"),      GameAttrib::IMAGE},
+                        {QStringLiteral("image"),      GameAttrib::IMAGE},
                         // sort title variations
                         {QStringLiteral("sorttitle"),   GameAttrib::SORT_BY},
                         {QStringLiteral("sortname"),    GameAttrib::SORT_BY},
@@ -267,6 +283,16 @@ namespace providers {
             }
 
             switch (attrib_it->second) {
+                case GameAttrib::ID: {
+                    QString text_qUuid = metafile::merge_lines(entry.values);
+                    replace_newlines(text_qUuid);
+                    QUuid qUuid = QUuid::createUuidV5(QUuid{}, text_qUuid);
+
+                    //TODO : Check si jeux exsiste?? (ici ou ailleur?)
+
+                    ps.cur_game->setId(qUuid);
+                }
+                    break;
                 case GameAttrib::FILES:
                     for (const QString &line: entry.values) {
                         const bool is_uri = rx_uri.match(line).hasMatch();
@@ -308,6 +334,16 @@ namespace providers {
                             sctx.game_add_filepath(*ps.cur_game, std::move(path));
                         }
                     }
+                    break;
+                case GameAttrib::VERSION: {
+                    QString text_version = metafile::merge_lines(entry.values);
+
+                    replace_newlines(text_version);
+
+                    //TODO : Check version and update needed (or other stuff)?
+
+                    ps.cur_game->setVersion(text_version);
+                }
                     break;
                 case GameAttrib::DEVELOPERS:
                     for (const QString &line: entry.values)
@@ -366,6 +402,26 @@ namespace providers {
                     ps.cur_game->setReleaseDate(std::move(date));
                 }
                     break;
+                case GameAttrib::MODIFICATION: {
+                    const auto rx_match = rx_date.match(first_line_of(ps, entry));
+                    if (!rx_match.hasMatch()) {
+                        print_warning(ps, entry,
+                                      LOGMSG("Incorrect date format, should be YYYY, YYYY-MM or YYYY-MM-DD"));
+                        return;
+                    }
+
+                    const int y = qMax(1, rx_match.captured(1).toInt());
+                    const int m = qBound(1, rx_match.captured(3).toInt(), 12);
+                    const int d = qBound(1, rx_match.captured(5).toInt(), 31);
+                    QDate date(y, m, d);
+                    if (!date.isValid()) {
+                        print_warning(ps, entry, LOGMSG("Invalid date"));
+                        return;
+                    }
+
+                    ps.cur_game->setLastUpdatedDate(std::move(date));
+                }
+                    break;
                 case GameAttrib::RATING: {
                     const QString &line = first_line_of(ps, entry);
 
@@ -381,6 +437,23 @@ namespace providers {
                     }
 
                     print_warning(ps, entry, LOGMSG("Failed to parse the rating value"));
+                }
+                    break;
+                case GameAttrib::LEADERBOARD: {
+                    QString text = metafile::merge_lines(entry.values);
+
+                    //TODO : update or prepare leaderboard ??
+
+                    ps.cur_game->setLeaderboard(text.contains("true"));
+                }
+                    break;
+                case GameAttrib::THUMBNAIL: {
+                    QString text = metafile::merge_lines(entry.values);
+                    ps.cur_game->assetsPtr()->add_uri(AssetType::CARTRIDGE, text); //TODO update thumbnail to be another type of assets??
+                }
+                case GameAttrib::IMAGE: {
+                    QString text = metafile::merge_lines(entry.values);
+                    ps.cur_game->assetsPtr()->add_uri(AssetType::BOX_FRONT, text); //TODO update BANNER to be another type of assets??
                 }
                     break;
                 case GameAttrib::LAUNCH_CMD:

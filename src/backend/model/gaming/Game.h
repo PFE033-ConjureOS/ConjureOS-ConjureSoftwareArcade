@@ -67,7 +67,11 @@ struct GameData {
         QString relative_basedir; // TODO: check if needed
     } launch_params;
 };
+        QDate last_updated_date;
 
+        QUuid id;
+        QString version;
+        bool hasLeaderboard = false;
 
 class Game : public QObject {
     Q_OBJECT
@@ -101,6 +105,13 @@ public:
     GETTER(const QString&, launchCmd, launch_params.launch_cmd)
     GETTER(const QString&, launchWorkdir, launch_params.launch_workdir)
     GETTER(const QString&, launchCmdBasedir, launch_params.relative_basedir)
+
+        GETTER(const QUuid&, id, id)
+
+        GETTER(const QString&, version, version)
+
+        GETTER(bool, hasLeaderboard, hasLeaderboard)
+
 #undef GETTER
 
 
@@ -117,9 +128,16 @@ public:
     SETTER(QString, LaunchWorkdir, launch_params.launch_workdir)
     SETTER(QString, LaunchCmdBasedir, launch_params.relative_basedir)
 
+        SETTER(QDate, LastUpdatedDate, last_updated_date)
+
     Game& setFavorite(bool val);
     Game& setRating(float rating);
     Game& setPlayerCount(int player_count);
+        Game &setId(QUuid qUuid);
+
+        Game &setVersion(QString version);
+
+        Game &setLeaderboard(bool hasLeaderboard);
 #undef SETTER
 
 
