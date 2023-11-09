@@ -124,9 +124,11 @@ namespace providers {
                         {QStringLiteral("modification"),     GameAttrib::MODIFICATION},
                         {QStringLiteral("rating"),      GameAttrib::RATING},
                         {QStringLiteral("leaderboard"),      GameAttrib::LEADERBOARD},
+                        {QStringLiteral("thumbnailpath"),      GameAttrib::THUMBNAIL},
                         {QStringLiteral("thumbnailPath"),      GameAttrib::THUMBNAIL},
                         {QStringLiteral("thumbnail"),      GameAttrib::THUMBNAIL},
                         {QStringLiteral("imagePath"),      GameAttrib::IMAGE},
+                        {QStringLiteral("imagepath"),      GameAttrib::IMAGE},
                         {QStringLiteral("image"),      GameAttrib::IMAGE},
                         // sort title variations
                         {QStringLiteral("sorttitle"),   GameAttrib::SORT_BY},

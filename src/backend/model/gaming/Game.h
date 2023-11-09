@@ -19,6 +19,7 @@
 
 #include "CollectionListModel.h"
 #include "GameFileListModel.h"
+#include "quuid.h"
 
 #include <QDateTime>
 #include <QStringList>
