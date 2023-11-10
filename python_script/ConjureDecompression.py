@@ -89,13 +89,13 @@ def check_collection_value_and_update(dir_path, collection_name):
         for line in file:
             if line.strip().startswith(f"{search_word}:"):
                 updated = True
-                new_lines.append(f"{search_word}: {collection_name}\n")
+                new_lines.insert(0, f"{search_word}: {collection_name}\n")
             else:
                 new_lines.append(line)
 
     if not updated:
         print(f"Add collection line in metadata at {dir_path}")
-        new_lines.append(f"{search_word}: {collection_name}\n")
+        new_lines.insert(0, f"{search_word}: {collection_name}\n")
 
     with open(f"{dir_path}/{extracted_metadata_filename}", "w") as output:
         output.writelines(new_lines)
