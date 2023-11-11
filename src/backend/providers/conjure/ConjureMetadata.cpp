@@ -288,7 +288,7 @@ namespace providers {
                 case GameAttrib::GAME: {
                     ps.cur_game->setTitle(first_line_of(ps, entry));
                 }
-
+                break;
 //                case GameAttrib::ID: {
 //                    QString text_qUuid = metafile::merge_lines(entry.values);
 //                    replace_newlines(text_qUuid);
