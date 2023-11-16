@@ -19,6 +19,7 @@
 
 #include "CollectionListModel.h"
 #include "GameFileListModel.h"
+#include "quuid.h"
 
 #include <QDateTime>
 #include <QStringList>
@@ -27,6 +28,7 @@
 // MSVC has troubles with forward declared QML model types
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
+
 #endif
 
 namespace model { class Assets; }
@@ -35,91 +37,139 @@ namespace model { class Collection; }
 
 
 namespace model {
-struct GameData {
-    explicit GameData();
-    explicit GameData(QString);
+    struct GameData {
+        explicit GameData();
 
-    QString title;
-    QString sort_by;
-    QString summary;
-    QString description;
+        explicit GameData(QString);
 
-    QStringList developers;
-    QStringList publishers;
-    QStringList genres;
-    QStringList tags;
+        QString title;
+        QString sort_by;
+        QString summary;
+        QString description;
 
-    short player_count = 1;
-    float rating = 0.0;
-    QDate release_date;
+        QStringList developers;
+        QStringList publishers;
+        QStringList genres;
+        QStringList tags;
 
-    struct PlayStats {
-        int play_count = 0;
-        int play_time = 0;
-        QDateTime last_played;
-    } playstats;
+        short player_count = 1;
+        float rating = 0.0;
+        QDate release_date;
+        QDate last_updated_date;
 
-    bool is_favorite = false;
+        struct PlayStats {
+            int play_count = 0;
+            int play_time = 0;
+            QDateTime last_played;
+        } playstats;
 
-    struct LaunchParams {
-        QString launch_cmd;
-        QString launch_workdir;
-        QString relative_basedir; // TODO: check if needed
-    } launch_params;
-};
+        bool is_favorite = false;
+
+        struct LaunchParams {
+            QString launch_cmd;
+            QString launch_workdir;
+            QString relative_basedir; // TODO: check if needed
+        } launch_params;
+
+        QUuid id;
+        QString version;
+        bool hasLeaderboard = false;
+    };
 
 
-class Game : public QObject {
+    class Game : public QObject {
     Q_OBJECT
 
-public:
+    public:
 #define GETTER(type, name, field) \
     type name() const { return m_data.field; }
 
-    GETTER(const QString&, title, title)
-    GETTER(const QString&, sortBy, sort_by)
-    GETTER(const QString&, summary, summary)
-    GETTER(const QString&, description, description)
-    GETTER(const QDate&, releaseDate, release_date)
-    GETTER(int, playerCount, player_count)
-    GETTER(float, rating, rating)
+        GETTER(const QString&, title, title)
 
-    GETTER(const QStringList&, developerListConst, developers)
-    GETTER(const QStringList&, publisherListConst, publishers)
-    GETTER(const QStringList&, genreListConst, genres)
-    GETTER(const QStringList&, tagListConst, tags)
+        GETTER(const QString&, sortBy, sort_by)
 
-    GETTER(int, releaseYear, release_date.year())
-    GETTER(int, releaseMonth, release_date.month())
-    GETTER(int, releaseDay, release_date.day())
+        GETTER(const QString&, summary, summary)
 
-    GETTER(int, playCount, playstats.play_count)
-    GETTER(int, playTime, playstats.play_time)
-    GETTER(const QDateTime&, lastPlayed, playstats.last_played)
-    GETTER(bool, isFavorite, is_favorite)
+        GETTER(const QString&, description, description)
 
-    GETTER(const QString&, launchCmd, launch_params.launch_cmd)
-    GETTER(const QString&, launchWorkdir, launch_params.launch_workdir)
-    GETTER(const QString&, launchCmdBasedir, launch_params.relative_basedir)
+        GETTER(const QDate&, releaseDate, release_date)
+
+        GETTER(const QDate&, lastUpdatedDate, last_updated_date)
+
+        GETTER(int, playerCount, player_count)
+
+        GETTER(float, rating, rating)
+
+        GETTER(const QStringList&, developerListConst, developers)
+
+        GETTER(const QStringList&, publisherListConst, publishers)
+
+        GETTER(const QStringList&, genreListConst, genres)
+
+        GETTER(const QStringList&, tagListConst, tags)
+
+        GETTER(int, releaseYear, release_date.year())
+
+        GETTER(int, releaseMonth, release_date.month())
+
+        GETTER(int, releaseDay, release_date.day())
+
+        GETTER(int, playCount, playstats.play_count)
+
+        GETTER(int, playTime, playstats.play_time)
+
+        GETTER(const QDateTime&, lastPlayed, playstats.last_played)
+
+        GETTER(bool, isFavorite, is_favorite)
+
+        GETTER(const QString&, launchCmd, launch_params.launch_cmd)
+
+        GETTER(const QString&, launchWorkdir, launch_params.launch_workdir)
+
+        GETTER(const QString&, launchCmdBasedir, launch_params.relative_basedir)
+
+        GETTER(const QUuid&, id, id)
+
+        GETTER(const QString&, version, version)
+
+        GETTER(bool, hasLeaderboard, hasLeaderboard)
+
 #undef GETTER
 
 
 #define SETTER(type, name, field) \
     Game& set##name(type val) { m_data.field = std::move(val); return *this; }
 
-    Game& setTitle(QString);
-    SETTER(QString, SortBy, sort_by)
-    SETTER(QString, Summary, summary)
-    SETTER(QString, Description, description)
-    SETTER(QDate, ReleaseDate, release_date)
+        Game &setTitle(QString);
 
-    SETTER(QString, LaunchCmd, launch_params.launch_cmd)
-    SETTER(QString, LaunchWorkdir, launch_params.launch_workdir)
-    SETTER(QString, LaunchCmdBasedir, launch_params.relative_basedir)
+        SETTER(QString, SortBy, sort_by)
 
-    Game& setFavorite(bool val);
-    Game& setRating(float rating);
-    Game& setPlayerCount(int player_count);
+        SETTER(QString, Summary, summary)
+
+        SETTER(QString, Description, description)
+
+        SETTER(QDate, ReleaseDate, release_date)
+
+        SETTER(QDate, LastUpdatedDate, last_updated_date)
+
+        SETTER(QString, LaunchCmd, launch_params.launch_cmd)
+
+        SETTER(QString, LaunchWorkdir, launch_params.launch_workdir)
+
+        SETTER(QString, LaunchCmdBasedir, launch_params.relative_basedir)
+
+        Game &setFavorite(bool val);
+
+        Game &setRating(float rating);
+
+        Game &setPlayerCount(int player_count);
+
+        Game &setId(QUuid qUuid);
+
+        Game &setVersion(QString version);
+
+        Game &setLeaderboard(bool hasLeaderboard);
+
 #undef SETTER
 
 
@@ -129,77 +179,96 @@ public:
     Q_PROPERTY(QString singular READ singular##Str CONSTANT) \
     Q_PROPERTY(QStringList singular##List READ singular##ListConst CONSTANT)
 
-    STRLIST(developer, developers)
-    STRLIST(publisher, publishers)
-    STRLIST(genre, genres)
-    STRLIST(tag, tags)
+        STRLIST(developer, developers)
+
+        STRLIST(publisher, publishers)
+
+        STRLIST(genre, genres)
+
+        STRLIST(tag, tags)
+
 #undef GEN
 
 
-    Q_PROPERTY(QString title READ title CONSTANT)
-    Q_PROPERTY(QString sortTitle READ sortBy CONSTANT)
-    Q_PROPERTY(QString sortBy READ sortBy CONSTANT)
-    Q_PROPERTY(QString summary READ summary CONSTANT)
-    Q_PROPERTY(QString description READ description CONSTANT)
-    Q_PROPERTY(QDate release READ releaseDate CONSTANT)
-    Q_PROPERTY(int players READ playerCount CONSTANT)
-    Q_PROPERTY(float rating READ rating CONSTANT)
+        Q_PROPERTY(QString title READ title CONSTANT)
+        Q_PROPERTY(QString sortTitle READ sortBy CONSTANT)
+        Q_PROPERTY(QString sortBy READ sortBy CONSTANT)
+        Q_PROPERTY(QString summary READ summary CONSTANT)
+        Q_PROPERTY(QString description READ description CONSTANT)
+        Q_PROPERTY(QDate release READ releaseDate CONSTANT)
+        Q_PROPERTY(int players READ playerCount CONSTANT)
+        Q_PROPERTY(float rating READ rating CONSTANT)
 
-    Q_PROPERTY(int releaseYear READ releaseYear CONSTANT)
-    Q_PROPERTY(int releaseMonth READ releaseMonth CONSTANT)
-    Q_PROPERTY(int releaseDay READ releaseDay CONSTANT)
+        Q_PROPERTY(int releaseYear READ releaseYear CONSTANT)
+        Q_PROPERTY(int releaseMonth READ releaseMonth CONSTANT)
+        Q_PROPERTY(int releaseDay READ releaseDay CONSTANT)
 
-    Q_PROPERTY(int playCount READ playCount NOTIFY playStatsChanged)
-    Q_PROPERTY(int playTime READ playTime NOTIFY playStatsChanged)
-    Q_PROPERTY(QDateTime lastPlayed READ lastPlayed NOTIFY playStatsChanged)
-    Q_PROPERTY(bool favorite READ isFavorite WRITE setFavorite NOTIFY favoriteChanged)
+        Q_PROPERTY(int playCount READ playCount NOTIFY playStatsChanged)
+        Q_PROPERTY(int playTime READ playTime NOTIFY playStatsChanged)
+        Q_PROPERTY(QDateTime lastPlayed READ lastPlayed NOTIFY playStatsChanged)
+        Q_PROPERTY(bool favorite READ isFavorite WRITE setFavorite NOTIFY favoriteChanged)
 
-    Q_PROPERTY(QVariantMap extra READ extraMap CONSTANT)
-    const QVariantMap& extraMap() const { return m_extra; }
-    QVariantMap& extraMapMut() { return m_extra; }
+        Q_PROPERTY(QVariantMap extra READ extraMap CONSTANT)
 
+        const QVariantMap &extraMap() const { return m_extra; }
 
-    const Assets& assets() const { return *m_assets; }
-    Assets& assetsMut() { return *m_assets; }
-    Assets* assetsPtr() const { return m_assets; }
-    Q_PROPERTY(model::Assets* assets READ assetsPtr CONSTANT)
-
-    CollectionListModel* collectionsModel() const { return m_collections; }
-    Q_PROPERTY(ObjectListModel* collections READ collectionsModel CONSTANT)
-
-    GameFileListModel* filesModel() const { return m_files; }
-    Q_PROPERTY(ObjectListModel* files READ filesModel CONSTANT)
-
-    Game& setFiles(std::vector<model::GameFile*>&&);
-    Game& setCollections(std::vector<model::Collection*>&&);
+        QVariantMap &extraMapMut() { return m_extra; }
 
 
-private:
-    GameData m_data;
-    Assets* const m_assets;
-    QVariantMap m_extra;
+        const Assets &assets() const { return *m_assets; }
 
-    CollectionListModel* m_collections = nullptr;
-    GameFileListModel* m_files = nullptr;
+        Assets &assetsMut() { return *m_assets; }
 
-signals:
-    void launchFileSelectorRequested();
-    void favoriteChanged();
-    void playStatsChanged();
+        Assets *assetsPtr() const { return m_assets; }
 
-private slots:
-    void onEntryPlayStatsChanged();
+        Q_PROPERTY(model::Assets *assets READ assetsPtr CONSTANT)
 
+        CollectionListModel *collectionsModel() const { return m_collections; }
 
-public:
-    explicit Game(QObject* parent = nullptr);
-    explicit Game(QString name, QObject* parent = nullptr);
+        Q_PROPERTY(ObjectListModel *collections READ collectionsModel CONSTANT)
 
-    Q_INVOKABLE void launch();
+        GameFileListModel *filesModel() const { return m_files; }
 
-    void finalize();
-};
+        Q_PROPERTY(ObjectListModel *files READ filesModel CONSTANT)
+
+        Game &setFiles(std::vector<model::GameFile *> &&);
+
+        Game &setCollections(std::vector<model::Collection *> &&);
 
 
-bool sort_games(const model::Game* const, const model::Game* const);
+    private:
+        GameData m_data;
+        Assets *const m_assets;
+        QVariantMap m_extra;
+
+        CollectionListModel *m_collections = nullptr;
+        GameFileListModel *m_files = nullptr;
+
+    signals:
+
+        void launchFileSelectorRequested();
+
+        void favoriteChanged();
+
+        void playStatsChanged();
+
+    private slots:
+
+        void onEntryPlayStatsChanged();
+
+
+    public:
+        explicit Game(QObject *parent = nullptr);
+
+        explicit Game(QString name, QObject *parent = nullptr);
+
+        Q_INVOKABLE void launch();
+
+        void finalize();
+
+
+    };
+
+
+    bool sort_games(const model::Game *const, const model::Game *const);
 } // namespace model

@@ -89,13 +89,15 @@ def check_collection_value_and_update(dir_path, collection_name):
         for line in file:
             if line.strip().startswith(f"{search_word}:"):
                 updated = True
-                new_lines.append(f"{search_word}: {collection_name}\n")
+                new_lines.insert(0, f"{search_word}: {collection_name}\n")
             else:
                 new_lines.append(line)
 
     if not updated:
         print(f"Add collection line in metadata at {dir_path}")
-        new_lines.append(f"{search_word}: {collection_name}\n")
+        new_lines.insert(0, f"{search_word}: {collection_name}\n")
+
+    new_lines.append("\nlaunch: {file.path}")
 
     with open(f"{dir_path}/{extracted_metadata_filename}", "w") as output:
         output.writelines(new_lines)
@@ -130,7 +132,6 @@ def unzip_game_file(dir_path):
 
 
 def main():
-
     print("----Decompressing script for Conjure Arcade library games----")
 
     conj_file_path = conj_dir
@@ -140,8 +141,6 @@ def main():
         conj_file_path = sys.argv[1]
     else:
         print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
-
-
 
     conj_paths = find_all_conj_file(conj_file_path)
 

@@ -18,6 +18,7 @@
 #include "utils/PathTools.h"
 
 #include <QUrl>
+#include <QUuid>
 
 namespace {
     constexpr size_t ISSUE_LOG_LIMIT = 100;
@@ -51,7 +52,9 @@ namespace providers {
         };
 
         enum class GameAttrib : unsigned char {
+            GAME,
             FILES,
+            VERSION,
             DEVELOPERS,
             PUBLISHERS,
             GENRES,
@@ -60,14 +63,18 @@ namespace providers {
             SHORT_DESC,
             LONG_DESC,
             RELEASE,
+            MODIFICATION,
             RATING,
+            LEADERBOARD,
+            THUMBNAIL,
+            IMAGE,
             LAUNCH_CMD,
             LAUNCH_WORKDIR,
             SORT_BY,
         };
 
         Metadata::Metadata(QString log_tag)
-                : m_log_tag(std::move(log_tag)), m_primary_key_collection("collection"), m_primary_key_game("game"),
+                : m_log_tag(std::move(log_tag)), m_primary_key_collection("collection"), m_primary_key_game("id"),
                   m_coll_attribs{
                           {QStringLiteral("shortname"),         CollAttrib::SHORT_NAME},
                           {QStringLiteral("launch"),            CollAttrib::LAUNCH_CMD},
@@ -93,35 +100,45 @@ namespace providers {
                           {QStringLiteral("sort_by"),           CollAttrib::SORT_BY},
                           {QStringLiteral("sort-by"),           CollAttrib::SORT_BY},
                   }, m_game_attribs{
-                        {QStringLiteral("file"),        GameAttrib::FILES},
-                        {QStringLiteral("files"),       GameAttrib::FILES},
-                        {QStringLiteral("launch"),      GameAttrib::LAUNCH_CMD},
-                        {QStringLiteral("command"),     GameAttrib::LAUNCH_CMD},
-                        {QStringLiteral("workdir"),     GameAttrib::LAUNCH_WORKDIR},
-                        {QStringLiteral("cwd"),         GameAttrib::LAUNCH_WORKDIR},
-                        {QStringLiteral("developer"),   GameAttrib::DEVELOPERS},
-                        {QStringLiteral("developers"),  GameAttrib::DEVELOPERS},
-                        {QStringLiteral("publisher"),   GameAttrib::PUBLISHERS},
-                        {QStringLiteral("publishers"),  GameAttrib::PUBLISHERS},
-                        {QStringLiteral("genre"),       GameAttrib::GENRES},
-                        {QStringLiteral("genres"),      GameAttrib::GENRES},
-                        {QStringLiteral("tag"),         GameAttrib::TAGS},
-                        {QStringLiteral("tags"),        GameAttrib::TAGS},
-                        {QStringLiteral("players"),     GameAttrib::PLAYER_COUNT},
-                        {QStringLiteral("summary"),     GameAttrib::SHORT_DESC},
-                        {QStringLiteral("description"), GameAttrib::LONG_DESC},
-                        {QStringLiteral("release"),     GameAttrib::RELEASE},
-                        {QStringLiteral("rating"),      GameAttrib::RATING},
+                        {QStringLiteral("game"),          GameAttrib::GAME},
+                        {QStringLiteral("file"),          GameAttrib::FILES},
+                        {QStringLiteral("files"),         GameAttrib::FILES},
+                        {QStringLiteral("version"),       GameAttrib::VERSION},
+                        {QStringLiteral("launch"),        GameAttrib::LAUNCH_CMD},
+                        {QStringLiteral("command"),       GameAttrib::LAUNCH_CMD},
+                        {QStringLiteral("workdir"),       GameAttrib::LAUNCH_WORKDIR},
+                        {QStringLiteral("cwd"),           GameAttrib::LAUNCH_WORKDIR},
+                        {QStringLiteral("developer"),     GameAttrib::DEVELOPERS},
+                        {QStringLiteral("developers"),    GameAttrib::DEVELOPERS},
+                        {QStringLiteral("publisher"),     GameAttrib::PUBLISHERS},
+                        {QStringLiteral("publishers"),    GameAttrib::PUBLISHERS},
+                        {QStringLiteral("genre"),         GameAttrib::GENRES},
+                        {QStringLiteral("genres"),        GameAttrib::GENRES},
+                        {QStringLiteral("tag"),           GameAttrib::TAGS},
+                        {QStringLiteral("tags"),          GameAttrib::TAGS},
+                        {QStringLiteral("players"),       GameAttrib::PLAYER_COUNT},
+                        {QStringLiteral("summary"),       GameAttrib::SHORT_DESC},
+                        {QStringLiteral("description"),   GameAttrib::LONG_DESC},
+                        {QStringLiteral("release"),       GameAttrib::RELEASE},
+                        {QStringLiteral("modification"),  GameAttrib::MODIFICATION},
+                        {QStringLiteral("rating"),        GameAttrib::RATING},
+                        {QStringLiteral("leaderboard"),   GameAttrib::LEADERBOARD},
+                        {QStringLiteral("thumbnailpath"), GameAttrib::THUMBNAIL},
+                        {QStringLiteral("thumbnailPath"), GameAttrib::THUMBNAIL},
+                        {QStringLiteral("thumbnail"),     GameAttrib::THUMBNAIL},
+                        {QStringLiteral("imagePath"),     GameAttrib::IMAGE},
+                        {QStringLiteral("imagepath"),     GameAttrib::IMAGE},
+                        {QStringLiteral("image"),         GameAttrib::IMAGE},
                         // sort title variations
-                        {QStringLiteral("sorttitle"),   GameAttrib::SORT_BY},
-                        {QStringLiteral("sortname"),    GameAttrib::SORT_BY},
-                        {QStringLiteral("sort_title"),  GameAttrib::SORT_BY},
-                        {QStringLiteral("sort_name"),   GameAttrib::SORT_BY},
-                        {QStringLiteral("sort-title"),  GameAttrib::SORT_BY},
-                        {QStringLiteral("sort-name"),   GameAttrib::SORT_BY},
-                        {QStringLiteral("sortby"),      GameAttrib::SORT_BY},
-                        {QStringLiteral("sort_by"),     GameAttrib::SORT_BY},
-                        {QStringLiteral("sort-by"),     GameAttrib::SORT_BY},
+                        {QStringLiteral("sorttitle"),     GameAttrib::SORT_BY},
+                        {QStringLiteral("sortname"),      GameAttrib::SORT_BY},
+                        {QStringLiteral("sort_title"),    GameAttrib::SORT_BY},
+                        {QStringLiteral("sort_name"),     GameAttrib::SORT_BY},
+                        {QStringLiteral("sort-title"),    GameAttrib::SORT_BY},
+                        {QStringLiteral("sort-name"),     GameAttrib::SORT_BY},
+                        {QStringLiteral("sortby"),        GameAttrib::SORT_BY},
+                        {QStringLiteral("sort_by"),       GameAttrib::SORT_BY},
+                        {QStringLiteral("sort-by"),       GameAttrib::SORT_BY},
                 }
                 /*, m_gamefile_attribs {
                     { QStringLiteral("name"), GameFileAttrib::TITLE },
@@ -267,6 +284,21 @@ namespace providers {
             }
 
             switch (attrib_it->second) {
+
+                case GameAttrib::GAME: {
+                    ps.cur_game->setTitle(first_line_of(ps, entry));
+                }
+                break;
+//                case GameAttrib::ID: {
+//                    QString text_qUuid = metafile::merge_lines(entry.values);
+//                    replace_newlines(text_qUuid);
+//                    QUuid qUuid = QUuid::createUuidV5(QUuid{}, text_qUuid);
+//
+//                    //TODO : Check si jeux exsiste?? (ici ou ailleur?)
+//
+//                    ps.cur_game->setId(qUuid);
+//                }
+//                    break;
                 case GameAttrib::FILES:
                     for (const QString &line: entry.values) {
                         const bool is_uri = rx_uri.match(line).hasMatch();
@@ -308,6 +340,16 @@ namespace providers {
                             sctx.game_add_filepath(*ps.cur_game, std::move(path));
                         }
                     }
+                    break;
+                case GameAttrib::VERSION: {
+                    QString text_version = metafile::merge_lines(entry.values);
+
+                    replace_newlines(text_version);
+
+                    //TODO : Check version and update needed (or other stuff)?
+
+                    ps.cur_game->setVersion(text_version);
+                }
                     break;
                 case GameAttrib::DEVELOPERS:
                     for (const QString &line: entry.values)
@@ -366,6 +408,26 @@ namespace providers {
                     ps.cur_game->setReleaseDate(std::move(date));
                 }
                     break;
+                case GameAttrib::MODIFICATION: {
+                    const auto rx_match = rx_date.match(first_line_of(ps, entry));
+                    if (!rx_match.hasMatch()) {
+                        print_warning(ps, entry,
+                                      LOGMSG("Incorrect date format, should be YYYY, YYYY-MM or YYYY-MM-DD"));
+                        return;
+                    }
+
+                    const int y = qMax(1, rx_match.captured(1).toInt());
+                    const int m = qBound(1, rx_match.captured(3).toInt(), 12);
+                    const int d = qBound(1, rx_match.captured(5).toInt(), 31);
+                    QDate date(y, m, d);
+                    if (!date.isValid()) {
+                        print_warning(ps, entry, LOGMSG("Invalid date"));
+                        return;
+                    }
+
+                    ps.cur_game->setLastUpdatedDate(std::move(date));
+                }
+                    break;
                 case GameAttrib::RATING: {
                     const QString &line = first_line_of(ps, entry);
 
@@ -381,6 +443,26 @@ namespace providers {
                     }
 
                     print_warning(ps, entry, LOGMSG("Failed to parse the rating value"));
+                }
+                    break;
+                case GameAttrib::LEADERBOARD: {
+                    QString text = metafile::merge_lines(entry.values);
+
+                    //TODO : update or prepare leaderboard ??
+
+                    ps.cur_game->setLeaderboard(text.contains("true"));
+                }
+                    break;
+                case GameAttrib::THUMBNAIL: {
+                    QString text = metafile::merge_lines(entry.values);
+                    ps.cur_game->assetsMut().add_uri(AssetType::CARTRIDGE, assetline_to_url(ps, entry,
+                                                                                            text)); //TODO update thumbnail to be another type of assets??
+                }
+                    break;
+                case GameAttrib::IMAGE: {
+                    QString text = metafile::merge_lines(entry.values);
+                    ps.cur_game->assetsMut().add_uri(AssetType::UI_BANNER, assetline_to_url(ps, entry,
+                                                                                            text));//TODO update BANNER to be another type of assets??
                 }
                     break;
                 case GameAttrib::LAUNCH_CMD:
@@ -480,7 +562,6 @@ namespace providers {
 
             if (entry.key == m_primary_key_game) {
                 ps.cur_game = sctx.create_game();
-                ps.cur_game->setTitle(first_line_of(ps, entry));
                 ps.cur_game->setLaunchCmdBasedir(ps.dir.path());
 
                 // Add to the ones found so far
