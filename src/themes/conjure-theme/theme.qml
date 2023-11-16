@@ -39,7 +39,7 @@ FocusScope {
 
             Text {
                 id: conjureOsDisplay
-                text : "Conjure OS"
+                text : "Conjure Arcade"
 
                 font.family:"Roboto"
                 font.capitalization: Font.AllUppercase
