@@ -139,18 +139,7 @@ namespace providers {
                         {QStringLiteral("sortby"),        GameAttrib::SORT_BY},
                         {QStringLiteral("sort_by"),       GameAttrib::SORT_BY},
                         {QStringLiteral("sort-by"),       GameAttrib::SORT_BY},
-                }
-                /*, m_gamefile_attribs {
-                    { QStringLiteral("name"), GameFileAttrib::TITLE },
-                    { QStringLiteral("title"), GameFileAttrib::TITLE },
-                    { QStringLiteral("launch"), GameFileAttrib::LAUNCH_CMD },
-                    { QStringLiteral("command"), GameFileAttrib::LAUNCH_CMD },
-                    { QStringLiteral("workdir"), GameFileAttrib::LAUNCH_WORKDIR },
-                    { QStringLiteral("cwd"), GameFileAttrib::LAUNCH_WORKDIR },
-                    { QStringLiteral("summary"), GameFileAttrib::SHORT_DESC },
-                    { QStringLiteral("description"), GameFileAttrib::LONG_DESC },
-                }*/
-                , rx_asset_key(QStringLiteral(R"(^assets?\.(.+)$)")),
+                }, rx_asset_key(QStringLiteral(R"(^assets?\.(.+)$)")),
                   rx_count_range(QStringLiteral("^(\\d+)(-(\\d+))?$")), rx_percent(QStringLiteral("^\\d+%$")),
                   rx_float(QStringLiteral("^\\d(\\.\\d+)?$")),
                   rx_date(QStringLiteral("^(\\d{4})(-(\\d{1,2}))?(-(\\d{1,2}))?$")),
@@ -288,17 +277,7 @@ namespace providers {
                 case GameAttrib::GAME: {
                     ps.cur_game->setTitle(first_line_of(ps, entry));
                 }
-                break;
-//                case GameAttrib::ID: {
-//                    QString text_qUuid = metafile::merge_lines(entry.values);
-//                    replace_newlines(text_qUuid);
-//                    QUuid qUuid = QUuid::createUuidV5(QUuid{}, text_qUuid);
-//
-//                    //TODO : Check si jeux exsiste?? (ici ou ailleur?)
-//
-//                    ps.cur_game->setId(qUuid);
-//                }
-//                    break;
+                    break;
                 case GameAttrib::FILES:
                     for (const QString &line: entry.values) {
                         const bool is_uri = rx_uri.match(line).hasMatch();
@@ -343,11 +322,7 @@ namespace providers {
                     break;
                 case GameAttrib::VERSION: {
                     QString text_version = metafile::merge_lines(entry.values);
-
                     replace_newlines(text_version);
-
-                    //TODO : Check version and update needed (or other stuff)?
-
                     ps.cur_game->setVersion(text_version);
                 }
                     break;
