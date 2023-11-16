@@ -101,5 +101,6 @@
         <file>conjure-theme/theme.cfg</file>
         <file>conjure-theme/theme.qml</file>
         <file>conjure-theme/assets/logos/noir_sur_blanc.png</file>
+        <file>conjure-theme/assets/BG.png</file>
     </qresource>
 </RCC>
