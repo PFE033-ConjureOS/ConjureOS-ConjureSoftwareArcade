@@ -7,10 +7,15 @@ file_extension = ".conj"
 
 curdir = os.path.expanduser('~/Documents')
 conj_dir = os.path.expanduser('~/AppData/Local/conjure/conjure-os/conj')
+
 conjure_library_dir = 'ConjureGames'
+
 conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
+
 extracted_metadata_filename = 'metadata.txt'
 compress_game_data_filename = 'game'
+
+
 
 if not os.path.exists(conjure_default_library_dir):
     os.mkdir(conjure_default_library_dir)
