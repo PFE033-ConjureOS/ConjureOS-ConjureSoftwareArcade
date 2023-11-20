@@ -1,4 +1,4 @@
-TARGET = pegasus-fe
+TARGET = conjure-os
 CONFIG += c++11 warn_on exceptions_off rtti_off
 
 SOURCES += main.cpp
