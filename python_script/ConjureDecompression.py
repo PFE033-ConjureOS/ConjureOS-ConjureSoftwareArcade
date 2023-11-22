@@ -23,7 +23,7 @@ if not os.path.exists(conjure_default_library_dir):
 
 def read_game_meta_data_collection_name_in_conj(conj):
     search_word = "collection"
-    default_collection = "MemberGames"
+    default_collection = "Members Games"
 
     with zipfile.ZipFile(conj, 'r') as zip_ref:
         zip_ref.extract(extracted_metadata_filename, path='temp')
