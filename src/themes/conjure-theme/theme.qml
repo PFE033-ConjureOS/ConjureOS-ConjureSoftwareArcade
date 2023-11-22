@@ -81,7 +81,7 @@ FocusScope {
     Rectangle {
         id: menu
 
-        property real contentWidth: width - vpx(100)
+        property real contentWidth: width - vpx(75)
 
         color: "#9900008b"
 
@@ -98,15 +98,17 @@ FocusScope {
             text: currentCollection.shortName
 
             minimumPixelSize: 10;
-            font.pixelSize: 72
+            font.pixelSize: 60
+
 
             font.capitalization: Font.Capitalize
             fontSizeMode: Text.HorizontalFit;
             font.family:"Roboto"
 
             anchors.horizontalCenter: parent.horizontalCenter
+
             anchors.top: parent.top
-            anchors.topMargin: vpx(30)
+            anchors.topMargin: vpx(20)
         }
 
         ListView {
@@ -119,7 +121,7 @@ FocusScope {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top: collectionDisplay.bottom
             anchors.bottom: parent.bottom
-            anchors.margins: vpx(30)
+            anchors.margins: vpx(20)
 
             highlightRangeMode: ListView.ApplyRange
             highlightMoveDuration: 0
@@ -129,6 +131,7 @@ FocusScope {
             spacing : vpx(15)
 
             focus: true
+            clip: true
         }
 
         Component {
