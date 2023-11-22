@@ -249,7 +249,7 @@ FocusScope {
 
         Text {
             id: gameRelease
-            text: currentGame.release
+            text: currentGame.release.toLocaleDateString(Qt.locale(), Locale.ShortFormat)
             color: "white"
             font.pixelSize: vpx(15)
             font.family:"Roboto"
