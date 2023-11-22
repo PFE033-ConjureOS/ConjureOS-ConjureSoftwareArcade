@@ -19,6 +19,9 @@
 #include <QStandardPaths>
 #include <QStringBuilder>
 #include <QDirIterator>
+#include <cstdlib>
+#include <iostream>
+
 
 namespace {
     bool is_conjure_metadata_file(const QString &filename) {
@@ -80,6 +83,8 @@ namespace providers {
                            PROVIDER_FLAG_INTERNAL, parent) {}
 
         Provider &ConjureProvider::run(SearchContext &sctx) {
+
+            system("python C:\\Users\\jonny\\Documents\\_Ecole\\_9e_session\\___LOG795\\repo\\ConjureOS-SoftwareArcade\\python_script\\ConjureDecompression.py");
 
             //TODO move this to Path.cpp
             const QString conjure_root =
