@@ -4,289 +4,304 @@ FocusScope {
 
 
     property int currentCollectionIndex: 0
-        property var currentCollection: api.collections.get(currentCollectionIndex)
-        property var currentGame: currentCollection.games.get(gameView.currentIndex)
+    property var currentCollection: api.collections.get(currentCollectionIndex)
+    property var currentGame: currentCollection.games.get(gameView.currentIndex)
 
-        Keys.onLeftPressed: {
-            if (currentCollectionIndex <= 0)
-            {
-                currentCollectionIndex = api.collections.count - 1;
-            }
-            else {
-                currentCollectionIndex--;
-            }
+    Keys.onLeftPressed: {
+        if (currentCollectionIndex <= 0)
+        {
+            currentCollectionIndex = api.collections.count - 1;
         }
-
-        Keys.onRightPressed: {
-            if (currentCollectionIndex >= api.collections.count - 1)
-            {
-                currentCollectionIndex = 0;
-            }
-            else {
-                currentCollectionIndex++;
-            }
+        else {
+            currentCollectionIndex--;
         }
+    }
 
-        Rectangle {
-            id: topbar
+    Keys.onRightPressed: {
+        if (currentCollectionIndex >= api.collections.count - 1)
+        {
+            currentCollectionIndex = 0;
+        }
+        else {
+            currentCollectionIndex++;
+        }
+    }
 
-            color: "#0B2670"
-            height: parent.height * 0.08
+    Rectangle {
+        id: topbar
 
-            anchors.top: parent.top
+        color: "#0B2670"
+        height: parent.height * 0.08
+
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        Text {
+            id: conjureOsDisplay
+            text : "Conjure Arcade"
+
+            font.family:"Roboto"
+            font.capitalization: Font.AllUppercase
+
+            color: "white"
+            fontSizeMode: Text.Fit
+
+            minimumPointSize: 5
+            font.pointSize: 30
+
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.leftMargin: vpx(20)
+
             anchors.left: parent.left
-            anchors.right: parent.right
-
-            Text {
-                id: conjureOsDisplay
-                text : "Conjure Arcade"
-
-                font.family:"Roboto"
-                font.capitalization: Font.AllUppercase
-
-                color: "white"
-                fontSizeMode: Text.Fit
-
-                minimumPointSize: 5
-                font.pointSize: 30
-
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: vpx(20)
-
-                anchors.left: parent.left
-            }
-
-            Image {
-                id: conjureName
-
-                fillMode: Image.PreserveAspectFit
-                source: "assets/logos/noir_sur_blanc.png"
-
-                anchors.rightMargin: vpx(20)
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.top: parent.top
-            }
         }
+
         Image {
-            fillMode: Image.PreserveAspectCrop
-            source: "assets/BG.png"
+            id: conjureName
+
+            fillMode: Image.PreserveAspectFit
+            source: "assets/logos/noir_sur_blanc.png"
+
+            anchors.rightMargin: vpx(20)
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             anchors.top: parent.top
-            z: -3
+        }
+    }
+
+    Image {
+        fillMode: Image.PreserveAspectCrop
+        source: "assets/BG.png"
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.top: parent.top
+        z: -3
+    }
+
+    Rectangle {
+        id: menu
+
+        property real contentWidth: width - vpx(100)
+
+        color: "#9900008b"
+
+        width: parent.width * 0.3
+        anchors.top: topbar.bottom
+        anchors.bottom: parent.bottom
+        z: 2
+
+        Text {
+            id: collectionDisplay
+
+            color: "#B8BFFC"
+            width: parent.contentWidth
+            text: currentCollection.shortName
+
+            minimumPixelSize: 10;
+            font.pixelSize: 72
+
+            font.capitalization: Font.Capitalize
+            fontSizeMode: Text.HorizontalFit;
+            font.family:"Roboto"
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: vpx(30)
         }
 
-        Rectangle {
-            id: menu
+        ListView {
+            id: gameView
 
-            property real contentWidth: width - vpx(100)
+            model: currentCollection.games
+            delegate: gameViewDelegate
 
-            color: "#9900008b"
-
-            width: parent.width * 0.3
-            anchors.top: topbar.bottom
+            width: parent.contentWidth
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: collectionDisplay.bottom
             anchors.bottom: parent.bottom
-            z: 2
-            Text {
-                id: collectionDisplay
+            anchors.margins: vpx(30)
 
-                color: "#B8BFFC"
-                width: parent.contentWidth
-                text: currentCollection.shortName
+            highlightRangeMode: ListView.ApplyRange
+            highlightMoveDuration: 0
+            preferredHighlightBegin: height * 0.5 - vpx(18)
+            preferredHighlightEnd: height * 0.5 + vpx(18)
 
-                minimumPixelSize: 10;
-                font.pixelSize: 72
+            spacing : vpx(15)
 
-                font.capitalization: Font.Capitalize
-                fontSizeMode: Text.HorizontalFit;
-                font.family:"Roboto"
+            focus: true
+        }
 
+        Component {
+            id: gameViewDelegate
+
+            Item {
+                id: itemList
+                width: ListView.view.width
+                height: cartridgeGame.height
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: vpx(30)
-            }
 
-            ListView {
-                id: gameView
+                Rectangle {
+                    id: currentRect
+                    width: parent.width
 
-                model: currentCollection.games
-                delegate: gameViewDelegate
+                    color : itemList.ListView.isCurrentItem ? "orange" : "transparent"
 
-                width: parent.contentWidth
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: collectionDisplay.bottom
-                anchors.bottom: parent.bottom
-                anchors.margins: vpx(40)
+                    height: itemList.ListView.isCurrentItem ? parent.height + vpx(10) : parent.height
 
-                highlightRangeMode: ListView.ApplyRange
-                highlightMoveDuration: 0
-                preferredHighlightBegin: height * 0.5 - vpx(18)
-                preferredHighlightEnd: height * 0.5 + vpx(18)
+                    Image {
+                        id: cartridgeGame
 
-                focus: true
-                clip: true
-            }
+                        source: modelData.assets.cartridge
+                        width: itemList.ListView.isCurrentItem ? parent.width - vpx(10) : parent.width
 
-            Component {
-                id: gameViewDelegate
+                        fillMode :Image.PreserveAspectFit
+                        anchors.horizontalCenter: currentRect.horizontalCenter
+                        anchors.verticalCenter: currentRect.verticalCenter
 
-                Text {
-                    text: modelData.title
-                    color: ListView.isCurrentItem ? "orange" : "#B8BFFC"
-
-                    font.family:"Roboto"
-                    font.pixelSize: ListView.isCurrentItem ? vpx(24) : vpx(20)
-                    font.bold: ListView.isCurrentItem
-
-                    width: ListView.view.width
-                    height: vpx(36)
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-
-                    Keys.onPressed: {
-                        if (api.keys.isAccept(event) && !event.isAutoRepeat)
-                        {
-                            modelData.launch()
+                        Keys.onPressed: {
+                            if (api.keys.isAccept(event) && !event.isAutoRepeat)
+                            {
+                                modelData.launch()
+                            }
                         }
                     }
                 }
             }
         }
+    }
 
-        Rectangle {
-            id: content
+    Rectangle {
+        id: content
 
-            color: "transparent"
+        color: "transparent"
 
-            anchors.left: menu.right
-            anchors.right: parent.right
-            anchors.top: topbar.bottom
-            anchors.bottom: parent.bottom
+        anchors.left: menu.right
+        anchors.right: parent.right
+        anchors.top: topbar.bottom
+        anchors.bottom: parent.bottom
 
-            z: 1
+        z: 1
 
-            Image {
-                id: cartridge
+        Image {
+            id: cartridge
 
-                fillMode: Image.PreserveAspectFit
-                horizontalAlignment: Image.AlignRight
+            fillMode: Image.PreserveAspectFit
+            horizontalAlignment: Image.AlignRight
 
-                source: currentGame.assets.cartridge
-                || currentGame.assets.boxFront
+            source: currentGame.assets.boxFront
                 || currentGame.assets.poster
                 || currentGame.assets.banner
                 || currentGame.assets.tile
 
-                sourceSize {
-                    width: 1024; height: 576
-                }
-
-                anchors.topMargin: vpx(40)
-                anchors.rightMargin: vpx(40)
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.left: parent.left
-
-                height: parent.height * 0.5
-
-                asynchronous: true
+            sourceSize {
+                width: 1024; height: 576
             }
 
-            Text {
-                id: title
+            anchors.topMargin: vpx(40)
+            anchors.rightMargin: vpx(40)
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.left: parent.left
 
-                text: currentGame.title
-                color: "white"
-                font.family:"Roboto"
-                font.pixelSize: vpx(50)
-                font.bold: true
+            height: parent.height * 0.5
 
-                horizontalAlignment: Text.AlignRight
-                elide: Text.ElideRight
+            asynchronous: true
+        }
 
-                anchors.topMargin: vpx(10)
+        Text {
+            id: title
 
-                anchors.top: cartridge.bottom
-                anchors.right: cartridge.right
-            }
+            text: currentGame.title
+            color: "white"
+            font.family:"Roboto"
+            font.pixelSize: vpx(50)
+            font.bold: true
 
-            Text {
-                id: developerText
-                text: currentGame.developer
-                color: "#FFC1FD"
-                font.pixelSize: vpx(15)
-                font.family:"Roboto"
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
 
-                anchors.top: title.bottom
-                anchors.right: cartridge.right
-                anchors.left: parent.left
+            anchors.topMargin: vpx(10)
 
-                anchors.topMargin: vpx(10)
-                anchors.leftMargin: vpx(250)
+            anchors.top: cartridge.bottom
+            anchors.right: cartridge.right
+        }
 
-                wrapMode: Text.WordWrap
-                horizontalAlignment: Text.AlignRight
-            }
+        Text {
+            id: developerText
+            text: currentGame.developer
+            color: "#FFC1FD"
+            font.pixelSize: vpx(15)
+            font.family:"Roboto"
 
-            Text {
-                id: gameRelease
-                text: currentGame.release
-                color: "white"
-                font.pixelSize: vpx(15)
-                font.family:"Roboto"
-                visible: currentGame.release > 0
+            anchors.top: title.bottom
+            anchors.right: cartridge.right
+            anchors.left: parent.left
 
-                anchors.topMargin: vpx(10)
-                anchors.top: developerText.bottom
-                anchors.right: cartridge.right
-                anchors.left: cartridge.left
+            anchors.topMargin: vpx(10)
+            anchors.leftMargin: vpx(250)
 
-                wrapMode: Text.WordWrap
-                horizontalAlignment: Text.AlignRight
-            }
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
 
-            Text {
-                id: genre
+        Text {
+            id: gameRelease
+            text: currentGame.release
+            color: "white"
+            font.pixelSize: vpx(15)
+            font.family:"Roboto"
+            visible: currentGame.release > 0
 
-                text: currentGame.genre
-                color: "white"
-                font.pixelSize: vpx(15)
-                font.family:"Roboto"
+            anchors.topMargin: vpx(10)
+            anchors.top: developerText.bottom
+            anchors.right: cartridge.right
+            anchors.left: cartridge.left
 
-                wrapMode: Text.WordWrap
-                horizontalAlignment: Text.AlignRight
-                elide: Text.ElideRight
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+        }
 
-                anchors.top: gameRelease.bottom
-                anchors.topMargin: vpx(5)
-                anchors.left: cartridge.left
-                anchors.right: cartridge.right
-            }
+        Text {
+            id: genre
 
-            Text {
-                id: description
+            text: currentGame.genre
+            color: "white"
+            font.pixelSize: vpx(15)
+            font.family:"Roboto"
 
-                text: currentGame.summary || currentGame.description
-                color: "white"
-                font.pixelSize: vpx(18)
-                font.family:"Roboto"
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
 
-                anchors.topMargin: vpx(10)
-                anchors.leftMargin: vpx(20)
+            anchors.top: gameRelease.bottom
+            anchors.topMargin: vpx(5)
+            anchors.left: cartridge.left
+            anchors.right: cartridge.right
+        }
 
-                anchors.top: genre.bottom
+        Text {
+            id: description
 
-                anchors.bottom: genre.top
+            text: currentGame.summary || currentGame.description
+            color: "white"
+            font.pixelSize: vpx(18)
+            font.family:"Roboto"
 
-                anchors.left: cartridge.left
-                anchors.right: cartridge.right
+            anchors.topMargin: vpx(10)
+            anchors.leftMargin: vpx(20)
 
-                wrapMode: Text.WordWrap
-                horizontalAlignment: Text.AlignRight
-            }
+            anchors.top: genre.bottom
 
+            anchors.bottom: genre.top
+
+            anchors.left: cartridge.left
+            anchors.right: cartridge.right
+
+            wrapMode: Text.WordWrap
+            horizontalAlignment: Text.AlignRight
         }
 
     }
+
+}
 
