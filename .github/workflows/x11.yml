@@ -9,7 +9,6 @@ env:
   SDL_TARGET: x11-bionic
   SDL_VERSION: "2.0.20"
 
-
 jobs:
   x11:
     runs-on: ubuntu-20.04
