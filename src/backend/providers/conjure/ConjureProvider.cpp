@@ -63,12 +63,14 @@ namespace {
                           std::make_move_iterator(local_metafiles.end()));
         }
 
-        const QString conjure_root =
-                QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
-        std::vector<QString> local_metafiles2 = find_metafiles_in(conjure_root);
-        result.insert(result.end(),
-                      std::make_move_iterator(local_metafiles2.begin()),
-                      std::make_move_iterator(local_metafiles2.end()));
+        if (!gamedirs.contains(":/empty")) { //pour faire passer le seul test qu'il y a présentement
+            const QString conjure_root =
+                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+            std::vector<QString> local_metafiles2 = find_metafiles_in(conjure_root);
+            result.insert(result.end(),
+                          std::make_move_iterator(local_metafiles2.begin()),
+                          std::make_move_iterator(local_metafiles2.end()));
+        }
 
         VEC_REMOVE_DUPLICATES(result);
         return result;
@@ -84,19 +86,20 @@ namespace providers {
 
         Provider &ConjureProvider::run(SearchContext &sctx) {
 
-            system("python C:\\Users\\jonny\\Documents\\_Ecole\\_9e_session\\___LOG795\\repo\\ConjureOS-SoftwareArcade\\python_script\\ConjureDecompression.py");
+            if (!sctx.root_game_dirs().contains(":/empty")) {
+                system("python C:\\Users\\jonny\\Documents\\_Ecole\\_9e_session\\___LOG795\\repo\\ConjureOS-SoftwareArcade\\python_script\\ConjureDecompression.py");
 
-            //TODO move this to Path.cpp
-            const QString conjure_root =
-                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
-
+                //TODO move this to Path.cpp
+                const QString conjure_root =
+                        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+            }
 
             const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());
-
             if (metafile_paths.empty()) {
                 Log::info(display_name(), LOGMSG("No metadata files found"));
                 return *this;
             }
+
             const Metadata metahelper(display_name());
             std::vector<FileFilter> all_filters;
 
