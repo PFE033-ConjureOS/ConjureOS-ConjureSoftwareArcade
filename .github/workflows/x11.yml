@@ -1,16 +1,5 @@
 name: Build - X11
-on:
-  push:
-    branches:
-      - 'dev'
-      - 'main'
-    tags:
-      - 'alpha*-*-g*_*' # DEB_REGEX_LATEST
-      - 'alpha*_*' # DEB_REGEX_STABLE
-  pull_request:
-    types:
-      - closed
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 env:
   TOOLS_URL: https://github.com/mmatyas/pegasus-frontend/releases/download/alpha1
