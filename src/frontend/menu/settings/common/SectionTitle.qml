@@ -21,7 +21,7 @@ import QtQuick 2.6
 Text {
     property bool first: false
 
-    color: "#bbb"
+    color: "purple"
 
     font.pixelSize: vpx(22)
     font.family: globalFonts.sans

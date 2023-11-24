@@ -4,7 +4,7 @@
         <file>MenuLayer.qml</file>
         <file>SplashLayer.qml</file>
         <file>assets/dir-icon.png</file>
-        <file>assets/logo.png</file>
+        <file>assets/conjureLogo.png</file>
         <file>assets/pbar-left.png</file>
         <file>assets/pbar-right.png</file>
         <file>assets/pbar.png</file>
@@ -80,5 +80,6 @@
         <file>menu/settings/gamedireditor/GameDirEditorEntry.qml</file>
         <file>menu/settings/AndroidSafEditor.qml</file>
         <file>menu/settings/common/SimpleShade.qml</file>
+        <file>dialogs/PasswordDialog.qml</file>
     </qresource>
 </RCC>

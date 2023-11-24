@@ -20,13 +20,14 @@ import QtQuick 2.8
 import QtQuick.Window 2.2
 
 
+
 Window {
     id: appWindow
     visible: true
     width: 1280
     height: 720
-    title: "Pegasus"
-    color: "#000"
+    title: "ConjureOS"
+    color: "#003"
 
     visibility: Internal.settings.fullscreen
                 ? Window.FullScreen : Window.AutomaticVisibility
@@ -130,6 +131,7 @@ Window {
             onLoaded: item.focus = focus
             onFocusChanged: if (item) item.focus = focus
             enabled: focus
+
         }
         Connections {
             target: mainMenu.item
@@ -142,7 +144,7 @@ Window {
             }
             function onRequestSuspend() {
                 Internal.system.suspend()
-            }                        
+            }
             function onRequestReboot() {
                 powerDialog.source = "dialogs/RebootDialog.qml"
                 powerDialog.focus = true;
@@ -151,6 +153,7 @@ Window {
                 theme.source = "";
                 Internal.system.quit();
             }
+
         }
         PegasusUtils.HorizontalSwipeArea {
             id: menuSwipe
@@ -186,15 +189,6 @@ Window {
         function onCancel() { content.focus = true; }
     }
 
-
-    Loader {
-        id: genericMessage
-        anchors.fill: parent
-    }
-    Connections {
-        target: genericMessage.item
-        function onClose() { content.focus = true; }
-    }
 
 
     Connections {

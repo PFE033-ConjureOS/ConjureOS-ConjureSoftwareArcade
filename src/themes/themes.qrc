@@ -98,5 +98,8 @@
         <file>pegasus-theme-grid/assets/logos/xbox.svg</file>
         <file>pegasus-theme-grid/assets/logos/zmachine.svg</file>
         <file>pegasus-theme-grid/assets/logos/zxspectrum.svg</file>
+        <file>conjure-theme/theme.cfg</file>
+        <file>conjure-theme/theme.qml</file>
+        <file>conjure-theme/assets/logos/noir_sur_blanc.png</file>
     </qresource>
 </RCC>

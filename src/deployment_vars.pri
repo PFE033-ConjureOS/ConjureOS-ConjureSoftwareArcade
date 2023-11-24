@@ -9,9 +9,9 @@
 
 # The base/fallback installation directory
 isEmpty(INSTALLDIR) {
-    unix:!macx: INSTALLDIR = /opt/pegasus-frontend
-    macx: INSTALLDIR = /usr/local/pegasus-frontend
-    win32: INSTALLDIR = C:/pegasus-frontend
+    unix:!macx: INSTALLDIR = /opt/conjure-os
+    macx: INSTALLDIR = /usr/local/conjure-os
+    win32: INSTALLDIR = C:/conjure-os
 }
 
 # Linux: installations are portable by default
