@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with: {submodules: 'recursive', fetch-depth: 200}
-      - run: git fetch --tags -f
+      - run: git submodule foreach 'git fetch --tags -f'
 
       - uses: actions/cache@v3
         with:
