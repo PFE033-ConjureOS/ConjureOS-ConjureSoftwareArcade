@@ -8,4 +8,3 @@
 [submodule "thirdparty/SortFilterProxyModel"]
 	path = thirdparty/SortFilterProxyModel
 	url = https://github.com/mmatyas/SortFilterProxyModel.git
-
