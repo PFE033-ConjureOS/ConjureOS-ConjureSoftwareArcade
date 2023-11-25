@@ -8,7 +8,3 @@
 [submodule "thirdparty/SortFilterProxyModel"]
 	path = thirdparty/SortFilterProxyModel
 	url = https://github.com/mmatyas/SortFilterProxyModel.git
-[submodule "python_script"]
-	path = python_script
-	url = https://github.com/PFE033-ConjureOS/ConjureOS-SoftwareArcade-PythonScripts.git
-	master = main
