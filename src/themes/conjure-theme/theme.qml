@@ -172,15 +172,15 @@ FocusScope {
 
                     anchors.fill: parent.width
 
-                    Keys.onPressed: {
-                        if (api.keys.isAccept(event) && !event.isAutoRepeat)
-                        {
-                            modelData.launch()
-                        }
-                    }
+
                 }
 
-
+                Keys.onPressed: {
+                    if (api.keys.isAccept(event) && !event.isAutoRepeat)
+                    {
+                        modelData.launch()
+                    }
+                }
 
             }
         }
