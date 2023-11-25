@@ -19,9 +19,6 @@
 #include <QStandardPaths>
 #include <QStringBuilder>
 #include <QDirIterator>
-#include <cstdlib>
-#include <iostream>
-
 
 namespace {
     bool is_conjure_metadata_file(const QString &filename) {

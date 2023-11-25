@@ -75,17 +75,18 @@ FocusScope {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
         z: -3
     }
 
     Rectangle {
         id: menu
 
-        property real contentWidth: width - vpx(75)
+        property real contentWidth: width - vpx(25)
 
         color: "#9900008b"
 
-        width: parent.width * 0.3
+        width: parent.width * 0.2
         anchors.top: topbar.bottom
         anchors.bottom: parent.bottom
         z: 2
@@ -123,10 +124,13 @@ FocusScope {
             anchors.bottom: parent.bottom
             anchors.margins: vpx(20)
 
-            highlightRangeMode: ListView.ApplyRange
+            highlightRangeMode: ListView.StrictlyEnforceRange
             highlightMoveDuration: 0
-            preferredHighlightBegin: height * 0.5 - vpx(18)
-            preferredHighlightEnd: height * 0.5 + vpx(18)
+
+            preferredHighlightBegin: 10
+            preferredHighlightEnd: height
+
+            snapMode: ListView.SnapOneItem
 
             spacing : vpx(15)
 
@@ -139,36 +143,45 @@ FocusScope {
 
             Item {
                 id: itemList
-                width: ListView.view.width
+
+                width: ListView.view.width - vpx(50)
                 height: cartridgeGame.height
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 Rectangle {
-                    id: currentRect
+                    id: selectionMarker
+
+                    width: cartridgeGame.width + vpx(10)
+                    height: cartridgeGame.height + vpx(10)
+
+                    color: itemList.ListView.isCurrentItem ? "#C18800" : "transparent"
+
+                    anchors.centerIn: cartridgeGame
+                }
+
+                Image {
+                    id: cartridgeGame
+
+                    source: modelData.assets.cartridge
+
+                    sourceSize { width: 512; height: 288 }
+
                     width: parent.width
 
-                    color : itemList.ListView.isCurrentItem ? "orange" : "transparent"
+                    fillMode :Image.PreserveAspectFit
 
-                    height: itemList.ListView.isCurrentItem ? parent.height + vpx(10) : parent.height
+                    anchors.fill: parent.width
 
-                    Image {
-                        id: cartridgeGame
-
-                        source: modelData.assets.cartridge
-                        width: itemList.ListView.isCurrentItem ? parent.width - vpx(10) : parent.width
-
-                        fillMode :Image.PreserveAspectFit
-                        anchors.horizontalCenter: currentRect.horizontalCenter
-                        anchors.verticalCenter: currentRect.verticalCenter
-
-                        Keys.onPressed: {
-                            if (api.keys.isAccept(event) && !event.isAutoRepeat)
-                            {
-                                modelData.launch()
-                            }
+                    Keys.onPressed: {
+                        if (api.keys.isAccept(event) && !event.isAutoRepeat)
+                        {
+                            modelData.launch()
                         }
                     }
                 }
+
+
+
             }
         }
     }
