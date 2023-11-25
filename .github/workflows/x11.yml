@@ -6,7 +6,7 @@ on:
       - 'dev'
       - 'deploy/**'
     tags:
-      - v1.*
+      - 'alpha**'
   pull_request:
     branches:
       - 'main'
