@@ -84,11 +84,8 @@ namespace providers {
 
         Provider &ConjureProvider::run(SearchContext &sctx) {
 
-            system("python C:\\Users\\jonny\\Documents\\_Ecole\\_9e_session\\___LOG795\\repo\\ConjureOS-SoftwareArcade\\python_script\\ConjureDecompression.py");
-
-            //TODO move this to Path.cpp
-            const QString conjure_root =
-                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+            if (!sctx.root_game_dirs().contains(":/empty")) {
+                system("python python\\ConjureDecompression.py");
 
 
             const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());
