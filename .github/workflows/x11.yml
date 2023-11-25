@@ -9,6 +9,7 @@ env:
   SDL_TARGET: x11-bionic
   SDL_VERSION: "2.0.20"
 
+
 jobs:
   x11:
     runs-on: ubuntu-20.04
@@ -17,8 +18,7 @@ jobs:
         buildgen: [cmake, qmake, qmake-lcov]
     steps:
       - uses: actions/checkout@v3
-        with: {submodules: 'recursive', fetch-depth: 200}
-      - run: git submodule foreach 'git fetch --tags -f'
+        with: {submodules: 'recursive', fetch-depth: 0, fetch-tags: true}
 
       - uses: actions/cache@v3
         with:
@@ -110,7 +110,7 @@ jobs:
           INSTALL_BINDIR: /usr/bin/
         run: .circleci/build.sh && .circleci/objdump_linux.sh '' && .circleci/zip_linux.sh
         if: matrix.buildgen == 'qmake'
-      - run: echo "Git Describe Output: $(git describe --always)"
+      - run: echo "Git Describe Output. $(git describe --always)"
       - run: PATH="$PATH:/home/runner/.gem/ruby/2.7.0/bin" ../.travis/script__create_deb.sh
         working-directory: dist
         if: matrix.buildgen == 'qmake'
