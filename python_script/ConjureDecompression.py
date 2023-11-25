@@ -15,6 +15,8 @@ conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
 extracted_metadata_filename = 'metadata.txt'
 compress_game_data_filename = 'game'
 
+
+
 if not os.path.exists(conjure_default_library_dir):
     os.mkdir(conjure_default_library_dir)
 
@@ -137,26 +139,19 @@ def unzip_game_file(dir_path):
 def main():
     print("----Decompressing script for Conjure Arcade library games----")
 
-    try:
+    conj_file_path = conj_dir
+    if len(sys.argv) == 1:
+        print("Search for *.conj in " + conj_dir)
+    elif len(sys.argv) == 2:
+        conj_file_path = sys.argv[1]
+    else:
+        print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
 
-        conj_file_path = conj_dir
-        if len(sys.argv) == 1:
-            print("Search for *.conj in " + conj_dir)
-        elif len(sys.argv) == 2:
-            conj_file_path = sys.argv[1]
-        else:
-            print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
+    conj_paths = find_all_conj_file(conj_file_path)
 
-        conj_paths = find_all_conj_file(conj_file_path)
-
-        for conj in conj_paths:
-            dir_path = unzip_conj(conj_file_path, conj)
-            unzip_game_file(dir_path)
-    except:
-        print(f"{os.path.basename(__file__)}.py failed to run: ")
-        return -1
-
-    return 0
+    for conj in conj_paths:
+        dir_path = unzip_conj(conj_file_path, conj)
+        unzip_game_file(dir_path)
 
 
 if __name__ == "__main__":
