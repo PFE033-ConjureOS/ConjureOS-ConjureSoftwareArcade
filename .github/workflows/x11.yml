@@ -110,6 +110,7 @@ jobs:
           INSTALL_BINDIR: /usr/bin/
         run: .circleci/build.sh && .circleci/objdump_linux.sh '' && .circleci/zip_linux.sh
         if: matrix.buildgen == 'qmake'
+      - run: echo "Git Describe Output: $(git describe --always)"
       - run: PATH="$PATH:/home/runner/.gem/ruby/2.7.0/bin" ../.travis/script__create_deb.sh
         working-directory: dist
         if: matrix.buildgen == 'qmake'
