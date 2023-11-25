@@ -85,7 +85,7 @@ namespace providers {
         Provider &ConjureProvider::run(SearchContext &sctx) {
 
             if (!sctx.root_game_dirs().contains(":/empty")) {
-                system("python python\\ConjureDecompression.py");
+                system("python python_script\\ConjureDecompression.py");
 
 
             const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());
