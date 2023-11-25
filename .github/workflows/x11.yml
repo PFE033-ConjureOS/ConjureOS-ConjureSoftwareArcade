@@ -1,5 +1,16 @@
 name: Build - X11
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+      - 'deploy/**'
+  pull_request:
+    branches:
+      - 'main'
+      - 'dev'
+      - 'deploy/**'
+  workflow_dispatch:
 
 env:
   TOOLS_URL: https://github.com/mmatyas/pegasus-frontend/releases/download/alpha1
