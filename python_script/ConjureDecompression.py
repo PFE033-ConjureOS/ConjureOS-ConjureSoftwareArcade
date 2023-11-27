@@ -68,8 +68,6 @@ def create_conj_file_if_dont_exist(path):
     if not os.path.exists(path):
         os.makedirs(path)
         print(f"Folder '{path}' created")
-    else:
-        print(f"Folder '{path}' already exists.")
 
 def find_all_conj_file(directory):
 
