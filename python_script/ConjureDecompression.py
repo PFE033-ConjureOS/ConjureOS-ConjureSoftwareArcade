@@ -2,28 +2,13 @@ import zipfile
 import os
 import shutil
 import sys
-
-file_extension = ".conj"
-
-curdir = os.path.expanduser('~/Documents')
-conj_dir = os.path.expanduser('~/AppData/Local/conjure/conjure-os/conj')
-
-conjure_library_dir = 'ConjureGames'
-
-conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
-
-extracted_metadata_filename = 'metadata.txt'
-compress_game_data_filename = 'game'
-
-
-
-if not os.path.exists(conjure_default_library_dir):
-    os.mkdir(conjure_default_library_dir)
+from dotenv import load_dotenv
 
 
 def read_game_meta_data_collection_name_in_conj(conj):
     search_word = "collection"
     default_collection = "Members Games"
+    extracted_metadata_filename = os.getenv('METADATA_FILENAME')
 
     with zipfile.ZipFile(conj, 'r') as zip_ref:
         zip_ref.extract(extracted_metadata_filename, path='temp')
@@ -48,6 +33,9 @@ def find_conj_file(directory):
     files = os.listdir(directory)
     count = 0
     conj_file = ""
+
+    file_extension = os.getenv('CONJ_EXT')
+
     for file in files:
         if file.endswith(file_extension):
             count += 1
@@ -64,18 +52,21 @@ def find_conj_file(directory):
 
     return conj_file
 
-def create_conj_file_if_dont_exist(path):
+
+def create_folder_if_dont_exist(path):
     if not os.path.exists(path):
         os.makedirs(path)
         print(f"Folder '{path}' created")
 
-def find_all_conj_file(directory):
 
-    create_conj_file_if_dont_exist(directory)
+def find_all_conj_file(directory):
+    create_folder_if_dont_exist(directory)
 
     files = os.listdir(directory)
     count = 0
     conj_files_paths = []
+
+    file_extension = os.getenv('CONJ_EXT')
 
     for file in files:
         if file.endswith(file_extension):
@@ -95,6 +86,8 @@ def find_all_conj_file(directory):
 def check_collection_value_and_update(dir_path, collection_name):
     search_word = "collection"
     new_lines = []
+
+    extracted_metadata_filename = os.getenv('METADATA_FILENAME')
 
     with open(f"{dir_path}/{extracted_metadata_filename}", "r") as file:
         updated = False
@@ -118,8 +111,10 @@ def check_collection_value_and_update(dir_path, collection_name):
 
 
 def unzip_conj(conj_dir_path, conj):
-    conj_path = conj_dir_path + '/' + conj
+    conj_path = conj_dir_path + conj
     collection_name = read_game_meta_data_collection_name_in_conj(conj_path)
+
+    conjure_default_library_dir = os.path.expanduser(os.getenv('LIB_DIR'))
 
     dir_path = conjure_default_library_dir + "/" + collection_name + "/" + os.path.splitext(conj)[0]
 
@@ -131,22 +126,25 @@ def unzip_conj(conj_dir_path, conj):
 
     check_collection_value_and_update(dir_path, collection_name)
 
-    print(f"Successfully extracted .conj content to {conjure_default_library_dir}/{collection_name}")
+    print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
 
     return dir_path
 
 
 def unzip_game_file(dir_path):
-    with zipfile.ZipFile(dir_path + f"/{compress_game_data_filename}.zip", 'r') as zip_ref:
-        zip_ref.extractall(f"{dir_path}/{compress_game_data_filename}")
+    game_data_zip = os.getenv('GAME_DATA_FOLDER_NAME')
 
-    os.remove(dir_path + f"/{compress_game_data_filename}.zip")
+    with zipfile.ZipFile(dir_path + f"/{game_data_zip}.zip", 'r') as zip_ref:
+        zip_ref.extractall(f"{dir_path}/{game_data_zip}")
+
+    os.remove(dir_path + f"/{game_data_zip}.zip")
 
 
 def main():
     print("----Decompressing script for Conjure Arcade library games----")
 
-    conj_file_path = conj_dir
+    load_dotenv()
+    conj_dir = os.path.expanduser(os.getenv('CONJ_DIR'))
     if len(sys.argv) == 1:
         print("Search for *.conj in " + conj_dir)
     elif len(sys.argv) == 2:
@@ -154,10 +152,10 @@ def main():
     else:
         print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
 
-    conj_paths = find_all_conj_file(conj_file_path)
+    conj_paths = find_all_conj_file(conj_dir)
 
     for conj in conj_paths:
-        dir_path = unzip_conj(conj_file_path, conj)
+        dir_path = unzip_conj(conj_dir, conj)
         unzip_game_file(dir_path)
 
 
