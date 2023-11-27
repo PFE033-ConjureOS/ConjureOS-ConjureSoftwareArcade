@@ -49,7 +49,7 @@ unix:!macx {
 win32 {
     QMAKE_TARGET_PRODUCT = "ConjureOS"
     QMAKE_TARGET_COMPANY = "pegasus-frontend.org"
-    QMAKE_TARGET_DESCRIPTION = "ConjureOS frontend propulsé par pegasus-frontend"
+    QMAKE_TARGET_DESCRIPTION = "ConjureOS frontend"
     QMAKE_TARGET_COPYRIGHT = "Copyright (c) 2017-2020 Matyas Mustoha"
     RC_ICONS = platform/windows/app_icon.ico
     OTHER_FILES += $${RC_ICONS}
