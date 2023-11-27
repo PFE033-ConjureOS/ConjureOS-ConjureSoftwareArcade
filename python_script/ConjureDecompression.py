@@ -64,8 +64,17 @@ def find_conj_file(directory):
 
     return conj_file
 
+def create_conj_file_if_dont_exist(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+        print(f"Folder '{path}' created")
+    else:
+        print(f"Folder '{path}' already exists.")
 
 def find_all_conj_file(directory):
+
+    create_conj_file_if_dont_exist(directory)
+
     files = os.listdir(directory)
     count = 0
     conj_files_paths = []
