@@ -85,7 +85,7 @@ namespace providers {
 
             if (!sctx.root_game_dirs().contains(":/empty")) {
 
-                Log::info("--Running ConjureDecompression.py--");
+                Log::info("Running ConjureDecompression.py");
                 system("python python_script\\ConjureDecompression.py");
 
                 //TODO move this to Path.cpp
