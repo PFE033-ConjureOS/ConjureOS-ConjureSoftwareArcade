@@ -33,20 +33,20 @@ build_script:
 
   - windeployqt
       --release
-      --plugindir C:\pegasus-frontend\lib
+      --plugindir C:\conjure-os\lib
       --qmldir ..
       --no-translations
       --no-opengl-sw
-      C:\pegasus-frontend
-  - md C:\pegasus-frontend\lib\qml
-  - ps: Get-ChildItem C:\pegasus-frontend -Filter 'Qt*' -Directory |
-      Move-Item -Destination C:\pegasus-frontend\lib\qml
+      C:\conjure-os
+  - md C:\conjure-os\lib\qml
+  - ps: Get-ChildItem C:\conjure-os -Filter 'Qt*' -Directory |
+      Move-Item -Destination C:\conjure-os\lib\qml
 
-  - copy ..\README.md C:\pegasus-frontend
-  - copy ..\LICENSE.md C:\pegasus-frontend
+  - copy ..\README.md C:\conjure-os
+  - copy ..\LICENSE.md C:\conjure-os
   - git describe --always > tmp_out.txt
   - set /p SUFFIX=<tmp_out.txt
-  - 7z a pegasus-fe_%SUFFIX%_win-%flavor%.zip C:\pegasus-frontend
+  - 7z a pegasus-fe_%SUFFIX%_win-%flavor%.zip C:\conjure-os
 
 artifacts:
   - path: build\pegasus-fe_*.zip

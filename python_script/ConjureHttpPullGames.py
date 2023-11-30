@@ -17,10 +17,18 @@ class BearerAuth(requests.auth.AuthBase):
         return r
 
 
+def create_conj_file_if_dont_exist(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+        print(f"Folder '{path}' created")
+
+
 def download_game(game_id):
     load_dotenv()
     conj_dir = os.getenv('CONJ_DIR')
     full_conj_dir = os.path.expanduser(conj_dir)
+
+    create_conj_file_if_dont_exist(full_conj_dir)
 
     domain = os.getenv('DOMAIN')
 

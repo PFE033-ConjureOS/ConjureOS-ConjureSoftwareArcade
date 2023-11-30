@@ -1,5 +1,18 @@
 name: Build - X11
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+      - 'deploy/**'
+    tags:
+      - 'alpha**'
+  pull_request:
+    branches:
+      - 'main'
+      - 'dev'
+      - 'deploy/**'
+  workflow_dispatch:
 
 env:
   TOOLS_URL: https://github.com/mmatyas/pegasus-frontend/releases/download/alpha1
@@ -18,8 +31,7 @@ jobs:
         buildgen: [cmake, qmake, qmake-lcov]
     steps:
       - uses: actions/checkout@v3
-        with: {submodules: 'recursive', fetch-depth: 200}
-      - run: git fetch --tags -f
+        with: {submodules: 'recursive', fetch-depth: 0, fetch-tags: true}
 
       - uses: actions/cache@v3
         with:
@@ -111,6 +123,7 @@ jobs:
           INSTALL_BINDIR: /usr/bin/
         run: .circleci/build.sh && .circleci/objdump_linux.sh '' && .circleci/zip_linux.sh
         if: matrix.buildgen == 'qmake'
+      - run: echo "Git Describe Output. $(git describe --always)"
       - run: PATH="$PATH:/home/runner/.gem/ruby/2.7.0/bin" ../.travis/script__create_deb.sh
         working-directory: dist
         if: matrix.buildgen == 'qmake'

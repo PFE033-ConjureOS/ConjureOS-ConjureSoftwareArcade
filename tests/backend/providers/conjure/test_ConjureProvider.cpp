@@ -25,6 +25,7 @@
 #include "providers/SearchContext.h"
 #include "providers/conjure/ConjureProvider.h"
 #include "utils/HashMap.h"
+#include "utils/StdHelpers.h"
 
 #include <QString>
 #include <QStringList>
@@ -117,7 +118,7 @@ private slots:
 };
 
 void test_ConjureProvider::empty() {
-    QTest::ignoreMessage(QtInfoMsg, "Conjure Metafiles: No Conjure game found");
+    QTest::ignoreMessage(QtInfoMsg, "Conjure Metafiles: No metadata files found");
 
     providers::SearchContext sctx({QStringLiteral(":/empty")});
     providers::conjure::ConjureProvider().run(sctx);

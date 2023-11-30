@@ -1,0 +1,5 @@
+TEMPLATE= aux
+
+TARGET = py
+
+

@@ -9,6 +9,7 @@ lessThan(QT_MAJOR_VERSION, $${REQ_QT_MAJOR}) | equals(QT_MAJOR_VERSION, $${REQ_Q
 
 TEMPLATE = subdirs
 SUBDIRS += src thirdparty
+SUBDIRS += src python_script
 OTHER_FILES += .qmake.conf
 
 src.depends = thirdparty
