@@ -28,11 +28,11 @@ namespace {
                || filename.endsWith(QLatin1String("..txt"));
     }
 
-    std::vector<QString> find_metafiles_in(const QString &dir_path) {
+    std::vector <QString> find_metafiles_in(const QString &dir_path) {
         constexpr auto dir_filters = QDir::Files | QDir::NoDotAndDotDot;
         constexpr auto dir_flags = QDirIterator::FollowSymlinks | QDirIterator::Subdirectories;
 
-        std::vector<QString> result;
+        std::vector <QString> result;
         QDirIterator dir_it(dir_path, dir_filters, dir_flags);
 
         Log::info("find_metafiles_in", LOGMSG("'%1'").arg(dir_it.hasNext()));
@@ -47,14 +47,14 @@ namespace {
         return result;
     }
 
-    std::vector<QString> find_all_metafiles(const QStringList &gamedirs) {
+    std::vector <QString> find_all_metafiles(const QStringList &gamedirs) {
         const QString global_metafile_dir = paths::writableConfigDir() + QLatin1String("/metafiles");
-        std::vector<QString> result = find_metafiles_in(global_metafile_dir);
+        std::vector <QString> result = find_metafiles_in(global_metafile_dir);
 
         result.reserve(result.size() + gamedirs.size());
 
         for (const QString &dir_path: gamedirs) {
-            std::vector<QString> local_metafiles = find_metafiles_in(dir_path);
+            std::vector <QString> local_metafiles = find_metafiles_in(dir_path);
             result.insert(result.end(),
                           std::make_move_iterator(local_metafiles.begin()),
                           std::make_move_iterator(local_metafiles.end()));
@@ -84,6 +84,8 @@ namespace providers {
         Provider &ConjureProvider::run(SearchContext &sctx) {
 
             if (!sctx.root_game_dirs().contains(":/empty")) {
+
+                Log::info("Running ConjureDecompression.py");
                 system("python python_script\\ConjureDecompression.py");
 
                 //TODO move this to Path.cpp
