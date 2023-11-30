@@ -46,7 +46,6 @@ def main():
 
     if len(sys.argv) == 1:
         print("Getting games from server")
-        # download_all_game()
     elif len(sys.argv) == 2:
         id_game = sys.argv[1]
         download_game(id_game)
