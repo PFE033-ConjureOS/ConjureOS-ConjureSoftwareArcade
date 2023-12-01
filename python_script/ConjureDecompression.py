@@ -6,17 +6,18 @@ from dotenv import load_dotenv
 import tempfile
 
 load_dotenv()
-extracted_metadata_filename = os.getenv('METADATA_FILENAME')
+metadata_filename = os.getenv('METADATA_FILENAME')
 
 
 def read_game_metadata_in_zip(conj, metadata_property):
     with zipfile.ZipFile(conj, 'r') as zip_ref:
-        with zip_ref.open(extracted_metadata_filename) as text_file:
+        with zip_ref.open(metadata_filename) as text_file:
             content = text_file.read().decode('utf-8')
     for line in content.split('\n'):
         key, value = line.split(': ', 1)
         if key == metadata_property:
             return value
+
 
 def find_all_conj_file(directory):
     file_extension = os.getenv('CONJ_EXT')
@@ -31,11 +32,34 @@ def find_all_conj_file(directory):
     return conj_files_paths
 
 
+def write_game_metadata(metadata_property, value):
+    pass
+
+
+def extract_conj(zip_file, output_folder):
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        for file_info in zip_ref.infolist():
+            file_path = os.path.join(output_folder, file_info.filename)
+
+            if file_info.is_dir():
+                os.makedirs(file_path, exist_ok=True)
+            else:
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                with zip_ref.open(file_info) as source, open(file_path, 'wb') as destination:
+                    destination.write(source.read())
+
+                # if file_info.filename == os.getenv('GAME_DATA_FOLDER'):
+                #     nested_folder = os.path.join(output_folder, file_info.filename.replace('.zip', ''))
+                #     os.makedirs(nested_folder, exist_ok=True)
+                #     with zipfile.ZipFile(nested_folder, 'r') as zip_nest:
+                #         zip_nest.extractall(nested_folder)
+
+
 def unzip_conj(conj_dir_path, conj):
     conj_path = os.path.join(conj_dir_path, conj)
 
     collection_name = read_game_metadata_in_zip(conj_path, "collection")
-    if collection_name is None:
+    if not collection_name:
         collection_name = "Members Games"
 
     conjure_default_library_dir = os.path.expanduser(os.getenv('LIB_DIR'))
@@ -44,24 +68,16 @@ def unzip_conj(conj_dir_path, conj):
 
     os.makedirs(dir_path, exist_ok=True)
 
-    with zipfile.ZipFile(conj_path, 'r') as zip_ref:
-        zip_ref.extractall(dir_path)
+    extract_conj(conj_path, dir_path)
 
-    # TODO update collection iin metadata
+    write_game_metadata("collection", collection_name)
+    write_game_metadata("launch", "{file.path}")
 
     print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
 
-    unzip_game_file(dir_path)
 
-
-def unzip_game_file(dir_path):
-    game_data_zip = os.getenv('GAME_DATA_FOLDER_NAME')
-    zip_file_path = os.path.join(dir_path, f"{game_data_zip}.zip")
-
-    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(f"{dir_path}/{game_data_zip}")
-
-    os.remove(zip_file_path)
+def game_exist(conj_dir, conj):
+    pass
 
 
 def main():
@@ -78,7 +94,8 @@ def main():
 
     conj_paths = find_all_conj_file(conj_dir)
     for conj in conj_paths:
-        unzip_conj(conj_dir, conj)
+        if not game_exist(conj_dir, conj):
+            unzip_conj(conj_dir, conj)
 
 
 if __name__ == "__main__":
