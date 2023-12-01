@@ -33,8 +33,26 @@ def find_all_conj_file(directory):
     return conj_files_paths
 
 
-def write_game_metadata(metadata_property, value):
-    pass
+def write_game_metadata_JSON(dir_path, json_object, index=None):
+    metadata_file = os.path.join(dir_path, metadata_filename)
+
+    with open(metadata_file, "r") as file:
+        file_content = file.readlines()
+
+    for key, value in json_object.items():
+        property_line = f"{key}: {value}\n"
+        if index is not None and 0 <= index < len(file_content):
+            file_content.insert(index, property_line)
+        else:
+            for i, line in enumerate(file_content):
+                if line.startswith(key):
+                    file_content[i] = property_line
+                    break
+            else:
+                file_content.append(property_line)
+
+    with open(metadata_file, "w") as file:
+        file.writelines(file_content)
 
 
 def extract_conj(zip_file, output_folder):
@@ -45,7 +63,7 @@ def extract_conj(zip_file, output_folder):
             if not file_info.is_dir():
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with zip_ref.open(file_info) as source, open(file_path, 'wb') as destination:
-                    if file_info.filename == game_data_folder:
+                    if file_info.filename == f"{game_data_folder}.zip":
                         os.makedirs(nested_folder, exist_ok=True)
                         with zipfile.ZipFile(source, 'r') as game_zip:
                             game_zip.extractall(nested_folder)
@@ -53,15 +71,6 @@ def extract_conj(zip_file, output_folder):
                         destination.write(source.read())
 
     os.remove(f"{nested_folder}.zip")
-
-
-def unzip_game_file(dir_path):
-    game_data_zip = os.getenv('GAME_DATA_FOLDER_NAME')
-
-    with zipfile.ZipFile(dir_path + f"/{game_data_zip}.zip", 'r') as zip_ref:
-        zip_ref.extractall(f"{dir_path}/{game_data_zip}")
-
-    os.remove(dir_path + f"/{game_data_zip}.zip")
 
 
 def unzip_conj(conj_dir_path, conj):
@@ -79,8 +88,10 @@ def unzip_conj(conj_dir_path, conj):
 
     extract_conj(conj_path, dir_path)
 
-    write_game_metadata("collection", collection_name)
-    write_game_metadata("launch", "{file.path}")
+    write_game_metadata_JSON(dir_path, {
+        "launch": "{file.path}",
+        "collection": collection_name
+    }, 0)
 
     print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
 
