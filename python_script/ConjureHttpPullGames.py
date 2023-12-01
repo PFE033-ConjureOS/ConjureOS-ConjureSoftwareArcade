@@ -2,18 +2,26 @@ import json
 import zipfile
 import os
 import sys
-from datetime import datetime
-
 import dotenv
 import requests
-from dotenv import load_dotenv
 import re
-
+import configparser
 from zipfile import ZipFile
 from io import BytesIO
+from dotenv import load_dotenv
 
 load_dotenv()
 domain = os.getenv('DOMAIN')
+username = os.getenv('CONJ_USERNAME')
+password = os.getenv('CONJ_PASSWORD')
+
+config = configparser.ConfigParser()
+config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+
+metadata_filename = config.get('filename', 'metadata_filename')
+conj_ext = config.get('filename', 'conj_ext')
+
+conjure_default_conj_dir = os.path.expanduser(config.get('path', 'conj_dir'))
 
 
 class BearerAuth(requests.auth.AuthBase):
@@ -29,22 +37,7 @@ def bearer_auth():
     return BearerAuth(os.getenv('BEARER_KEY'))
 
 
-def create_conj_folder_if_dont_exist(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-        print(f"Folder '{path}' created")
-
-
-def conj_folder():
-    conj_dir = os.getenv('CONJ_DIR')
-    full_conj_dir = os.path.expanduser(conj_dir)
-    create_conj_folder_if_dont_exist(full_conj_dir)
-    return full_conj_dir
-
-
 def download_game(game_id):
-    full_conj_dir = conj_folder()
-
     url = f"http://{domain}/games/{game_id}/download"
     auth = bearer_auth()
     response = requests.get(url, auth=auth)
@@ -58,9 +51,9 @@ def download_game(game_id):
         match = re.search(pattern, content_disposition)
         if match:
             filename = match.group(1)
-            with open(f"{full_conj_dir}{filename}.conj", "wb") as output_file:
+            with open(f"{conjure_default_conj_dir}{filename}{conj_ext}", "wb") as output_file:
                 output_file.write(response.content)
-            print(filename + " saved at " + full_conj_dir)
+            print(filename + " saved at " + conjure_default_conj_dir)
     else:
         print(f"Error: {response.status_code}")
         print(response.text)
@@ -73,8 +66,6 @@ def extract_download(content, path_dir):
 
 
 def download_all_game():
-    full_conj_dir = conj_folder()
-
     url = f"http://{domain}/games/download"
     auth = bearer_auth()
     response = requests.get(url, auth=auth)
@@ -82,26 +73,22 @@ def download_all_game():
     print(response)
 
     if response.status_code == 200:
-        extract_download(response.content, full_conj_dir)
+        extract_download(response.content, conjure_default_conj_dir)
     else:
         print(f"Error: {response.status_code}")
         print(response.text)
 
 
 def current_games():
-    extracted_metadata_filename = os.getenv('METADATA_FILENAME')
-
     data_list = []
 
-    conf_folder_path = conj_folder()
-
-    for root, dirs, files in os.walk(conf_folder_path):
+    for root, dirs, files in os.walk(conjure_default_conj_dir):
         for file in files:
-            if file.endswith('.conj'):
+            if file.endswith(conj_ext):
                 zip_file_path = os.path.join(root, file)
                 with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
                     for zip_file_info in zip_ref.infolist():
-                        if zip_file_info.filename == extracted_metadata_filename:
+                        if zip_file_info.filename == metadata_filename:
                             with zip_ref.open(zip_file_info.filename) as text_file:
                                 content = text_file.read().decode('utf-8')
                                 data = {}
@@ -116,8 +103,6 @@ def current_games():
 
 
 def update_games():
-    full_conj_dir = conj_folder()
-
     url = f"http://{domain}/games/download"
     headers = {'Content-Type': 'application/json'}
     data = current_games()
@@ -126,7 +111,7 @@ def update_games():
 
     print(response)
     if response.status_code == 200:
-        extract_download(response.content, full_conj_dir)
+        extract_download(response.content, conjure_default_conj_dir)
     else:
         print(f"Error: {response.status_code}")
         print(response.text)
@@ -164,8 +149,8 @@ def connexion():
     url = f"http://{domain}/login"
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     data = {
-        'username': os.getenv('CONJ_USERNAME'),
-        'password': os.getenv('CONJ_PASSWORD')
+        'username': username,
+        'password': password
     }
     response = requests.post(url, headers=headers, data=data)
 

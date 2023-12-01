@@ -1,14 +1,19 @@
 import zipfile
 import os
-import shutil
 import sys
-from dotenv import load_dotenv
-import tempfile
+import configparser
 
-load_dotenv()
-metadata_filename = os.getenv('METADATA_FILENAME')
-game_data_folder = os.getenv('GAME_DATA_FOLDER')
-conjure_default_library_dir = os.path.expanduser(os.getenv('LIB_DIR'))
+config = configparser.ConfigParser()
+config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
+
+metadata_filename = config.get('filename', 'metadata_filename')
+game_data_folder = config.get('filename', 'game_data_folder')
+conj_ext = config.get('filename', 'conj_ext')
+
+conjure_default_library_dir = os.path.expanduser(config.get('path', 'lib_dir'))
+conjure_default_conj_dir = os.path.expanduser(config.get('path', 'conj_dir'))
+
+default_collection_name = config.get('conjure', 'default_collection_name')
 
 
 def read_game_metadata_in_zip(conj, metadata_property):
@@ -22,14 +27,13 @@ def read_game_metadata_in_zip(conj, metadata_property):
 
 
 def find_all_conj_file(directory):
-    file_extension = os.getenv('CONJ_EXT')
-    conj_files_paths = [file for file in os.listdir(directory) if file.endswith(file_extension)]
+    conj_files_paths = [file for file in os.listdir(directory) if file.endswith(conj_ext)]
 
     if not conj_files_paths:
-        print(f"No file with '{file_extension}' extension found in {directory}")
+        print(f"No file with '{conj_ext}' extension found in {directory}")
     else:
         for file in conj_files_paths:
-            print(f"File with '{file_extension}' extension found: {file}")
+            print(f"File with '{conj_ext}' extension found: {file}")
 
     return conj_files_paths
 
@@ -56,14 +60,14 @@ def write_game_metadata_JSON(dir_path, json_object, index=None):
         file.writelines(file_content)
 
 
-def read_game_metadata(dir_path, property):
+def read_game_metadata(dir_path, metadata_property):
     metadata_file = os.path.join(dir_path, metadata_filename)
 
     with open(metadata_file, "r") as file:
         file_content = file.readlines()
 
     for line in file_content:
-        if line.startswith(property):
+        if line.startswith(metadata_property):
             _, value = line.split(":")
             return value.strip()
 
@@ -91,9 +95,7 @@ def extract_conj(zip_file, output_folder):
 def unzip_conj(conj_dir_path, conj):
     conj_path = os.path.join(conj_dir_path, conj)
 
-    collection_name = read_game_metadata_in_zip(conj_path, "collection")
-    if not collection_name:
-        collection_name = "Members Games"
+    collection_name = read_game_metadata_in_zip(conj_path, "collection") or default_collection_name
 
     dir_path = os.path.join(conjure_default_library_dir, collection_name, os.path.splitext(conj)[0])
 
@@ -151,17 +153,28 @@ def game_to_update(conj_dir, conj, ids):
     return True
 
 
+def print_usage():
+    print('\033[93m', f"Usage of {os.path.basename(__file__)}.py :"
+          f"\n  [with path in param] --> extract game at specified path"
+          f"\n  [no param]           --> extract game at default path: {conjure_default_conj_dir}")
+
+
 def main():
     print("----Decompressing script for Conjure Arcade library games----")
 
-    conj_dir = os.path.expanduser(os.getenv('CONJ_DIR'))
+    conj_dir = conjure_default_conj_dir
     if len(sys.argv) == 1:
         print("Search for *.conj in " + conj_dir)
         os.makedirs(conj_dir, exist_ok=True)
     elif len(sys.argv) == 2:
         conj_dir = sys.argv[1]
+        if not os.path.exists(conj_dir):
+            print('\033[93m', f"path '{conj_dir}' not found\n")
+            print_usage()
+            return
     else:
-        print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
+        print_usage()
+        return
 
     conj_paths = find_all_conj_file(conj_dir)
     all_ids = get_all_ids_in_folder(conjure_default_library_dir)
