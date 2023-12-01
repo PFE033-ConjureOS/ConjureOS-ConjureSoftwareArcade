@@ -8,6 +8,7 @@ import tempfile
 load_dotenv()
 metadata_filename = os.getenv('METADATA_FILENAME')
 game_data_folder = os.getenv('GAME_DATA_FOLDER')
+conjure_default_library_dir = os.path.expanduser(os.getenv('LIB_DIR'))
 
 
 def read_game_metadata_in_zip(conj, metadata_property):
@@ -17,7 +18,7 @@ def read_game_metadata_in_zip(conj, metadata_property):
     for line in content.split('\n'):
         key, value = line.split(': ', 1)
         if key == metadata_property:
-            return value
+            return value.strip('\n\r')
 
 
 def find_all_conj_file(directory):
@@ -55,6 +56,20 @@ def write_game_metadata_JSON(dir_path, json_object, index=None):
         file.writelines(file_content)
 
 
+def read_game_metadata(dir_path, property):
+    metadata_file = os.path.join(dir_path, metadata_filename)
+
+    with open(metadata_file, "r") as file:
+        file_content = file.readlines()
+
+    for line in file_content:
+        if line.startswith(property):
+            _, value = line.split(":")
+            return value.strip()
+
+    return None
+
+
 def extract_conj(zip_file, output_folder):
     nested_folder = os.path.join(output_folder, game_data_folder)
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
@@ -80,8 +95,6 @@ def unzip_conj(conj_dir_path, conj):
     if not collection_name:
         collection_name = "Members Games"
 
-    conjure_default_library_dir = os.path.expanduser(os.getenv('LIB_DIR'))
-
     dir_path = os.path.join(conjure_default_library_dir, collection_name, os.path.splitext(conj)[0])
 
     os.makedirs(dir_path, exist_ok=True)
@@ -96,8 +109,38 @@ def unzip_conj(conj_dir_path, conj):
     print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
 
 
-def game_exist(conj_dir, conj):
-    pass
+def get_id_from_file(file_path):
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.startswith("id:"):
+                _, id_value = line.split(":")
+                return id_value.strip('\n\r')
+
+    return None
+
+
+def get_all_ids_in_folder(folder_path):
+    all_ids = []
+
+    for root, dirs, files in os.walk(folder_path):
+        for filename in files:
+            if filename == metadata_filename:
+                file_path = os.path.join(root, filename)
+                id_value = get_id_from_file(file_path)
+
+                if id_value is not None:
+                    all_ids.append(id_value)
+
+    return all_ids
+
+
+def game_to_update(conj_dir, conj, ids):
+    conj_path = os.path.join(conj_dir, conj)
+    zip_game_id = read_game_metadata_in_zip(conj_path, "id")
+
+    return not any(zip_game_id in id for id in ids)
+
+
 
 
 def main():
@@ -113,8 +156,10 @@ def main():
         print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
 
     conj_paths = find_all_conj_file(conj_dir)
+    all_ids = get_all_ids_in_folder(conjure_default_library_dir)
     for conj in conj_paths:
-        if not game_exist(conj_dir, conj):
+        if game_to_update(conj_dir, conj, all_ids):
+            print(f"Extracting {conj}")
             unzip_conj(conj_dir, conj)
 
 
