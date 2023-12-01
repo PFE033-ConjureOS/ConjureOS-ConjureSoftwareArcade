@@ -129,7 +129,8 @@ def get_all_ids_in_folder(folder_path):
                 id_value = get_id_from_file(file_path)
 
                 if id_value is not None:
-                    all_ids.append(id_value)
+                    all_ids.append({"id": id_value,
+                                    "root": root})
 
     return all_ids
 
@@ -138,9 +139,16 @@ def game_to_update(conj_dir, conj, ids):
     conj_path = os.path.join(conj_dir, conj)
     zip_game_id = read_game_metadata_in_zip(conj_path, "id")
 
-    return not any(zip_game_id in id for id in ids)
+    for a_id in ids:
+        my_id = a_id["id"].strip()
+        if my_id == zip_game_id:
+            zip_game_version = read_game_metadata_in_zip(conj_path, "version")
+            path = a_id["root"]
+            game_version = read_game_metadata(path, "version")
 
+            return zip_game_version > game_version
 
+    return True
 
 
 def main():
