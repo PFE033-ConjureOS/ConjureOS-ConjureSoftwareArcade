@@ -7,6 +7,7 @@ import tempfile
 
 load_dotenv()
 metadata_filename = os.getenv('METADATA_FILENAME')
+game_data_folder = os.getenv('GAME_DATA_FOLDER')
 
 
 def read_game_metadata_in_zip(conj, metadata_property):
@@ -37,22 +38,30 @@ def write_game_metadata(metadata_property, value):
 
 
 def extract_conj(zip_file, output_folder):
+    nested_folder = os.path.join(output_folder, game_data_folder)
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
         for file_info in zip_ref.infolist():
             file_path = os.path.join(output_folder, file_info.filename)
-
-            if file_info.is_dir():
-                os.makedirs(file_path, exist_ok=True)
-            else:
+            if not file_info.is_dir():
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 with zip_ref.open(file_info) as source, open(file_path, 'wb') as destination:
-                    destination.write(source.read())
+                    if file_info.filename == game_data_folder:
+                        os.makedirs(nested_folder, exist_ok=True)
+                        with zipfile.ZipFile(source, 'r') as game_zip:
+                            game_zip.extractall(nested_folder)
+                    else:
+                        destination.write(source.read())
 
-                # if file_info.filename == os.getenv('GAME_DATA_FOLDER'):
-                #     nested_folder = os.path.join(output_folder, file_info.filename.replace('.zip', ''))
-                #     os.makedirs(nested_folder, exist_ok=True)
-                #     with zipfile.ZipFile(nested_folder, 'r') as zip_nest:
-                #         zip_nest.extractall(nested_folder)
+    os.remove(f"{nested_folder}.zip")
+
+
+def unzip_game_file(dir_path):
+    game_data_zip = os.getenv('GAME_DATA_FOLDER_NAME')
+
+    with zipfile.ZipFile(dir_path + f"/{game_data_zip}.zip", 'r') as zip_ref:
+        zip_ref.extractall(f"{dir_path}/{game_data_zip}")
+
+    os.remove(dir_path + f"/{game_data_zip}.zip")
 
 
 def unzip_conj(conj_dir_path, conj):
