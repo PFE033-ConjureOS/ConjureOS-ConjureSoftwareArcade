@@ -1,164 +1,187 @@
 import zipfile
 import os
-import shutil
 import sys
+import configparser
 
-file_extension = ".conj"
+config = configparser.ConfigParser()
+config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
-curdir = os.path.expanduser('~/Documents')
-conj_dir = os.path.expanduser('~/AppData/Local/conjure/conjure-os/conj')
+metadata_filename = config.get('filename', 'metadata_filename')
+game_data_folder = config.get('filename', 'game_data_folder')
+conj_ext = config.get('filename', 'conj_ext')
 
-conjure_library_dir = 'ConjureGames'
+conjure_default_library_dir = os.path.expanduser(config.get('path', 'lib_dir'))
+conjure_default_conj_dir = os.path.expanduser(config.get('path', 'conj_dir'))
 
-conjure_default_library_dir = os.path.join(curdir, conjure_library_dir)
-
-extracted_metadata_filename = 'metadata.txt'
-compress_game_data_filename = 'game'
-
-
-
-if not os.path.exists(conjure_default_library_dir):
-    os.mkdir(conjure_default_library_dir)
+default_collection_name = config.get('conjure', 'default_collection_name')
 
 
-def read_game_meta_data_collection_name_in_conj(conj):
-    search_word = "collection"
-    default_collection = "Members Games"
-
+def read_game_metadata_in_zip(conj, metadata_property):
     with zipfile.ZipFile(conj, 'r') as zip_ref:
-        zip_ref.extract(extracted_metadata_filename, path='temp')
-        collection_name = default_collection
-        found = False
-        with open(f"./temp/{extracted_metadata_filename}", "r") as file:
-            for line in file:
-                if line.startswith(f"{search_word}:"):
-                    collection_name = line.strip()
-                    collection_name = collection_name.split(f"{search_word}:", 1)[1]
-                    collection_name = collection_name.strip()
-                    print(f"Found collection: {collection_name}")
-                    found = True
-                    break
-            if not found:
-                print(f"No collection found for {conj}. Using the default collection \"{default_collection}\"")
-        shutil.rmtree('temp')
-        return collection_name
+        with zip_ref.open(metadata_filename) as text_file:
+            content = text_file.read().decode('utf-8')
+    for line in content.split('\n'):
+        key, value = line.split(': ', 1)
+        if key == metadata_property:
+            return value.strip('\n\r')
 
-
-def find_conj_file(directory):
-    files = os.listdir(directory)
-    count = 0
-    conj_file = ""
-    for file in files:
-        if file.endswith(file_extension):
-            count += 1
-            if count > 1:
-                print(f"more than one file with '{file_extension}' extension found in {directory}")
-                break
-            conj_file = file
-
-    if count <= 0:
-        print(f"No file with '{file_extension}' extension found in {directory}")
-
-    elif count == 1:
-        print(f"File with '{file_extension}' extension found: {file}")
-
-    return conj_file
-
-def create_conj_file_if_dont_exist(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-        print(f"Folder '{path}' created")
 
 def find_all_conj_file(directory):
+    conj_files_paths = [file for file in os.listdir(directory) if file.endswith(conj_ext)]
 
-    create_conj_file_if_dont_exist(directory)
-
-    files = os.listdir(directory)
-    count = 0
-    conj_files_paths = []
-
-    for file in files:
-        if file.endswith(file_extension):
-            count += 1
-            conj_files_paths.append(file)
-
-    if count <= 0:
-        print(f"No file with '{file_extension}' extension found in {directory}")
-
-    elif count >= 1:
+    if not conj_files_paths:
+        print(f"No file with '{conj_ext}' extension found in {directory}")
+    else:
         for file in conj_files_paths:
-            print(f"File with '{file_extension}' extension found: {file}")
+            print(f"File with '{conj_ext}' extension found: {file}")
 
     return conj_files_paths
 
 
-def check_collection_value_and_update(dir_path, collection_name):
-    search_word = "collection"
-    new_lines = []
+def write_game_metadata_JSON(dir_path, json_object, index=None):
+    metadata_file = os.path.join(dir_path, metadata_filename)
 
-    with open(f"{dir_path}/{extracted_metadata_filename}", "r") as file:
-        updated = False
-        for line in file:
-            if line.strip().startswith(f"{search_word}:"):
-                updated = True
-                new_lines.insert(0, f"{search_word}: {collection_name}\n")
+    with open(metadata_file, "r") as file:
+        file_content = file.readlines()
+
+    for key, value in json_object.items():
+        property_line = f"{key}: {value}\n"
+        if index is not None and 0 <= index < len(file_content):
+            file_content.insert(index, property_line)
+        else:
+            for i, line in enumerate(file_content):
+                if line.startswith(key):
+                    file_content[i] = property_line
+                    break
             else:
-                new_lines.append(line)
+                file_content.append(property_line)
 
-    if not updated:
-        print(f"Add collection line in metadata at {dir_path}")
-        new_lines.insert(0, f"{search_word}: {collection_name}\n")
+    with open(metadata_file, "w") as file:
+        file.writelines(file_content)
 
-    new_lines.append("\nlaunch: {file.path}")
 
-    with open(f"{dir_path}/{extracted_metadata_filename}", "w") as output:
-        output.writelines(new_lines)
+def read_game_metadata(dir_path, metadata_property):
+    metadata_file = os.path.join(dir_path, metadata_filename)
 
-    return updated
+    with open(metadata_file, "r") as file:
+        file_content = file.readlines()
+
+    for line in file_content:
+        if line.startswith(metadata_property):
+            _, value = line.split(":")
+            return value.strip()
+
+    return None
+
+
+def extract_conj(zip_file, output_folder):
+    nested_folder = os.path.join(output_folder, game_data_folder)
+    with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        for file_info in zip_ref.infolist():
+            file_path = os.path.join(output_folder, file_info.filename)
+            if not file_info.is_dir():
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                with zip_ref.open(file_info) as source, open(file_path, 'wb') as destination:
+                    if file_info.filename == f"{game_data_folder}.zip":
+                        os.makedirs(nested_folder, exist_ok=True)
+                        with zipfile.ZipFile(source, 'r') as game_zip:
+                            game_zip.extractall(nested_folder)
+                    else:
+                        destination.write(source.read())
+
+    os.remove(f"{nested_folder}.zip")
 
 
 def unzip_conj(conj_dir_path, conj):
-    conj_path = conj_dir_path + '/' + conj
-    collection_name = read_game_meta_data_collection_name_in_conj(conj_path)
+    conj_path = os.path.join(conj_dir_path, conj)
 
-    dir_path = conjure_default_library_dir + "/" + collection_name + "/" + os.path.splitext(conj)[0]
+    collection_name = read_game_metadata_in_zip(conj_path, "collection") or default_collection_name
 
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+    dir_path = os.path.join(conjure_default_library_dir, collection_name, os.path.splitext(conj)[0])
 
-    with zipfile.ZipFile(conj_path, 'r') as zip_ref:
-        zip_ref.extractall(dir_path)
+    os.makedirs(dir_path, exist_ok=True)
 
-    check_collection_value_and_update(dir_path, collection_name)
+    extract_conj(conj_path, dir_path)
 
-    print(f"Successfully extracted .conj content to {conjure_default_library_dir}/{collection_name}")
+    write_game_metadata_JSON(dir_path, {
+        "launch": "{file.path}",
+        "collection": collection_name
+    }, 0)
 
-    return dir_path
+    print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
 
 
-def unzip_game_file(dir_path):
-    with zipfile.ZipFile(dir_path + f"/{compress_game_data_filename}.zip", 'r') as zip_ref:
-        zip_ref.extractall(f"{dir_path}/{compress_game_data_filename}")
+def get_id_from_file(file_path):
+    with open(file_path, 'r') as file:
+        for line in file:
+            if line.startswith("id:"):
+                _, id_value = line.split(":")
+                return id_value.strip('\n\r')
 
-    os.remove(dir_path + f"/{compress_game_data_filename}.zip")
+    return None
+
+
+def get_all_ids_in_folder(folder_path):
+    all_ids = []
+
+    for root, dirs, files in os.walk(folder_path):
+        for filename in files:
+            if filename == metadata_filename:
+                file_path = os.path.join(root, filename)
+                id_value = get_id_from_file(file_path)
+
+                if id_value is not None:
+                    all_ids.append({"id": id_value,
+                                    "root": root})
+
+    return all_ids
+
+
+def game_to_update(conj_dir, conj, ids):
+    conj_path = os.path.join(conj_dir, conj)
+    zip_game_id = read_game_metadata_in_zip(conj_path, "id")
+
+    for a_id in ids:
+        my_id = a_id["id"].strip()
+        if my_id == zip_game_id:
+            zip_game_version = read_game_metadata_in_zip(conj_path, "version")
+            path = a_id["root"]
+            game_version = read_game_metadata(path, "version")
+
+            return zip_game_version > game_version
+
+    return True
+
+
+def print_usage():
+    print('\033[93m', f"Usage of {os.path.basename(__file__)}.py :"
+          f"\n  [with path in param] --> extract game at specified path"
+          f"\n  [no param]           --> extract game at default path: {conjure_default_conj_dir}")
 
 
 def main():
     print("----Decompressing script for Conjure Arcade library games----")
 
-    conj_file_path = conj_dir
+    conj_dir = conjure_default_conj_dir
     if len(sys.argv) == 1:
         print("Search for *.conj in " + conj_dir)
+        os.makedirs(conj_dir, exist_ok=True)
     elif len(sys.argv) == 2:
-        conj_file_path = sys.argv[1]
+        conj_dir = sys.argv[1]
+        if not os.path.exists(conj_dir):
+            print('\033[93m', f"path '{conj_dir}' not found\n")
+            print_usage()
+            return
     else:
-        print(f"Usage: python {os.path.basename(__file__)}.py [.conj_dir_path]")
+        print_usage()
+        return
 
-    conj_paths = find_all_conj_file(conj_file_path)
-
+    conj_paths = find_all_conj_file(conj_dir)
+    all_ids = get_all_ids_in_folder(conjure_default_library_dir)
     for conj in conj_paths:
-        dir_path = unzip_conj(conj_file_path, conj)
-        unzip_game_file(dir_path)
+        if game_to_update(conj_dir, conj, all_ids):
+            print(f"Extracting {conj}")
+            unzip_conj(conj_dir, conj)
 
 
 if __name__ == "__main__":

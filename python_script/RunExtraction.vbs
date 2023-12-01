@@ -1,0 +1,1 @@
+CreateObject("WScript.Shell").Run "Runner_Extraction.bat", 1, True
