@@ -3,6 +3,11 @@ import os
 import shutil
 import sys
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
+
+
+def extract_file(zip_ref, file, extract_path):
+    zip_ref.extract(file, path=extract_path)
 
 
 def read_game_meta_data_collection_name_in_conj(conj):
@@ -11,7 +16,7 @@ def read_game_meta_data_collection_name_in_conj(conj):
     extracted_metadata_filename = os.getenv('METADATA_FILENAME')
 
     with zipfile.ZipFile(conj, 'r') as zip_ref:
-        zip_ref.extract(extracted_metadata_filename, path='temp')
+        extract_file(zip_ref, extracted_metadata_filename, 'temp')
         collection_name = default_collection
         found = False
         with open(f"./temp/{extracted_metadata_filename}", "r") as file:
@@ -122,12 +127,17 @@ def unzip_conj(conj_dir_path, conj):
         os.makedirs(dir_path)
 
     with zipfile.ZipFile(conj_path, 'r') as zip_ref:
-        zip_ref.extractall(dir_path)
 
-    check_collection_value_and_update(dir_path, collection_name)
+        if check_collection_value_and_update(dir_path, collection_name):
+            print(f"Updated collection name in metadata at {dir_path}")
+
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(extract_file, zip_ref, file, dir_path) for file in zip_ref.namelist()]
+
+            for future in futures:
+                future.result()
 
     print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
-
     return dir_path
 
 
@@ -145,6 +155,7 @@ def main():
 
     load_dotenv()
     conj_dir = os.path.expanduser(os.getenv('CONJ_DIR'))
+
     if len(sys.argv) == 1:
         print("Search for *.conj in " + conj_dir)
     elif len(sys.argv) == 2:
