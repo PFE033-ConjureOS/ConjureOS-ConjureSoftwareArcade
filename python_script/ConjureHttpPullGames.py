@@ -4,12 +4,16 @@ import os
 import sys
 from datetime import datetime
 
+import dotenv
 import requests
 from dotenv import load_dotenv
 import re
 
 from zipfile import ZipFile
 from io import BytesIO
+
+load_dotenv()
+domain = os.getenv('DOMAIN')
 
 
 class BearerAuth(requests.auth.AuthBase):
@@ -41,7 +45,7 @@ def conj_folder():
 def download_game(game_id):
     full_conj_dir = conj_folder()
 
-    url = f"http://{os.getenv('DOMAIN')}/games/{game_id}/download"
+    url = f"http://{domain}/games/{game_id}/download"
     auth = bearer_auth()
     response = requests.get(url, auth=auth)
 
@@ -71,7 +75,7 @@ def extract_download(content, path_dir):
 def download_all_game():
     full_conj_dir = conj_folder()
 
-    url = f"http://{os.getenv('DOMAIN')}/games/download"
+    url = f"http://{domain}/games/download"
     auth = bearer_auth()
     response = requests.get(url, auth=auth)
 
@@ -114,7 +118,7 @@ def current_games():
 def update_games():
     full_conj_dir = conj_folder()
 
-    url = f"http://{os.getenv('DOMAIN')}/games/download"
+    url = f"http://{domain}/games/download"
     headers = {'Content-Type': 'application/json'}
     data = current_games()
     auth = bearer_auth()
@@ -156,14 +160,30 @@ def execute():
     return False
 
 
-def test_connection():
-    pass
+def connexion():
+    url = f"http://{domain}/login"
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {
+        'username': os.getenv('CONJ_USERNAME'),
+        'password': os.getenv('CONJ_PASSWORD')
+    }
+    response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        print("Login succesful")
+        content = response.content.decode('utf-8')
+        token = content.strip('"')
+        dotenv.set_key(".env", "BEARER_KEY", token)
+        return True
+    else:
+        print(f"Error: {response.status_code}")
+        print(response.text)
+        return False
 
 
 def main():
-    load_dotenv()
-    test_connection()
-    execute()
+    if connexion():
+        execute()
 
 
 if __name__ == "__main__":
