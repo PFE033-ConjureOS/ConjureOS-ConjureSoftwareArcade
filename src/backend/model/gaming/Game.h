@@ -73,7 +73,7 @@ namespace model {
 
         QUuid id;
         QString version;
-        bool hasLeaderboard = false;
+        bool has_Leaderboard = false;
     };
 
 
@@ -132,7 +132,7 @@ namespace model {
 
         GETTER(const QString&, version, version)
 
-        GETTER(bool, hasLeaderboard, hasLeaderboard)
+        GETTER(bool, hasLeaderboard, has_Leaderboard)
 
 #undef GETTER
 
@@ -198,6 +198,7 @@ namespace model {
         Q_PROPERTY(QDate release READ releaseDate CONSTANT)
         Q_PROPERTY(int players READ playerCount CONSTANT)
         Q_PROPERTY(float rating READ rating CONSTANT)
+        Q_PROPERTY(bool hasLeaderboard READ hasLeaderboard CONSTANT)
 
         Q_PROPERTY(int releaseYear READ releaseYear CONSTANT)
         Q_PROPERTY(int releaseMonth READ releaseMonth CONSTANT)

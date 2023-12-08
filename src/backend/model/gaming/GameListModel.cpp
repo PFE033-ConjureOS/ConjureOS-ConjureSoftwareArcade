@@ -52,6 +52,7 @@ enum Roles {
     Assets,
     Files,
     Collections,
+    HasLeaderboard
 };
 } // namespace
 
@@ -92,6 +93,7 @@ QHash<int, QByteArray> GameListModel::roleNames() const
         { Roles::Assets, QByteArrayLiteral("assets") },
         { Roles::Files, QByteArrayLiteral("files") },
         { Roles::Collections, QByteArrayLiteral("collections") },
+        { Roles::HasLeaderboard, QByteArrayLiteral("hasLeaderboard") },
     };
     return ROLE_NAMES;
 }

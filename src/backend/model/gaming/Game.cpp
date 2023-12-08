@@ -147,7 +147,7 @@ namespace model {
     }
 
     Game &Game::setLeaderboard(bool value) {
-        m_data.hasLeaderboard = value;
+        m_data.has_Leaderboard = value;
         return *this;
     }
 
