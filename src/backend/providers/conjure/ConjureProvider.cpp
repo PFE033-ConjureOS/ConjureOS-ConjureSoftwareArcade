@@ -88,9 +88,6 @@ namespace providers {
                 Log::info("Running ConjureDecompression.py");
                 system("python3 python_script\\ConjureDecompression.py");
 
-                //TODO move this to Path.cpp
-                const QString conjure_root =
-                        QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
             }
 
             const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());

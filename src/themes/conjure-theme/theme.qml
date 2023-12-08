@@ -170,9 +170,6 @@ FocusScope {
 
                     fillMode :Image.PreserveAspectFit
 
-                    anchors.fill: parent.width
-
-
                 }
 
                 Keys.onPressed: {
@@ -198,6 +195,52 @@ FocusScope {
 
         z: 1
 
+        ListView {
+            anchors.left: parent.left
+            anchors.right: cartridge.left
+            anchors.top: parent.top
+            anchors.bottom: title.top
+            anchors.margins: 10
+
+
+            model: ListModel {
+                ListElement { name: "Player 1"; score: 500 }
+                ListElement { name: "Player 2"; score: 450 }
+                ListElement { name: "Player 3"; score: 600 }
+            }
+
+            delegate: Item {
+                width: parent.width
+                height: 50
+
+                Rectangle {
+                    width: parent.width
+                    height: 50
+                    color: index % 2 === 0 ? "lightblue" : "lightcyan"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: model.name + " - Score: " + model.score
+                    }
+                }
+            }
+
+            // Customizing the header
+            header: Rectangle {
+                width: parent.width
+                height: 50
+                color: "steelblue"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Leaderboard"
+                    color: "white"
+                    font.bold: true
+                    font.pointSize: 16
+                }
+            }
+        }
+
         Image {
             id: cartridge
 
@@ -217,7 +260,6 @@ FocusScope {
             anchors.rightMargin: vpx(40)
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.left: parent.left
 
             height: parent.height * 0.5
 
