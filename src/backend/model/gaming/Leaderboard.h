@@ -36,14 +36,6 @@ namespace model {
     Q_PROPERTY(QString qmlname READ qmlname CONSTANT) \
     Q_PROPERTY(QStringList qmlname##List READ qmlname##List CONSTANT) \
 
-        GEN(boxFront, BOX_FRONT)
-        GEN(boxBack, BOX_BACK)
-        GEN(boxSpine, BOX_SPINE)
-        GEN(boxFull, BOX_FULL)
-        GEN(cartridge, CARTRIDGE)
-        GEN(logo, LOGO)
-        GEN(poster, POSTER)
-
 #undef GEN
 
     public:
@@ -51,7 +43,7 @@ namespace model {
 
     private:
 
-        HashMap<QStringList, qint64> m_scores;  // playerId, score
+       // HashMap<QStringList, qint64> m_scores;  // playerId, score
     };
 
 } // namespace model

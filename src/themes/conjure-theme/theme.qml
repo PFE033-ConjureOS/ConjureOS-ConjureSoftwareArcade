@@ -195,12 +195,15 @@ FocusScope {
 
         z: 1
 
+
         ListView {
             anchors.left: parent.left
             anchors.right: cartridge.left
             anchors.top: parent.top
             anchors.bottom: title.top
-            anchors.margins: 10
+            anchors.margins: 50
+
+            visible: currentGame.hasLeaderboard
 
 
             model: ListModel {
@@ -227,13 +230,14 @@ FocusScope {
 
             // Customizing the header
             header: Rectangle {
+
                 width: parent.width
                 height: 50
                 color: "steelblue"
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Leaderboard"
+                    text: "Leaderboard Exemple"
                     color: "white"
                     font.bold: true
                     font.pointSize: 16
@@ -313,7 +317,6 @@ FocusScope {
             anchors.topMargin: vpx(10)
             anchors.top: developerText.bottom
             anchors.right: cartridge.right
-            anchors.left: cartridge.left
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignRight
@@ -333,7 +336,6 @@ FocusScope {
 
             anchors.top: gameRelease.bottom
             anchors.topMargin: vpx(5)
-            anchors.left: cartridge.left
             anchors.right: cartridge.right
         }
 
@@ -352,7 +354,7 @@ FocusScope {
 
             anchors.bottom: genre.top
 
-            anchors.left: cartridge.left
+            anchors.left: parent.left
             anchors.right: cartridge.right
 
             wrapMode: Text.WordWrap
