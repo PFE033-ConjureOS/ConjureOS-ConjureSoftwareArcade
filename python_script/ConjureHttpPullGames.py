@@ -156,8 +156,10 @@ def connexion():
 
     if response.status_code == 200:
         print("Login succesful")
-        content = response.content.decode('utf-8')
-        token = content.strip('"')
+        content = response.json()
+
+        token = content["token"]
+
         dotenv.set_key(".env", "BEARER_KEY", token)
         return True
     else:
