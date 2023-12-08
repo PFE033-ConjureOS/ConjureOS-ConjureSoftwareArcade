@@ -34,7 +34,6 @@
 namespace model { class Assets; }
 namespace model { class GameFile; }
 namespace model { class Collection; }
-namespace model { class Leaderboard; }
 
 
 namespace model {
@@ -233,14 +232,6 @@ namespace model {
 
         Q_PROPERTY(ObjectListModel *files READ filesModel CONSTANT)
 
-        const Leaderboard &leaderboard() const { return *m_leaderboard; }
-
-        Leaderboard &leaderboardMut() { return *m_leaderboard; }
-
-        Leaderboard *leaderboardPtr() const { return m_leaderboard; }
-
-        Q_PROPERTY(model::Leaderboard *leaderboard READ leaderboardPtr CONSTANT)
-
         Game &setFiles(std::vector<model::GameFile *> &&);
 
         Game &setCollections(std::vector<model::Collection *> &&);
@@ -249,7 +240,6 @@ namespace model {
     private:
         GameData m_data;
         Assets *const m_assets;
-        Leaderboard *const m_leaderboard;
         QVariantMap m_extra;
 
         CollectionListModel *m_collections = nullptr;

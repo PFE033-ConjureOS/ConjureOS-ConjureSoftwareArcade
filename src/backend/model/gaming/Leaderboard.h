@@ -20,28 +20,17 @@
 #include "types/AssetType.h"
 #include "utils/HashMap.h"
 #include "utils/MoveOnly.h"
-#include "model/ObjectListModel.h"
 
 #include <QStringList>
 #include <QObject>
-#include <QDate>
 
 
 namespace model {
-    struct ScoreLine {
-        explicit ScoreLine();
-
-        int playerId;
-        int score;
-        QDateTime date;
-
-    };
-    class Leaderboard : public TypeListModel<model::ScoreLine> {
+    class Leaderboard : public QObject {
         Q_OBJECT
 
     public:
 #define GEN(qmlname, enumname) \
-                               \
     const QString& qmlname() const { return getFirst(AssetType::enumname); } \
     const QStringList& qmlname##List() const { return get(AssetType::enumname); } \
     Q_PROPERTY(QString qmlname READ qmlname CONSTANT) \
