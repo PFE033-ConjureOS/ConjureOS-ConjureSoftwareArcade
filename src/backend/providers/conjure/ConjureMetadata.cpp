@@ -122,7 +122,7 @@ namespace providers {
                         {QStringLiteral("release"),       GameAttrib::RELEASE},
                         {QStringLiteral("modification"),  GameAttrib::MODIFICATION},
                         {QStringLiteral("rating"),        GameAttrib::RATING},
-                        {QStringLiteral("leaderboard"),   GameAttrib::LEADERBOARD},
+                        {QStringLiteral("leaderboardModel"),   GameAttrib::LEADERBOARD},
                         {QStringLiteral("thumbnailpath"), GameAttrib::THUMBNAIL},
                         {QStringLiteral("thumbnailPath"), GameAttrib::THUMBNAIL},
                         {QStringLiteral("thumbnail"),     GameAttrib::THUMBNAIL},
@@ -423,7 +423,7 @@ namespace providers {
                 case GameAttrib::LEADERBOARD: {
                     QString text = metafile::merge_lines(entry.values);
 
-                    //TODO : update or prepare leaderboard ??
+                    //TODO : update or prepare leaderboardModel ??
 
                     ps.cur_game->setLeaderboard(text.contains("True") || text.contains("true"));
                 }
