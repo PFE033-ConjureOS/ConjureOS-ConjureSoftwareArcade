@@ -71,6 +71,7 @@ public:
     Q_INVOKABLE void requestAndroidDir();
 
     Q_INVOKABLE void reloadProviders();
+    Q_INVOKABLE void simpleReloadProviders();
 
 signals:
     void fullscreenChanged();
@@ -79,6 +80,7 @@ signals:
     void gameDirsChanged();
     void androidDirsChanged();
     void providerReloadingRequested();
+    void providerSimpleReloadingRequest();
 };
 
 } // namespace model

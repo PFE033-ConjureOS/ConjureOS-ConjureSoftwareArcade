@@ -32,6 +32,7 @@ FocusScope {
     signal openAndroidSafSettings
     signal openProviderSettings
     signal reloadRequested
+    signal simpleReloadRequested
 
     width: parent.width
     height: parent.height
@@ -117,13 +118,6 @@ FocusScope {
             section: "gaming"
         },
         SettingsEntry {
-            label: QT_TR_NOOP("Accessible Android directories...")
-            type: SettingsEntry.Type.Button
-            buttonAction: root.openAndroidSafSettings
-            section: "gaming"
-            enabled: Qt.platform.os === "android"
-        },
-        SettingsEntry {
             label: QT_TR_NOOP("Only show existing games")
             desc: QT_TR_NOOP("Check the game files and only show games that actually exist. You can disable this to improve loading times.")
             type: SettingsEntry.Type.Bool
@@ -139,6 +133,12 @@ FocusScope {
         },
         SettingsEntry {
             label: QT_TR_NOOP("Reload all games")
+            type: SettingsEntry.Type.Button
+            buttonAction: root.simpleReloadRequested
+            section: "gaming"
+        },
+        SettingsEntry {
+            label: QT_TR_NOOP("Reload and download all games")
             type: SettingsEntry.Type.Button
             buttonAction: root.reloadRequested
             section: "gaming"

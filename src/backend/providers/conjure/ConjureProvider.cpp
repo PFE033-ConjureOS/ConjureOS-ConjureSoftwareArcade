@@ -126,5 +126,6 @@ namespace providers {
 
             return *this;
         }
+
     } // namespace conjure
 } // namespace providers

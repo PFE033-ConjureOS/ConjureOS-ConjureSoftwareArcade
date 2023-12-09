@@ -52,6 +52,7 @@ private:
 
     void onScanRequested();
     void onScanFinished();
+    void onSimpleScanRequest();
     void onFavoritesChanged();
     void onProcessLaunched();
     void onProcessFinished();
