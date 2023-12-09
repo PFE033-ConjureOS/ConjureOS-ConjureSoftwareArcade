@@ -28,7 +28,6 @@
 // MSVC has troubles with forward declared QML model types
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
-#include "Leaderboard.h"
 
 #endif
 
@@ -133,7 +132,7 @@ namespace model {
 
         GETTER(const QString&, version, version)
 
-        GETTER(const bool, hasLeaderboard, has_Leaderboard)
+        GETTER(bool, hasLeaderboard, has_Leaderboard)
 
 #undef GETTER
 
@@ -233,10 +232,6 @@ namespace model {
 
         Q_PROPERTY(ObjectListModel *files READ filesModel CONSTANT)
 
-        Leaderboard *leaderboardModel() const { return m_leaderboard; }
-
-        Q_PROPERTY(ObjectListModel *leaderboard READ leaderboardModel CONSTANT)
-
         Game &setFiles(std::vector<model::GameFile *> &&);
 
         Game &setCollections(std::vector<model::Collection *> &&);
@@ -249,7 +244,6 @@ namespace model {
 
         CollectionListModel *m_collections = nullptr;
         GameFileListModel *m_files = nullptr;
-        Leaderboard *m_leaderboard = nullptr;
 
     signals:
 

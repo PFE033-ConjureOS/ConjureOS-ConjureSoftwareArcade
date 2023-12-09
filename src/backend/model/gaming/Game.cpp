@@ -49,7 +49,6 @@ namespace model {
 
     QString Game::tagStr() const { return joined_list(m_data.tags); }
 
-
     Game &Game::setTitle(QString title) {
         m_data.title = std::move(title);
         if (sortBy().isEmpty())

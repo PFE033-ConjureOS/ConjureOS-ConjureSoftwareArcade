@@ -23,17 +23,15 @@ namespace model { class Game; }
 
 
 namespace model {
-    class GameListModel : public TypeListModel<model::Game> {
-    public:
-        explicit GameListModel(QObject *parent = nullptr);
+class GameListModel : public TypeListModel<model::Game> {
+public:
+    explicit GameListModel(QObject* parent = nullptr);
 
-        QHash<int, QByteArray> roleNames() const override;
+    QHash<int, QByteArray> roleNames() const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-        QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-
-    private:
-        void connectEntry(model::Game *const) override;
-
-        void onGamePropertyChanged(const QVector<int> &roles);
-    };
+private:
+    void connectEntry(model::Game* const) override;
+    void onGamePropertyChanged(const QVector<int>& roles);
+};
 } // namespace model

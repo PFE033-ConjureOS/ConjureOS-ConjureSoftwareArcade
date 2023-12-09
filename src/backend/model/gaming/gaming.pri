@@ -5,9 +5,8 @@ HEADERS += \
     $$PWD/Game.h \
     $$PWD/GameFile.h \
     $$PWD/GameFileListModel.h \
-    $$PWD/GameListModel.h \
-    $$PWD/Leaderboard.h \
-    $$PWD/ScoreLine.h
+    $$PWD/GameListModel.h\
+    $$PWD/Leaderboard.h
 
 SOURCES += \
     $$PWD/Assets.cpp \
@@ -17,5 +16,4 @@ SOURCES += \
     $$PWD/GameFile.cpp \
     $$PWD/GameFileListModel.cpp \
     $$PWD/GameListModel.cpp \
-    $$PWD/Leaderboard.cpp \
-    $$PWD/ScoreLine.cpp
+    $$PWD/Leaderboard.cpp
