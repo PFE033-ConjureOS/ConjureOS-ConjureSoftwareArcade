@@ -235,13 +235,8 @@ namespace backend {
     }
 
     void Backend::onScanRequested() {
-
-        // Custom step for Conjure download
-        Log::info("Running ConjureHttpPullGames.py -update");
-        system("python3 python_script\\ConjureHttpPullGames.py -update");
-
         m_api_public->clearGameData();
-        m_providerman->run();
+        m_providerman->runWithDownload();
     }
 
     void Backend::onSimpleScanRequest() {
