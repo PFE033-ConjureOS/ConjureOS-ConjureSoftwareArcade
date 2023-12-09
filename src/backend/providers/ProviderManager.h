@@ -32,6 +32,7 @@ public:
     explicit ProviderManager(QObject* parent = nullptr);
 
     void run();
+    void runWithDownload();
 
     void onGameLaunched(model::GameFile* const) const;
     void onGameFinished(model::GameFile* const) const;

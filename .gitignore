@@ -23,3 +23,4 @@ build*/
 *.autosave
 .vs
 .idea
+python_script/.env

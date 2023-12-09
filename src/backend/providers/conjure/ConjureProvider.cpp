@@ -87,7 +87,7 @@ namespace providers {
 
                 Log::info("Running ConjureDecompression.py");
                 system("python3 python_script\\ConjureDecompression.py");
-
+                emit progressChanged(0.001f);
             }
 
             const std::vector<QString> metafile_paths = find_all_metafiles(sctx.root_game_dirs());
@@ -123,5 +123,6 @@ namespace providers {
 
             return *this;
         }
+
     } // namespace conjure
 } // namespace providers
