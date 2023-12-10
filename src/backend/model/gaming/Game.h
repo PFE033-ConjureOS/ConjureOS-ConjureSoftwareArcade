@@ -226,23 +226,23 @@ namespace model {
 
         Q_PROPERTY(model::Assets *assets READ assetsPtr CONSTANT)
 
+        Game &setCollections(std::vector<model::Collection *> &&);
+
         CollectionListModel *collectionsModel() const { return m_collections; }
 
         Q_PROPERTY(ObjectListModel *collections READ collectionsModel CONSTANT)
+
+        Game &setFiles(std::vector<model::GameFile *> &&);
 
         GameFileListModel *filesModel() const { return m_files; }
 
         Q_PROPERTY(ObjectListModel *files READ filesModel CONSTANT)
 
+        Game &setLeaderboard(std::vector<model::ScoreLine *> &&);
+
         Leaderboard *leaderboardModel() const { return m_leaderboard; }
 
         Q_PROPERTY(ObjectListModel *leaderboard READ leaderboardModel CONSTANT)
-
-        Game &setCollections(std::vector<model::Collection *> &&);
-
-        Game &setFiles(std::vector<model::GameFile *> &&);
-
-        Game &setLeaderboard(std::vector<model::ScoreLine *> &&);
 
 
     private:
@@ -253,7 +253,7 @@ namespace model {
         CollectionListModel *m_collections = nullptr;
         GameFileListModel *m_files = nullptr;
 
-        Leaderboard *m_leaderboard =  nullptr;
+        Leaderboard *m_leaderboard = nullptr;
 
     signals:
 

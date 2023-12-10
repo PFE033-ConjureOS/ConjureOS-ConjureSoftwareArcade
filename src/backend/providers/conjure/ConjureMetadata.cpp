@@ -423,9 +423,20 @@ namespace providers {
                 case GameAttrib::LEADERBOARD: {
                     QString text = metafile::merge_lines(entry.values);
 
-                    //TODO : update or prepare leaderboard ??
 
-                    ps.cur_game->setHasLeaderboard(text.contains("True") || text.contains("true"));
+                    bool hasLeaderboard = text.contains("True") || text.contains("true");
+
+                    ps.cur_game->setHasLeaderboard(hasLeaderboard);
+
+                    if (hasLeaderboard) {
+                        std::vector<model::ScoreLine *> leaderboard;
+                        leaderboard.push_back(new model::ScoreLine(QString("1"), 234, QDateTime::currentDateTime()));
+                        leaderboard.push_back(new model::ScoreLine(QString("2"), 45, QDateTime::currentDateTime()));
+                        leaderboard.push_back(new model::ScoreLine(QString("3"), 2334, QDateTime::currentDateTime()));
+                        leaderboard.push_back(new model::ScoreLine(QString("4"), 22234, QDateTime::currentDateTime()));
+                        ps.cur_game->setLeaderboard(std::move(leaderboard));
+                    }
+
                 }
                     break;
                 case GameAttrib::THUMBNAIL: {

@@ -144,8 +144,6 @@ namespace model {
         m_leaderboard = new Leaderboard(this);
         m_leaderboard->update(std::move(scores));
 
-        onEntryPlayStatsChanged();
-
         return *this;
     }
 
