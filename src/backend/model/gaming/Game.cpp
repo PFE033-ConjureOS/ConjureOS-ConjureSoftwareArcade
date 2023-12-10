@@ -136,6 +136,19 @@ namespace model {
         return *this;
     }
 
+    Game &Game::setLeaderboard(std::vector<model::ScoreLine *> &&scores) {
+
+//        std::sort(scores.begin(), scores.end(), model::sort_scores);
+
+        Q_ASSERT(!m_leaderboard);
+        m_leaderboard = new Leaderboard(this);
+        m_leaderboard->update(std::move(scores));
+
+        onEntryPlayStatsChanged();
+
+        return *this;
+    }
+
     Game &Game::setId(QUuid uuid) {
         m_data.id = uuid;
         return *this;
@@ -146,7 +159,7 @@ namespace model {
         return *this;
     }
 
-    Game &Game::setLeaderboard(bool value) {
+    Game &Game::setHasLeaderboard(bool value) {
         m_data.has_Leaderboard = value;
         return *this;
     }

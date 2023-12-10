@@ -28,6 +28,8 @@
 // MSVC has troubles with forward declared QML model types
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
+#include "Leaderboard.h"
+#include "ScoreLine.h"
 
 #endif
 
@@ -168,7 +170,7 @@ namespace model {
 
         Game &setVersion(QString version);
 
-        Game &setLeaderboard(bool hasLeaderboard);
+        Game &setHasLeaderboard(bool hasLeaderboard);
 
 #undef SETTER
 
@@ -232,9 +234,15 @@ namespace model {
 
         Q_PROPERTY(ObjectListModel *files READ filesModel CONSTANT)
 
-        Game &setFiles(std::vector<model::GameFile *> &&);
+        Leaderboard *leaderboardModel() const { return m_leaderboard; }
+
+        Q_PROPERTY(ObjectListModel *leaderboard READ leaderboardModel CONSTANT)
 
         Game &setCollections(std::vector<model::Collection *> &&);
+
+        Game &setFiles(std::vector<model::GameFile *> &&);
+
+        Game &setLeaderboard(std::vector<model::ScoreLine *> &&);
 
 
     private:
@@ -244,6 +252,8 @@ namespace model {
 
         CollectionListModel *m_collections = nullptr;
         GameFileListModel *m_files = nullptr;
+
+        Leaderboard *m_leaderboard =  nullptr;
 
     signals:
 

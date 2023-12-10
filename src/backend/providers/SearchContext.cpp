@@ -243,6 +243,7 @@ void SearchContext::finalize_apply_lists()
         pair.first->setCollections(std::move(pair.second));
     }
 
+
     // Apply games to collections
     for (auto& pair : m_collection_games) {
         VEC_REMOVE_DUPLICATES(pair.second);

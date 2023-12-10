@@ -4,33 +4,38 @@
 
 #pragma once
 
+#include <QString>
+#include <QFileInfo>
 #include <QDateTime>
-#include <QStringList>
-#include <QObject>
 
 namespace model {
     struct ScoreLineData {
-        explicit ScoreLineData();
+        explicit ScoreLineData(QString, int, QDateTime);
 
-        explicit ScoreLineData(int, int, QDateTime);
-
-        int player_id{};
-        int score{};
+        QString playerId;
+        int score = 0;
         QDateTime score_date;
     };
 
     class ScoreLine : public QObject {
     Q_OBJECT
 
-    private:
-        ScoreLineData m_scoreLineData;
+    public:
+        const QString &playerId() const { return m_scoreLineData.playerId; }
+
+        const int score() const { return m_scoreLineData.score; }
+
+        const QDateTime &scoreDate() const { return m_scoreLineData.score_date; }
+
+        ScoreLine &setScoreLine(int score) {
+            m_scoreLineData.score = score;
+            return *this;
+        }
 
     public:
-        Q_PROPERTY(int player_id READ player_id CONSTANT)
-        Q_PROPERTY(int score READ score CONSTANT)
-        Q_PROPERTY(QDateTime score_date READ score_date CONSTANT)
+        explicit ScoreLine(QString, int, QDateTime);
 
-        explicit ScoreLine(QObject *parent = nullptr);
-        explicit ScoreLine(int player_id, int score, QDateTime score_date, QObject *parent = nullptr);
+    private:
+        ScoreLineData m_scoreLineData;
     };
 }

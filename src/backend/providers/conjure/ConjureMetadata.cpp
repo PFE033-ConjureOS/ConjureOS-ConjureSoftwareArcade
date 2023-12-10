@@ -425,7 +425,7 @@ namespace providers {
 
                     //TODO : update or prepare leaderboard ??
 
-                    ps.cur_game->setLeaderboard(text.contains("True") || text.contains("true"));
+                    ps.cur_game->setHasLeaderboard(text.contains("True") || text.contains("true"));
                 }
                     break;
                 case GameAttrib::THUMBNAIL: {
