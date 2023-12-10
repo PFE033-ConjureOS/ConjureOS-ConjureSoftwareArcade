@@ -21,6 +21,10 @@ namespace model {
     Q_OBJECT
 
     public:
+        Q_PROPERTY(QString playerId READ playerId CONSTANT)
+        Q_PROPERTY(int score READ score CONSTANT)
+        Q_PROPERTY(QDateTime date READ scoreDate CONSTANT)
+
         const QString &playerId() const { return m_scoreLineData.playerId; }
 
         const int score() const { return m_scoreLineData.score; }
