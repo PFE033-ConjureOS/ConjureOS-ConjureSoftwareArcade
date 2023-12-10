@@ -200,33 +200,17 @@ FocusScope {
             anchors.right: cartridge.left
             anchors.top: parent.top
             anchors.bottom: title.top
-            anchors.margins: 10
+            anchors.margins: 50
 
+            visible: currentGame.hasLeaderboard
 
-            model: ListModel {
-                ListElement { name: "Player 1"; score: 500 }
-                ListElement { name: "Player 2"; score: 450 }
-                ListElement { name: "Player 3"; score: 600 }
-            }
+            model: currentGame.leaderboard
 
-            delegate: Item {
-                width: parent.width
-                height: 50
-
-                Rectangle {
-                    width: parent.width
-                    height: 50
-                    color: index % 2 === 0 ? "lightblue" : "lightcyan"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: model.name + " - Score: " + model.score
-                    }
-                }
-            }
+            delegate: scoreLineDelegate
 
             // Customizing the header
             header: Rectangle {
+
                 width: parent.width
                 height: 50
                 color: "steelblue"
@@ -237,6 +221,26 @@ FocusScope {
                     color: "white"
                     font.bold: true
                     font.pointSize: 16
+                }
+            }
+        }
+
+        Component {
+            id: scoreLineDelegate
+
+            Item {
+                width: parent.width
+                height: 50
+
+                Rectangle {
+                    width: parent.width
+                    height: 50
+                    color: index % 2 === 0 ? "lightblue" : "lightcyan"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: modelData.date + " - " + modelData.playerId + " - Score: " + modelData.score
+                    }
                 }
             }
         }
@@ -313,7 +317,6 @@ FocusScope {
             anchors.topMargin: vpx(10)
             anchors.top: developerText.bottom
             anchors.right: cartridge.right
-            anchors.left: cartridge.left
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignRight
@@ -333,7 +336,6 @@ FocusScope {
 
             anchors.top: gameRelease.bottom
             anchors.topMargin: vpx(5)
-            anchors.left: cartridge.left
             anchors.right: cartridge.right
         }
 
@@ -352,7 +354,7 @@ FocusScope {
 
             anchors.bottom: genre.top
 
-            anchors.left: cartridge.left
+            anchors.left: parent.left
             anchors.right: cartridge.right
 
             wrapMode: Text.WordWrap
