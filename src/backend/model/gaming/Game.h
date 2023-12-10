@@ -132,7 +132,7 @@ namespace model {
 
         GETTER(const QString&, version, version)
 
-        GETTER(bool, hasLeaderboard, has_Leaderboard)
+        GETTER(const bool, hasLeaderboard, has_Leaderboard)
 
 #undef GETTER
 

@@ -30,6 +30,8 @@ add_library(pegasus-backend
         providers/conjure/ConjureFilter.h
         providers/conjure/ConjureFilter.cpp
         providers/conjure/ConjureFilter.cpp
+        model/gaming/ScoreLine.cpp
+        model/gaming/ScoreLine.h
 )
 
 add_subdirectory(imggen)
