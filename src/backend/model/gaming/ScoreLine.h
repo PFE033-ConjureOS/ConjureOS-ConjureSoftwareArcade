@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include "utils/HashMap.h"
+#include "utils/MoveOnly.h"
+
 #include <QString>
-#include <QFileInfo>
 #include <QDateTime>
+#include <QObject>
 
 namespace model {
     struct ScoreLineData {
