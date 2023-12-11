@@ -16,8 +16,13 @@
 #include "providers/conjure/ConjureFilter.h"
 #include "types/AssetType.h"
 #include "utils/PathTools.h"
+#include "providers/ProviderUtils.h"
 
-#include <QUrl>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkReply>
+#include <array>
 #include <QUuid>
 
 namespace {
@@ -74,7 +79,10 @@ namespace providers {
         };
 
         Metadata::Metadata(QString log_tag)
-                : m_log_tag(std::move(log_tag)), m_primary_key_collection("collection"), m_primary_key_game("id"),
+                : m_log_tag(std::move(log_tag)),
+                  m_primary_key_collection("collection"),
+                  m_primary_key_game("id"),
+                  m_json_cache_dir(QStringLiteral("conjure")),
                   m_coll_attribs{
                           {QStringLiteral("shortname"),         CollAttrib::SHORT_NAME},
                           {QStringLiteral("launch"),            CollAttrib::LAUNCH_CMD},
@@ -423,20 +431,24 @@ namespace providers {
                 case GameAttrib::LEADERBOARD: {
                     QString text = metafile::merge_lines(entry.values);
 
-
                     bool hasLeaderboard = text.contains("True") || text.contains("true");
 
                     ps.cur_game->setHasLeaderboard(hasLeaderboard);
 
-                    if (hasLeaderboard) {
-                        std::vector<model::ScoreLine *> leaderboard;
-                        leaderboard.push_back(new model::ScoreLine(QString("1"), 234, QDateTime::currentDateTime()));
-                        leaderboard.push_back(new model::ScoreLine(QString("2"), 45, QDateTime::currentDateTime()));
-                        leaderboard.push_back(new model::ScoreLine(QString("3"), 2334, QDateTime::currentDateTime()));
-                        leaderboard.push_back(new model::ScoreLine(QString("4"), 22234, QDateTime::currentDateTime()));
-                        ps.cur_game->setLeaderboard(std::move(leaderboard));
+                    if (!hasLeaderboard) {
+                        break;
                     }
 
+                    std::vector<model::ScoreLine *> leaderboard;
+
+                    leaderboard.push_back(new model::ScoreLine(QString("1654"), 234, QDateTime::currentDateTime()));
+                    leaderboard.push_back(new model::ScoreLine(QString("2232"), 45, QDateTime::currentDateTime()));
+                    leaderboard.push_back(new model::ScoreLine(QString("12333"), 2334, QDateTime::currentDateTime()));
+                    leaderboard.push_back(new model::ScoreLine(QString("2344"), 22234, QDateTime::currentDateTime()));
+                    leaderboard.push_back(new model::ScoreLine(QString("2344"), 22234, QDateTime::currentDateTime()));
+                    leaderboard.push_back(new model::ScoreLine(QString("2344"), 22234, QDateTime::currentDateTime()));
+
+                    ps.cur_game->setLeaderboard(std::move(leaderboard));
                 }
                     break;
                 case GameAttrib::THUMBNAIL: {
@@ -596,5 +608,111 @@ namespace providers {
 
             return std::move(ps.filters);
         }
+
+        bool apply_json(model::Game &game, const QJsonDocument &json) {
+            if (json.isNull())
+                return false;
+
+            const auto json_root = json.object();
+            if (json_root.isEmpty())
+                return false;
+
+
+            const auto desc = json_root[QLatin1String("description")].toObject();
+            if (!desc.isEmpty()) {
+                game.setSummary(desc[QLatin1String("lead")].toString().replace('\n', ' '))
+                        .setDescription(desc[QLatin1String("full")].toString().replace('\n', ' '));
+            }
+
+            const auto date_raw = json_root[QLatin1String("release_date")].toString();
+            game.setReleaseDate(QDate::fromString(date_raw, Qt::ISODate));
+
+
+            model::Assets &assets = game.assetsMut();  // FIXME: update signals?
+
+            const auto images = json_root[QLatin1String("images")].toObject();
+            if (!images.isEmpty()) {
+                const QString prefix(QStringLiteral("https:"));
+
+                const QString box_front = images[QLatin1String("logo2x")].toString();
+                const QString background = images[QLatin1String("background")].toString();
+                const QString logo = images[QLatin1String("icon")].toString();
+
+                if (!box_front.isEmpty())
+                    assets.add_uri(AssetType::BOX_FRONT, prefix + box_front);
+                if (!background.isEmpty())
+                    assets.add_uri(AssetType::BACKGROUND, prefix + background);
+                if (!logo.isEmpty())
+                    assets.add_uri(AssetType::LOGO, prefix + logo);
+            }
+
+            const auto screenshots = json_root[QLatin1String("screenshots")].toArray();
+            for (const auto &array_entry: screenshots) {
+                const auto screenshot = array_entry.toObject();
+                const auto url = screenshot[QLatin1String("formatter_template_url")].toString()
+                        .replace(QStringLiteral("{formatter}"), QStringLiteral("ggvgm_2x"));
+
+                if (!url.isEmpty())
+                    assets.add_uri(AssetType::SCREENSHOT, url);
+            }
+
+            return true;
+        }
+
+        void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
+
+            model::Game *const game_ptr = &game;
+
+            const QString domain = "localhost:8081";
+            const QString gameId = game_ptr->id().toString();
+
+            const QString url_str = QStringLiteral("https://%1/games/%2/scores").arg(domain, gameId);
+
+            const QUrl url(url_str, QUrl::StrictMode);
+
+            Q_ASSERT(url.isValid());
+
+            if (Q_UNLIKELY(!url.isValid()))
+                return;
+
+            using JsonCallback = std::function<bool(model::Game &, const QJsonDocument &)>;
+
+            const std::tuple<QUrl, JsonCallback> request = std::make_tuple(url, apply_json);
+
+            QString log_tag = m_log_tag;
+            QString json_cache_dir = m_json_cache_dir;
+
+
+            const JsonCallback &json_callback = std::get<1>(request);
+
+            sctx.schedule_download(std::get<0>(request),
+                                   [log_tag, json_cache_dir, game_ptr, json_callback](QNetworkReply *const reply) {
+                                       if (reply->error()) {
+                                           Log::warning(log_tag, LOGMSG("Fetching scores for `%1` failed: %2")
+                                                   .arg(game_ptr->title(), reply->errorString()));
+                                           return;
+                                       }
+
+                                       const QByteArray raw_data = reply->readAll();
+                                       const QJsonDocument json = QJsonDocument::fromJson(raw_data);
+                                       if (json.isNull()) {
+                                           Log::warning(log_tag, LOGMSG(
+                                                   "Failed to parse the response of the server for game '%1'"
+                                           ).arg(game_ptr->title()));
+                                           return;
+                                       }
+
+                                       const bool success = json_callback(*game_ptr, json);
+                                       if (success) {
+                                           const QString json_name = gameId;
+                                           providers::cache_json(log_tag, json_cache_dir, json_name,
+                                                                 json.toJson(QJsonDocument::Compact));
+                                       }
+                                   });
+
+
+        }
+
+
     } // namespace conjure
 } // namespace providers

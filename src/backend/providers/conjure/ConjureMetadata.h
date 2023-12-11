@@ -46,9 +46,11 @@ namespace providers {
             explicit Metadata(QString);
 
             std::vector<FileFilter> apply_metafile(const QString &, SearchContext &) const;
+            void fetch_leaderboard(model::Game&, SearchContext&) const;
 
         private:
             const QString m_log_tag;
+            const QString m_json_cache_dir;
 
             const QLatin1String m_primary_key_collection;
             const QLatin1String m_primary_key_game;
@@ -63,6 +65,8 @@ namespace providers {
             const QRegularExpression rx_date;
             const QRegularExpression rx_unescaped_newline;
             const QRegularExpression rx_uri;
+
+            const QString m_json_suffix;
 
 
             void print_error(ParserState &, const metafile::Error &) const;
