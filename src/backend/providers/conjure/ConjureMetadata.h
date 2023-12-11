@@ -7,6 +7,7 @@
 
 #include "utils/HashMap.h"
 #include "utils/NoCopyNoMove.h"
+#include "model/gaming/Leaderboard.h"
 
 #include <QDir>
 #include <QString>
@@ -46,7 +47,7 @@ namespace providers {
             explicit Metadata(QString);
 
             std::vector<FileFilter> apply_metafile(const QString &, SearchContext &) const;
-            void fetch_leaderboard(model::Game&, SearchContext&) const;
+            void fetch_leaderboard(std::vector<model::ScoreLine *>&, model::Game&, SearchContext&) const;
 
         private:
             const QString m_log_tag;
