@@ -73,7 +73,7 @@ namespace model {
             QString relative_basedir; // TODO: check if needed
         } launch_params;
 
-        QUuid id;
+        QString id;
         QString version;
         bool has_Leaderboard = false;
     };
@@ -130,7 +130,7 @@ namespace model {
 
         GETTER(const QString&, launchCmdBasedir, launch_params.relative_basedir)
 
-        GETTER(const QUuid&, id, id)
+        GETTER(const QString&, id, id)
 
         GETTER(const QString&, version, version)
 
@@ -166,7 +166,7 @@ namespace model {
 
         Game &setPlayerCount(int player_count);
 
-        Game &setId(QUuid qUuid);
+        Game &setId(QString);
 
         Game &setVersion(QString version);
 
@@ -276,8 +276,6 @@ namespace model {
         Q_INVOKABLE void launch();
 
         void finalize();
-
-
     };
 
 

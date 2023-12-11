@@ -147,8 +147,8 @@ namespace model {
         return *this;
     }
 
-    Game &Game::setId(QUuid uuid) {
-        m_data.id = uuid;
+    Game &Game::setId(QString id) {
+        m_data.id = id;
         return *this;
     }
 
