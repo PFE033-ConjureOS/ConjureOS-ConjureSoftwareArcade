@@ -18,6 +18,7 @@
 #include "utils/PathTools.h"
 #include "providers/ProviderUtils.h"
 
+#include <QUrl>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -240,7 +241,7 @@ namespace providers {
                     break;
                 case CollAttrib::FILES:
                     for (const QString &path: entry.values)
-                        filter_group.files.emplace_back(std::move(path));
+                        filter_group.files.emplace_back(path);
                     break;
                 case CollAttrib::REGEX: {
                     QRegularExpression new_rx(first_line_of(ps, entry));
@@ -435,13 +436,10 @@ namespace providers {
 
                     ps.cur_game->setHasLeaderboard(hasLeaderboard);
 
-                    if (!hasLeaderboard) {
-                        break;
-                    }
 
+                    if (!hasLeaderboard) break; //set leaderboard to game if properties leaderboard is true
                     std::vector<model::ScoreLine *> leaderboard;
-                    model::Game *const game = ps.cur_game;
-                    fetch_leaderboard(leaderboard, *game, sctx);
+                    fetch_leaderboard(leaderboard, *ps.cur_game, sctx);
 
                 }
                     break;

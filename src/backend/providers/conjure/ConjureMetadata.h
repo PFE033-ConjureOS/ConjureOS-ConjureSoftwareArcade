@@ -7,7 +7,7 @@
 
 #include "utils/HashMap.h"
 #include "utils/NoCopyNoMove.h"
-#include "model/gaming/Leaderboard.h"
+#include "model/gaming/ScoreLine.h"
 
 #include <QDir>
 #include <QString>
