@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QStringList>
 #include <vector>
+#include <QtNetwork>
 
 namespace model { class Game; }
 namespace model { class GameFile; }
@@ -61,6 +62,8 @@ public:
     SearchContext& enable_network();
     bool has_network() const;
     SearchContext& schedule_download(const QUrl&, const std::function<void(QNetworkReply* const)>&);
+    SearchContext& schedule_download2(const QUrl&, const std::function<void(QNetworkReply* const)>&);
+    void SearchContext::errorHandle(QNetworkReply::NetworkError code);
     bool has_pending_downloads() const;
 
     const HashMap<QString, model::GameFile*>& current_filepath_to_entry_map() const { return m_filepath_to_gamefile; }

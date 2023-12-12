@@ -36,7 +36,8 @@ namespace model {
 
 
     Game::Game(QString name, QObject *parent)
-            : QObject(parent), m_data(std::move(name)), m_assets(new model::Assets(this)) {}
+            : QObject(parent), m_data(std::move(name)), m_assets(new model::Assets(this)),
+              m_leaderboard(new model::Leaderboard(this)) {}
 
     Game::Game(QObject *parent)
             : Game(QString(), parent) {}

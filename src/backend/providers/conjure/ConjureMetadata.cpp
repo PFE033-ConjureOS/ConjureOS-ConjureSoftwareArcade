@@ -438,8 +438,7 @@ namespace providers {
 
 
                     if (!hasLeaderboard) break; //set leaderboard to game if properties leaderboard is true
-                    std::vector<model::ScoreLine *> leaderboard;
-                    fetch_leaderboard(leaderboard, *ps.cur_game, sctx);
+                    fetch_leaderboard(*ps.cur_game, sctx);
 
                 }
                     break;
@@ -552,6 +551,7 @@ namespace providers {
 
             if (entry.key == m_primary_key_game) {
                 ps.cur_game = sctx.create_game();
+                ps.cur_game->setId(first_line_of(ps, entry));
                 ps.cur_game->setLaunchCmdBasedir(ps.dir.path());
 
                 // Add to the ones found so far
@@ -601,7 +601,10 @@ namespace providers {
             return std::move(ps.filters);
         }
 
-        bool apply_json(model::Game &game, std::vector<model::ScoreLine *> &leaderboard, const QJsonDocument &json) {
+        bool apply_json(model::Game &game, const QJsonDocument &json) {
+
+            std::vector<model::ScoreLine *> leaderboard;
+
             if (json.isNull())
                 return false;
 
@@ -622,21 +625,20 @@ namespace providers {
                         date
                 ));
             }
+
             game.setLeaderboard(std::move(leaderboard));
 
             return true;
         }
 
-        void Metadata::fetch_leaderboard(std::vector<model::ScoreLine *> &leaderboard, model::Game &game,
-                                         SearchContext &sctx) const {
+        void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
 
             model::Game *const game_ptr = &game;
-            std::vector<model::ScoreLine *> *const leaderboard_ptr = &leaderboard;
 
             const QString domain = "localhost:8081";
-            const QString gameId = game_ptr->id().toString();
+            const QString gameId = game_ptr->id();
 
-            const QString url_str = QStringLiteral("https://%1/games/%2/scores").arg(domain, gameId);
+            const QString url_str = QStringLiteral("http://%1/games/%2/scores").arg(domain, gameId);
 
             const QUrl url(url_str, QUrl::StrictMode);
 
@@ -645,8 +647,7 @@ namespace providers {
             if (Q_UNLIKELY(!url.isValid()))
                 return;
 
-            using JsonCallback = std::function<bool(model::Game &, std::vector<model::ScoreLine *> &,
-                                                    const QJsonDocument &)>;
+            using JsonCallback = std::function<bool(model::Game &, const QJsonDocument &)>;
 
             const std::tuple<QUrl, JsonCallback> request = std::make_tuple(url, apply_json);
 
@@ -655,9 +656,10 @@ namespace providers {
 
             const JsonCallback &json_callback = std::get<1>(request);
 
-            sctx.schedule_download(std::get<0>(request),
-                                   [log_tag, json_cache_dir, game_ptr, json_callback, gameId, leaderboard_ptr](
+            sctx.schedule_download2(std::get<0>(request),
+                                   [log_tag, json_cache_dir, game_ptr, json_callback, gameId](
                                            QNetworkReply *const reply) {
+
                                        if (reply->error()) {
                                            Log::warning(log_tag, LOGMSG("Fetching scores for `%1` failed: %2")
                                                    .arg(game_ptr->title(), reply->errorString()));
@@ -673,7 +675,7 @@ namespace providers {
                                            return;
                                        }
 
-                                       const bool success = json_callback(*game_ptr, *leaderboard_ptr, json);
+                                       const bool success = json_callback(*game_ptr, json);
                                        if (success) {
                                            providers::cache_json(log_tag, json_cache_dir, gameId,
                                                                  json.toJson(QJsonDocument::Compact));
