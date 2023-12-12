@@ -338,23 +338,26 @@ namespace providers {
         Q_ASSERT(m_netman);
         Q_ASSERT(url.isValid());
 
-//        m_pending_downloads++;
+        m_pending_downloads++;
 
         QNetworkRequest request(url);
+        request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+        request.setTransferTimeout(10000);
+#endif
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
         QString bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibGFiZWwiOiJBZG1pbiJ9LHsiaWQiOjIsImxhYmVsIjoiTWVtYmVyIn1dLCJleHAiOjE3MDIzMzU4MjN9.Vdx8w2K5l0yW18y82ypTXPgA7Ky5g3VbM3_KhntYnds";
         request.setRawHeader("Authorization", "Bearer " + bearerToken.toUtf8());
 
-        QNetworkReply *reply = m_netman->get(request);
-//        emit downloadScheduled();
+        QNetworkReply *const reply = m_netman->get(request);
+        emit downloadScheduled();
 
         QObject::connect(reply, &QNetworkReply::finished,
                          this, [this, reply, on_finish_callback] {
                     on_finish_callback(reply);
-//                    m_pending_downloads--;
-//                    emit downloadCompleted();
+                    m_pending_downloads--;
+                    emit downloadCompleted();
                 });
         return *this;
     }

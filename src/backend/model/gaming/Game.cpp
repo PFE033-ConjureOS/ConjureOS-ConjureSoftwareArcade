@@ -21,6 +21,7 @@
 #include "model/gaming/Assets.h"
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
+#include "Log.h"
 
 
 namespace {
@@ -144,6 +145,8 @@ namespace model {
         Q_ASSERT(!m_leaderboard);
         m_leaderboard = new Leaderboard(this);
         m_leaderboard->update(std::move(scores));
+
+        Log::info(QString("setLeaderboard!!"));
 
         return *this;
     }
