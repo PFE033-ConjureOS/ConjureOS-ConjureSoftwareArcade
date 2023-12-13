@@ -606,18 +606,21 @@ namespace providers {
                 return false;
             }
 
-            const QJsonArray jsonArray = json.array();
-            std::vector<model::ScoreLine *> leaderboard;
-            leaderboard.reserve(jsonArray.size());
+            const QJsonArray scoresArray = json.object()["scores"].toArray();
 
-            for (const auto &entry : jsonArray) {
+            std::vector<model::ScoreLine *> leaderboard;
+
+            leaderboard.reserve(scoresArray.size());
+
+            for (const auto &entry : scoresArray) {
                 const QJsonObject jsonObject = entry.toObject();
                 int playerId = jsonObject["playerId"].toInt();
                 const int score = jsonObject["score"].toInt();
                 const QDateTime date = QDateTime::fromString(jsonObject["date"].toString(), Qt::ISODateWithMs);
 
-                Log::info(QString::number(playerId));
-                leaderboard.push_back(new model::ScoreLine(QString::number(playerId), score, date));
+                QString username = json.object()["players"].toArray()[playerId].toObject()["username"].toString();
+
+                leaderboard.push_back(new model::ScoreLine(username, score, date));
             }
 
             game.setLeaderboard(std::move(leaderboard));
@@ -625,14 +628,17 @@ namespace providers {
             return true;
         }
 
+
         void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
+
+
+            const QString domain = sctx.conjure_domain;
 
             model::Game *const game_ptr = &game;
 
-            const QString domain = "localhost:8081";
             const QString gameId = game_ptr->id();
 
-            const QString url_str = QStringLiteral("http://%1/games/%2/scores").arg(domain, gameId);
+            const QString url_str = QStringLiteral("http://%1/games/%2/scores/detailed").arg(domain, gameId);
 
             const QUrl url(url_str, QUrl::StrictMode);
 
