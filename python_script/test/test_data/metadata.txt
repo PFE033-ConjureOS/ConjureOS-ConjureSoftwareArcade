@@ -1,0 +1,14 @@
+collection: Members Games
+id: 00000000-0000-0000-0000-000000000000
+game: Game Title test
+version: 0.1.1
+description: test_description
+players: 1-1
+leaderboard: False
+thumbnailPath: medias\thumbnail.png
+imagePath: medias\gameplayImage.png
+release: 2021-02-01
+modification: 2022-01-02
+files: game\urp.exe
+developers: test_dev1, test_dev2
+genres: puzzle

@@ -1,0 +1,2 @@
+collection: collection_name
+launch: {file.path}

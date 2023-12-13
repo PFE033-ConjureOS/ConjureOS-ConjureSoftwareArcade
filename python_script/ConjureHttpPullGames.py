@@ -10,6 +10,8 @@ from zipfile import ZipFile
 from io import BytesIO
 from dotenv import load_dotenv
 
+from MetadataProperties import MetadataProperties
+
 load_dotenv()
 domain = os.getenv('DOMAIN')
 username = os.getenv('CONJ_USERNAME')
@@ -95,7 +97,11 @@ def current_games():
                                 for line in content.split('\n'):
                                     key, value = line.split(': ', 1)
                                     data[key] = value.strip()
-                                data_list.append({'id': data.get('id'), 'version': data.get('version')})
+                                data_list.append({
+                                    MetadataProperties.METADATA_ID.value:
+                                        data.get(MetadataProperties.METADATA_ID.value),
+                                    MetadataProperties.VERSION.value:
+                                        data.get(MetadataProperties.VERSION.value)})
 
     print("Current games:")
     print(json.dumps(data_list, indent=2))
