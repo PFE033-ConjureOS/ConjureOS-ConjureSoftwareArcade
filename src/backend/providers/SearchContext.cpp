@@ -332,7 +332,7 @@ namespace providers {
         return *this;
     }
 
-    SearchContext &SearchContext::schedule_download2(
+    SearchContext &SearchContext::schedule_download_conjure(
             const QUrl &url,
             const std::function<void(QNetworkReply *const)> &on_finish_callback) {
         Q_ASSERT(m_netman);
@@ -347,7 +347,10 @@ namespace providers {
         request.setTransferTimeout(10000);
 #endif
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-        QString bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibGFiZWwiOiJBZG1pbiJ9LHsiaWQiOjIsImxhYmVsIjoiTWVtYmVyIn1dLCJleHAiOjE3MDIzMzU4MjN9.Vdx8w2K5l0yW18y82ypTXPgA7Ky5g3VbM3_KhntYnds";
+
+        //TODO update so Bearer is not hardcoded
+        QString bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibGFiZWwiOiJBZG1pbiJ9LHsiaWQiOjIsImxhYmVsIjoiTWVtYmVyIn1dLCJleHAiOjE3MDI0NTgyNjl9.ojnSil54KpI8B9kl8oJQWTnDj2ZPtVHwEsjoUQ7HDTc";
+
         request.setRawHeader("Authorization", "Bearer " + bearerToken.toUtf8());
 
         QNetworkReply *const reply = m_netman->get(request);

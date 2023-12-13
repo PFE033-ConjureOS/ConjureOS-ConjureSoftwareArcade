@@ -140,13 +140,9 @@ namespace model {
 
     Game &Game::setLeaderboard(std::vector<model::ScoreLine *> &&scores) {
 
-//        std::sort(scores.begin(), scores.end(), model::sort_scores);
-
         Q_ASSERT(!m_leaderboard);
         m_leaderboard = new Leaderboard(this);
         m_leaderboard->update(std::move(scores));
-
-        Log::info(QString("setLeaderboard!!"));
 
         return *this;
     }

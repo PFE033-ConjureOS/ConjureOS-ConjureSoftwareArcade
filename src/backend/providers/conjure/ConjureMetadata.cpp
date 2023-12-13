@@ -602,24 +602,24 @@ namespace providers {
 
         bool apply_json(model::Game &game, const QJsonDocument &json) {
 
-            if (json.isNull() || !json.isArray()) {
+            if (json.isNull()) {
                 return false;
             }
+            QJsonObject jsonObject = json.object();
 
-            const QJsonArray scoresArray = json.object()["scores"].toArray();
+            const QJsonArray scoresArray = jsonObject["scores"].toArray();
 
             std::vector<model::ScoreLine *> leaderboard;
-
             leaderboard.reserve(scoresArray.size());
 
-            for (const auto &entry : scoresArray) {
-                const QJsonObject jsonObject = entry.toObject();
-                int playerId = jsonObject["playerId"].toInt();
-                const int score = jsonObject["score"].toInt();
-                const QDateTime date = QDateTime::fromString(jsonObject["date"].toString(), Qt::ISODateWithMs);
+            for (const auto &entry: scoresArray) {
 
-                QString username = json.object()["players"].toArray()[playerId].toObject()["username"].toString();
+                const QJsonObject entryObject = entry.toObject();
+                int playerId = entryObject["playerId"].toInt();
+                const int score = entryObject["score"].toInt();
+                const QDateTime date = QDateTime::fromString(entryObject["date"].toString(), Qt::ISODateWithMs);
 
+                QString username = jsonObject["players"].toObject()[QString::number(playerId)].toObject()["username"].toString();
                 leaderboard.push_back(new model::ScoreLine(username, score, date));
             }
 
@@ -630,7 +630,6 @@ namespace providers {
 
 
         void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
-
 
             const QString domain = sctx.conjure_domain;
 
@@ -656,31 +655,34 @@ namespace providers {
 
             const JsonCallback &json_callback = std::get<1>(request);
 
-            sctx.schedule_download2(std::get<0>(request),
-                                    [log_tag, json_cache_dir, game_ptr, json_callback, gameId](
-                                            QNetworkReply *const reply) {
+            sctx.schedule_download_conjure(std::get<0>(request),
+                                           [log_tag, json_cache_dir, game_ptr, json_callback, gameId](
+                                                   QNetworkReply *const reply) {
 
-                                        if (reply->error()) {
-                                            Log::warning(log_tag, LOGMSG("Fetching scores for `%1` failed: %2")
-                                                    .arg(game_ptr->title(), reply->errorString()));
-                                            return;
-                                        }
+                                               if (reply->error()) {
+                                                   Log::warning(log_tag,
+                                                                LOGMSG("Fetching scores for `%1` failed: %2")
+                                                                        .arg(game_ptr->title(),
+                                                                             reply->errorString()));
+                                                   return;
+                                               }
 
-                                        const QByteArray raw_data = reply->readAll();
-                                        const QJsonDocument json = QJsonDocument::fromJson(raw_data);
-                                        if (json.isNull()) {
-                                            Log::warning(log_tag, LOGMSG(
-                                                    "Failed to parse the response of the server for game '%1'"
-                                            ).arg(game_ptr->title()));
-                                            return;
-                                        }
+                                               const QByteArray raw_data = reply->readAll();
+                                               const QJsonDocument json = QJsonDocument::fromJson(raw_data);
+                                               if (json.isNull()) {
+                                                   Log::warning(log_tag, LOGMSG(
+                                                           "Failed to parse the response of the server for game '%1'"
+                                                   ).arg(game_ptr->title()));
+                                                   return;
+                                               }
 
-                                        const bool success = json_callback(*game_ptr, json);
-                                        if (success) {
-                                            providers::cache_json(log_tag, json_cache_dir, gameId,
-                                                                  json.toJson(QJsonDocument::Compact));
-                                        }
-                                    });
+                                               const bool success = json_callback(*game_ptr, json);
+                                               if (success) {
+                                                   providers::cache_json(log_tag, json_cache_dir, gameId,
+                                                                         json.toJson(
+                                                                                 QJsonDocument::Compact));
+                                               }
+                                           });
 
 
         }
