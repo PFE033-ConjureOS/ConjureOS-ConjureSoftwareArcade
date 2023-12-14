@@ -1,6 +1,7 @@
 
-#include "Leaderboard.h"
+#include "GameListModel.h"
 
+#include "Leaderboard.h"
 #include "model/gaming/ScoreLine.h"
 
 namespace {
