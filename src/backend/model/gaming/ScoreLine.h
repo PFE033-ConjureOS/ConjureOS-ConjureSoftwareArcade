@@ -40,6 +40,8 @@ signals:
 public:
     explicit ScoreLine(QString, int, QDateTime);
 
+    void finalize();
+
 private:
     ScoreLineData m_scoreLineData;
 };
