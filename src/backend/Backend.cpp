@@ -200,6 +200,7 @@ Backend::Backend(const CliArgs &args)
                      m_api_public, &model::ApiObject::onThemeChanged);
     QObject::connect(m_api_private->settings().keyEditorPtr(), &model::KeyEditor::keysChanged,
                      m_api_public->keysPtr(), &model::Keys::refresh_keys);
+
     QObject::connect(m_api_private->settingsPtr(), &model::Settings::providerReloadingRequested,
                      [this]() { onScanRequested(); });
     QObject::connect(m_api_private->settingsPtr(), &model::Settings::providerSimpleReloadingRequest,

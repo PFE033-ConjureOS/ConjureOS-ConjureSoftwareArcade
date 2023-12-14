@@ -94,8 +94,9 @@ def current_games():
                                 content = text_file.read().decode('utf-8')
                                 data = {}
                                 for line in content.split('\n'):
-                                    key, value = line.split(': ', 1)
-                                    data[key] = value.strip()
+                                    if ":" in line:
+                                        key, value = line.split(': ', 1)
+                                        data[key] = value.strip()
                                 data_list.append({
                                     MetadataProperties.METADATA_ID.value:
                                         data.get(MetadataProperties.METADATA_ID.value),

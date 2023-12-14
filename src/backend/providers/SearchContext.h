@@ -39,7 +39,7 @@ class SearchContext : public QObject {
     Q_OBJECT
 
 public:
-    const QString conjure_domain = "localhost:8081"; //TODO  : move this to environment variable?
+    const QString conjure_domain = "142.137.247.118:8080"; //TODO  : move this to environment variable?
     explicit SearchContext(QObject* parent = nullptr);
     explicit SearchContext(QStringList, QObject* parent = nullptr);
     NO_COPY_NO_MOVE(SearchContext)

@@ -349,7 +349,7 @@ SearchContext &SearchContext::schedule_download_conjure(
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     //TODO update so Bearer is not hardcoded
-    QString bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibGFiZWwiOiJBZG1pbiJ9LHsiaWQiOjIsImxhYmVsIjoiTWVtYmVyIn1dLCJleHAiOjE3MDI0NTgyNjl9.ojnSil54KpI8B9kl8oJQWTnDj2ZPtVHwEsjoUQ7HDTc";
+    QString bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibGFiZWwiOiJBZG1pbiJ9LHsiaWQiOjIsImxhYmVsIjoiTWVtYmVyIn1dLCJleHAiOjE3MDIwOTA3MTl9.uXDvIX2mtf0q09uqfL4RudkYoDUpGTVz1UFjoG2M_uQ";
 
     request.setRawHeader("Authorization", "Bearer " + bearerToken.toUtf8());
 

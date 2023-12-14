@@ -600,7 +600,7 @@ std::vector<FileFilter> Metadata::apply_metafile(const QString &metafile_path, S
     return std::move(ps.filters);
 }
 
-bool apply_json(model::Game &game, const QJsonDocument &json) {
+bool apply_json_C(model::Game &game, const QJsonDocument &json) {
 
     if (json.isNull()) {
         return false;
@@ -648,7 +648,7 @@ void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
 
     using JsonCallback = std::function<bool(model::Game &, const QJsonDocument &)>;
 
-    const std::tuple<QUrl, JsonCallback> request = std::make_tuple(url, apply_json);
+    const std::tuple<QUrl, JsonCallback> request = std::make_tuple(url, apply_json_C);
 
     QString log_tag = m_log_tag;
     QString json_cache_dir = m_json_cache_dir;

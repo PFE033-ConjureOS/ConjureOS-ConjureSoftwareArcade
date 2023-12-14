@@ -202,7 +202,7 @@ FocusScope {
             anchors.bottom: title.top
             anchors.margins: 50
 
-            visible: currentGame.hasLeaderboard
+            visible: currentGame.hasLeaderboard && (currentGame.leaderboard.count > 0)
 
             model: currentGame.leaderboard
 
@@ -239,7 +239,7 @@ FocusScope {
 
                     Text {
                         anchors.centerIn: parent
-                        text: modelData.date + " - " + modelData.playerId + " - Score: " + modelData.score
+                        text: modelData.playerId + " | Score: " + modelData.score + " | " + modelData.date
                     }
                 }
             }
