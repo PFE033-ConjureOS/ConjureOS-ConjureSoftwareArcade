@@ -46,16 +46,16 @@ CollectionListModel::CollectionListModel(QObject* parent)
 QHash<int, QByteArray> CollectionListModel::roleNames() const
 {
     static QHash<int, QByteArray> ROLE_NAMES {
-        { Roles::Self, QByteArrayLiteral("modelData") },
-        { Roles::Name, QByteArrayLiteral("name") },
-        { Roles::ShortName, QByteArrayLiteral("shortName") },
-        { Roles::SortBy, QByteArrayLiteral("sortBy") },
-        { Roles::Summary, QByteArrayLiteral("summary") },
-        { Roles::Description, QByteArrayLiteral("description") },
-        { Roles::Extra, QByteArrayLiteral("extra") },
-        { Roles::Assets, QByteArrayLiteral("assets") },
-        { Roles::Games, QByteArrayLiteral("games") },
-    };
+                                             { Roles::Self, QByteArrayLiteral("modelData") },
+                                             { Roles::Name, QByteArrayLiteral("name") },
+                                             { Roles::ShortName, QByteArrayLiteral("shortName") },
+                                             { Roles::SortBy, QByteArrayLiteral("sortBy") },
+                                             { Roles::Summary, QByteArrayLiteral("summary") },
+                                             { Roles::Description, QByteArrayLiteral("description") },
+                                             { Roles::Extra, QByteArrayLiteral("extra") },
+                                             { Roles::Assets, QByteArrayLiteral("assets") },
+                                             { Roles::Games, QByteArrayLiteral("games") },
+                                             };
     return ROLE_NAMES;
 }
 
@@ -68,16 +68,16 @@ QVariant CollectionListModel::data(const QModelIndex& index, int role) const
     model::Collection* const coll_ptr = m_entries.at(index.row());
     const model::Collection& coll = *coll_ptr;
     switch (role) {
-        case Roles::Self: return QVariant::fromValue(coll_ptr);
-        case Roles::Name: return coll.name();
-        case Roles::ShortName: return coll.shortName();
-        case Roles::SortBy: return coll.sortBy();
-        case Roles::Summary: return coll.summary();
-        case Roles::Description: return coll.description();
-        case Roles::Extra: return coll.extraMap();
-        case Roles::Assets: return QVariant::fromValue(coll.assetsPtr());
-        case Roles::Games: return QVariant::fromValue(coll.gameList());
-        default: return {};
+    case Roles::Self: return QVariant::fromValue(coll_ptr);
+    case Roles::Name: return coll.name();
+    case Roles::ShortName: return coll.shortName();
+    case Roles::SortBy: return coll.sortBy();
+    case Roles::Summary: return coll.summary();
+    case Roles::Description: return coll.description();
+    case Roles::Extra: return coll.extraMap();
+    case Roles::Assets: return QVariant::fromValue(coll.assetsPtr());
+    case Roles::Games: return QVariant::fromValue(coll.gameList());
+    default: return {};
     }
 }
 } // namespace model

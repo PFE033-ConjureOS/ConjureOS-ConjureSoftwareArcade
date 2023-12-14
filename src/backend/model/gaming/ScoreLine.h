@@ -12,33 +12,49 @@
 #include <QObject>
 
 namespace model {
-    struct ScoreLineData {
-        explicit ScoreLineData(QString, int, QDateTime);
+struct ScoreLineData {
+    explicit ScoreLineData(QString, int, QDateTime);
 
-        QString playerId;
-        int score = 0;
-        QDateTime score_date;
-    };
+    QString playerId;
+    int score = 0;
+    QDateTime score_date;
+};
 
-    class ScoreLine : public QObject {
+class ScoreLine : public QObject {
     Q_OBJECT
 
-    public:
-        Q_PROPERTY(QString playerId READ playerId CONSTANT)
-        Q_PROPERTY(int score READ score CONSTANT)
-        Q_PROPERTY(QDateTime date READ scoreDate CONSTANT)
+public:
 
-        const QString &playerId() const { return m_scoreLineData.playerId; }
+#define GETTER(type, name, field) \
+    type name() const { return m_scoreLineData.field; }
+        GETTER(const QString&, playerId, playerId)
+        GETTER(const int, score, score)
+        GETTER(const QDateTime&, scoreDate, score_date)
+#undef GETTER
 
-        const int score() const { return m_scoreLineData.score; }
+#define SETTER(type, name, field) \
+    ScoreLine& set##name(type val) { m_scoreLineData.field = std::move(val); return *this; }
+        SETTER(QString, PlayerId, playerId)
+        SETTER(int, Score, score)
+        SETTER(QDateTime, ScoreDate, score_date)
+#undef SETTER
 
-        const QDateTime &scoreDate() const { return m_scoreLineData.score_date; }
+    Q_PROPERTY(QString playerId READ playerId CONSTANT)
+    Q_PROPERTY(int score READ score CONSTANT)
+    Q_PROPERTY(QDateTime date READ scoreDate CONSTANT)
 
 
-    public:
-        explicit ScoreLine(QString, int, QDateTime);
+signals:
+    void scoreLinesChanged();
 
-    private:
-        ScoreLineData m_scoreLineData;
-    };
+public:
+    explicit ScoreLine(QString, int, QDateTime);
+
+    void finalize();
+
+private:
+    ScoreLineData m_scoreLineData;
+};
+
+bool sort_scores(const model::ScoreLine* const, const model::ScoreLine* const);
 }
