@@ -137,12 +137,9 @@ void ProviderManager::runWithDownload()
         // Custom step for Conjure download
         Log::info("Running ConjureHttpPullGames.py -update");
         system("python3 python_script\\ConjureHttpPullGames.py -update");
-
-        emit onProviderProgressChanged(0.1f);
-
+        
         providers::SearchContext sctx;
         sctx.enable_network();
-
 
         QElapsedTimer run_timer;
         run_timer.start();
