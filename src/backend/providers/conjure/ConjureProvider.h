@@ -9,14 +9,14 @@
 
 
 namespace providers {
-    namespace conjure {
-        class ConjureProvider : public Provider {
-        Q_OBJECT
+namespace conjure {
+class ConjureProvider : public Provider {
+    Q_OBJECT
 
-        public:
-            explicit ConjureProvider(QObject *parent = nullptr);
+public:
+    explicit ConjureProvider(QObject *parent = nullptr);
 
-            Provider &run(SearchContext &) final;
-        };
-    } // namespace conjure
+    Provider &run(SearchContext &) final;
+};
+} // namespace conjure
 } // namespace providers
