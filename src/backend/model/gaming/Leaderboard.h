@@ -14,7 +14,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 private:
-    void connectEntry(model::ScoreLine* const) override;
+    void connectEntry(model::ScoreLine *const) override;
     void onScoreLinePropertyChanged(const QVector<int>& roles);
 };
 } // namespace model

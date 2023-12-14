@@ -19,6 +19,7 @@
 
 #include "CollectionListModel.h"
 #include "GameFileListModel.h"
+#include "model/gaming/Leaderboard.h"
 #include "quuid.h"
 
 #include <QDateTime>
@@ -28,7 +29,6 @@
 // MSVC has troubles with forward declared QML model types
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
-#include "model/gaming/Leaderboard.h"
 #include "model/gaming/ScoreLine.h"
 
 #endif

@@ -33,7 +33,6 @@ public:
 
 private:
     void connectEntry(model::GameFile *const) override;
-
     void onEntryPropertyChanged(const QVector<int> &roles);
 };
 } // namespace model
