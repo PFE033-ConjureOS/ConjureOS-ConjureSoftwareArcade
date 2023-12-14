@@ -21,6 +21,8 @@
 #include "model/gaming/Assets.h"
 #include "model/gaming/Collection.h"
 #include "model/gaming/GameFile.h"
+#include "model/gaming/Leaderboard.h"
+#include "model/gaming/ScoreLine.h"
 #include "Log.h"
 
 
