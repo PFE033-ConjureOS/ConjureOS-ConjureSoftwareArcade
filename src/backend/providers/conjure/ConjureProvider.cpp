@@ -61,8 +61,7 @@ std::vector <QString> find_all_metafiles(const QStringList &gamedirs) {
     }
 
     if (!gamedirs.contains(":/empty")) { //pour faire passer le seul test qu'il y a présentement
-        const QString conjure_root =
-            QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+        const QString conjure_root = paths::conjureRootGameFolder();
         std::vector<QString> local_metafiles2 = find_metafiles_in(conjure_root);
         result.insert(result.end(),
                       std::make_move_iterator(local_metafiles2.begin()),

@@ -3,6 +3,8 @@ import os
 import sys
 import configparser
 
+from MetadataProperties import MetadataProperties
+
 config = configparser.ConfigParser()
 config.read(os.path.join(os.path.dirname(__file__), 'config.ini'))
 
@@ -95,7 +97,7 @@ def extract_conj(zip_file, output_folder):
 def unzip_conj(conj_dir_path, conj):
     conj_path = os.path.join(conj_dir_path, conj)
 
-    collection_name = read_game_metadata_in_zip(conj_path, "collection") or default_collection_name
+    collection_name = read_game_metadata_in_zip(conj_path, MetadataProperties.COLLECTION.value) or default_collection_name
 
     dir_path = os.path.join(conjure_default_library_dir, collection_name, os.path.splitext(conj)[0])
 
@@ -105,7 +107,7 @@ def unzip_conj(conj_dir_path, conj):
 
     write_game_metadata_JSON(dir_path, {
         "launch": "{file.path}",
-        "collection": collection_name
+        MetadataProperties.COLLECTION.value: collection_name
     }, 0)
 
     print(f"Successfully extracted {conj} content to {conjure_default_library_dir}/{collection_name}")
@@ -139,12 +141,12 @@ def get_all_ids_in_folder(folder_path):
 
 def game_to_update(conj_dir, conj, ids):
     conj_path = os.path.join(conj_dir, conj)
-    zip_game_id = read_game_metadata_in_zip(conj_path, "id")
+    zip_game_id = read_game_metadata_in_zip(conj_path, MetadataProperties.METADATA_ID.value)
 
     for a_id in ids:
         my_id = a_id["id"].strip()
         if my_id == zip_game_id:
-            zip_game_version = read_game_metadata_in_zip(conj_path, "version")
+            zip_game_version = read_game_metadata_in_zip(conj_path, MetadataProperties.VERSION.value)
             path = a_id["root"]
             game_version = read_game_metadata(path, "version")
 
@@ -154,7 +156,7 @@ def game_to_update(conj_dir, conj, ids):
 
 
 def print_usage():
-    print('\033[93m', f"Usage of {os.path.basename(__file__)}.py :"
+    print('\033[93m', f"Usage of {os.path.basename(__file__)} :"
           f"\n  [with path in param] --> extract game at specified path"
           f"\n  [no param]           --> extract game at default path: {conjure_default_conj_dir}")
 
