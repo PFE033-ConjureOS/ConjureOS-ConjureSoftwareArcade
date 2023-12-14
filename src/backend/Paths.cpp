@@ -158,4 +158,10 @@ QString writableCacheDir()
     return cache_dir;
 }
 
+QString conjureRootGameFolder()
+{
+    static const QString root_dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "\\ConjureGames";
+    return root_dir;
+}
+
 } // namespace paths

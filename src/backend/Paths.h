@@ -39,4 +39,7 @@ QString writableConfigDir();
 /// Returns a directory path where cache data could be stored
 QString writableCacheDir();
 
+/// Returns a directory of Conjure Games
+QString conjureRootGameFolder();
+
 } // namespace paths
