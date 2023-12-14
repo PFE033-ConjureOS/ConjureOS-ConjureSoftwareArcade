@@ -243,9 +243,9 @@ private:
     Assets *const m_assets;
     QVariantMap m_extra;
 
-    CollectionListModel *m_collections = nullptr;
-    GameFileListModel *m_files = nullptr;
-    Leaderboard *m_leaderboard = nullptr;
+    CollectionListModel* m_collections = nullptr;
+    GameFileListModel* m_files = nullptr;
+    Leaderboard* m_leaderboard = nullptr;
 
 signals:
 
