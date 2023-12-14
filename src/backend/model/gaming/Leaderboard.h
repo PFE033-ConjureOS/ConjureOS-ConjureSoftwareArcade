@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "model/ObjectListModel.h"
 
 namespace model { class ScoreLine; }
