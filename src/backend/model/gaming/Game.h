@@ -36,6 +36,8 @@
 namespace model { class Assets; }
 namespace model { class GameFile; }
 namespace model { class Collection; }
+namespace model { class Leaderboard; }
+namespace model { class ScoreLine; }
 
 
 namespace model {
