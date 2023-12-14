@@ -24,15 +24,25 @@ class ScoreLine : public QObject {
     Q_OBJECT
 
 public:
+
+#define GETTER(type, name, field) \
+    type name() const { return m_scoreLineData.field; }
+        GETTER(const QString&, playerId, playerId)
+        GETTER(const int, score, score)
+        GETTER(const QDateTime&, scoreDate, score_date)
+#undef GETTER
+
+#define SETTER(type, name, field) \
+    ScoreLine& set##name(type val) { m_scoreLineData.field = std::move(val); return *this; }
+        SETTER(QString, PlayerId, playerId)
+        SETTER(int, Score, score)
+        SETTER(QDateTime, ScoreDate, score_date)
+#undef SETTER
+
     Q_PROPERTY(QString playerId READ playerId CONSTANT)
     Q_PROPERTY(int score READ score CONSTANT)
     Q_PROPERTY(QDateTime date READ scoreDate CONSTANT)
 
-    const QString &playerId() const { return m_scoreLineData.playerId; }
-
-    const int score() const { return m_scoreLineData.score; }
-
-    const QDateTime &scoreDate() const { return m_scoreLineData.score_date; }
 
 signals:
     void scoreLinesChanged();
