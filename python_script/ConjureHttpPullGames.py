@@ -8,11 +8,10 @@ import re
 import configparser
 from zipfile import ZipFile
 from io import BytesIO
-from dotenv import load_dotenv
 
 from MetadataProperties import MetadataProperties
 
-load_dotenv()
+dotenv.load_dotenv()
 domain = os.getenv('DOMAIN')
 username = os.getenv('CONJ_USERNAME')
 password = os.getenv('CONJ_PASSWORD')
@@ -166,7 +165,7 @@ def connexion():
 
         token = content["token"]
 
-        dotenv.set_key(".env", "BEARER_KEY", token)
+        dotenv.set_key("../.env", "BEARER_KEY", token)
         return True
     else:
         print(f"Error: {response.status_code}")
