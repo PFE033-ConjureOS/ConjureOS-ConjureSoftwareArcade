@@ -34,6 +34,8 @@ namespace model {
 
         const QDateTime &scoreDate() const { return m_scoreLineData.score_date; }
 
+        signals:
+            void scoreLinesChanged();
 
     public:
         explicit ScoreLine(QString, int, QDateTime);

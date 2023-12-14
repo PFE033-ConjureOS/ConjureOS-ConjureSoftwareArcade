@@ -15,5 +15,6 @@ namespace model {
 
     private:
         void connectEntry(model::ScoreLine* const) override;
+        void onScoreLinePropertyChanged(const QVector<int>& roles);
     };
 } // namespace model

@@ -48,5 +48,20 @@ namespace model {
         }
     }
 
-    void Leaderboard::connectEntry(model::ScoreLine *const score) {}
+    void Leaderboard::connectEntry(model::ScoreLine *const score) {
+        connect(score, &model::ScoreLine::scoreLinesChanged,
+                this, [this]() { onScoreLinePropertyChanged({Roles::Score, Roles::PlayerId, Roles::Date}); });
+    }
+
+    void Leaderboard::onScoreLinePropertyChanged(const QVector<int> &roles) {
+        QObject *const game_ptr = sender();
+        const auto it = std::find(m_entries.cbegin(), m_entries.cend(), game_ptr);
+        if (it == m_entries.cend())
+            return;
+
+        const size_t data_idx = std::distance(m_entries.cbegin(), it);
+        const QModelIndex model_idx = index(data_idx);
+        emit dataChanged(model_idx, model_idx, roles);
+
+    }
 }
