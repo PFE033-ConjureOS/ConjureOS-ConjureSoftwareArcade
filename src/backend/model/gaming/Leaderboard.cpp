@@ -47,4 +47,6 @@ namespace model {
                 return {};
         }
     }
+
+    void Leaderboard::connectEntry(model::ScoreLine *const score) {}
 }

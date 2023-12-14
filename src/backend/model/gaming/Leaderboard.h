@@ -12,5 +12,8 @@ namespace model {
         QHash<int, QByteArray> roleNames() const override;
 
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    private:
+        void connectEntry(model::ScoreLine* const) override;
     };
 } // namespace model
