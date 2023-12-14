@@ -254,7 +254,6 @@ namespace model {
 
         CollectionListModel *m_collections = nullptr;
         GameFileListModel *m_files = nullptr;
-
         Leaderboard *m_leaderboard = nullptr;
 
     signals:
