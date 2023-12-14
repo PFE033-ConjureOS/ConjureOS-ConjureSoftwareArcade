@@ -41,4 +41,6 @@ namespace model {
     private:
         ScoreLineData m_scoreLineData;
     };
+
+    bool sort_scores(const model::ScoreLine* const, const model::ScoreLine* const);
 }

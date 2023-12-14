@@ -14,4 +14,8 @@ namespace model {
 
     ScoreLine::ScoreLine(QString playerId, int score, QDateTime score_date)
             : m_scoreLineData(std::move(playerId), score, std::move(score_date)) {}
+
+    bool sort_scores(const model::ScoreLine *const a, const model::ScoreLine *const b) {
+        return a->score() > b->score();
+    }
 }
