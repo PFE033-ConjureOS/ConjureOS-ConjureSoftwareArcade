@@ -170,9 +170,6 @@ FocusScope {
 
                     fillMode :Image.PreserveAspectFit
 
-                    anchors.fill: parent.width
-
-
                 }
 
                 Keys.onPressed: {
@@ -198,6 +195,56 @@ FocusScope {
 
         z: 1
 
+        ListView {
+            anchors.left: parent.left
+            anchors.right: cartridge.left
+            anchors.top: parent.top
+            anchors.bottom: title.top
+            anchors.margins: 50
+
+            visible: currentGame.hasLeaderboard
+
+            model: currentGame.leaderboard
+
+            delegate: scoreLineDelegate
+
+            // Customizing the header
+            header: Rectangle {
+
+                width: parent.width
+                height: 50
+                color: "steelblue"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Leaderboard"
+                    color: "white"
+                    font.bold: true
+                    font.pointSize: 16
+                }
+            }
+        }
+
+        Component {
+            id: scoreLineDelegate
+
+            Item {
+                width: parent.width
+                height: 50
+
+                Rectangle {
+                    width: parent.width
+                    height: 50
+                    color: index % 2 === 0 ? "lightblue" : "lightcyan"
+
+                    Text {
+                        anchors.centerIn: parent
+                        text: modelData.date + " - " + modelData.playerId + " - Score: " + modelData.score
+                    }
+                }
+            }
+        }
+
         Image {
             id: cartridge
 
@@ -217,7 +264,6 @@ FocusScope {
             anchors.rightMargin: vpx(40)
             anchors.top: parent.top
             anchors.right: parent.right
-            anchors.left: parent.left
 
             height: parent.height * 0.5
 
@@ -271,7 +317,6 @@ FocusScope {
             anchors.topMargin: vpx(10)
             anchors.top: developerText.bottom
             anchors.right: cartridge.right
-            anchors.left: cartridge.left
 
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignRight
@@ -291,7 +336,6 @@ FocusScope {
 
             anchors.top: gameRelease.bottom
             anchors.topMargin: vpx(5)
-            anchors.left: cartridge.left
             anchors.right: cartridge.right
         }
 
@@ -310,7 +354,7 @@ FocusScope {
 
             anchors.bottom: genre.top
 
-            anchors.left: cartridge.left
+            anchors.left: parent.left
             anchors.right: cartridge.right
 
             wrapMode: Text.WordWrap

@@ -14,29 +14,29 @@ namespace model { class Collection; }
 namespace providers { class SearchContext; }
 
 namespace providers {
-    namespace conjure {
+namespace conjure {
 
-        struct FileFilterGroup {
-            std::vector<QString> extensions;
-            std::vector<QString> files;
-            QRegularExpression regex;
+struct FileFilterGroup {
+    std::vector<QString> extensions;
+    std::vector<QString> files;
+    QRegularExpression regex;
 
-            explicit FileFilterGroup();
-            MOVE_ONLY(FileFilterGroup)
-        };
+    explicit FileFilterGroup();
+    MOVE_ONLY(FileFilterGroup)
+};
 
-        struct FileFilter {
-            //QString collection_key;
-            model::Collection *collection;
-            std::vector<QString> directories;
-            FileFilterGroup include;
-            FileFilterGroup exclude;
+struct FileFilter {
+    //QString collection_key;
+    model::Collection *collection;
+    std::vector<QString> directories;
+    FileFilterGroup include;
+    FileFilterGroup exclude;
 
-            explicit FileFilter(model::Collection *const, QString);
-            MOVE_ONLY(FileFilter)
-        };
+    explicit FileFilter(model::Collection *const, QString);
+    MOVE_ONLY(FileFilter)
+};
 
-        void apply_filter(FileFilter &, SearchContext &);
+void apply_filter(FileFilter &, SearchContext &);
 
-    } // namespace conjure
+} // namespace conjure
 } // namespace providers

@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QStringList>
 #include <vector>
+#include <QtNetwork>
 
 namespace model { class Game; }
 namespace model { class GameFile; }
@@ -38,6 +39,7 @@ class SearchContext : public QObject {
     Q_OBJECT
 
 public:
+    const QString conjure_domain = "localhost:8081"; //TODO  : move this to environment variable?
     explicit SearchContext(QObject* parent = nullptr);
     explicit SearchContext(QStringList, QObject* parent = nullptr);
     NO_COPY_NO_MOVE(SearchContext)
@@ -61,6 +63,7 @@ public:
     SearchContext& enable_network();
     bool has_network() const;
     SearchContext& schedule_download(const QUrl&, const std::function<void(QNetworkReply* const)>&);
+    SearchContext& schedule_download_conjure(const QUrl &url, const std::function<void(QNetworkReply* const)> &on_finish_callback);
     bool has_pending_downloads() const;
 
     const HashMap<QString, model::GameFile*>& current_filepath_to_entry_map() const { return m_filepath_to_gamefile; }

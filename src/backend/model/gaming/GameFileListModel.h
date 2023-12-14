@@ -25,13 +25,14 @@ namespace model { class GameFile; }
 namespace model {
 class GameFileListModel : public TypeListModel<model::GameFile> {
 public:
-    explicit GameFileListModel(QObject* parent = nullptr);
+    explicit GameFileListModel(QObject *parent = nullptr);
 
     QHash<int, QByteArray> roleNames() const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 private:
-    void connectEntry(model::GameFile* const) override;
-    void onEntryPropertyChanged(const QVector<int>& roles);
+    void connectEntry(model::GameFile *const) override;
+    void onEntryPropertyChanged(const QVector<int> &roles);
 };
 } // namespace model

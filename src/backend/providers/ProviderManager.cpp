@@ -28,19 +28,19 @@ using ProviderPtr = providers::Provider *;
 
 
 namespace {
-    std::vector<ProviderPtr> enabled_providers() {
-        std::vector<ProviderPtr> out;
-        for (const auto &provider: AppSettings::providers()) {
-            if (provider->enabled())
-                out.emplace_back(provider.get());
-        }
-        return out;
+std::vector<ProviderPtr> enabled_providers() {
+    std::vector<ProviderPtr> out;
+    for (const auto &provider: AppSettings::providers()) {
+        if (provider->enabled())
+            out.emplace_back(provider.get());
     }
+    return out;
+}
 } // namespace
 
 
 ProviderManager::ProviderManager(QObject *parent)
-        : QObject(parent) {
+    : QObject(parent) {
     for (const auto &provider: AppSettings::providers()) {
         connect(provider.get(), &providers::Provider::progressChanged,
                 this, &ProviderManager::onProviderProgressChanged);
@@ -86,7 +86,7 @@ void ProviderManager::run() {
             provider.run(sctx);
 
             Log::info(provider.display_name(), LOGMSG("Finished searching in %1ms")
-                    .arg(QString::number(provider_timer.restart())));
+                                                   .arg(QString::number(provider_timer.restart())));
 
             const bool has_progress = !(provider.flags() & providers::PROVIDER_FLAG_HIDE_PROGRESS);
             if (has_progress)
@@ -170,7 +170,7 @@ void ProviderManager::runWithDownload()
             provider.run(sctx);
 
             Log::info(provider.display_name(), LOGMSG("Finished searching in %1ms")
-                    .arg(QString::number(provider_timer.restart())));
+                                                   .arg(QString::number(provider_timer.restart())));
 
             const bool has_progress = !(provider.flags() & providers::PROVIDER_FLAG_HIDE_PROGRESS);
             if (has_progress)
