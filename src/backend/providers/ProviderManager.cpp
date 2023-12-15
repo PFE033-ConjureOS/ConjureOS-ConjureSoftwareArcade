@@ -133,13 +133,13 @@ void ProviderManager::runWithDownload()
 
     m_future = QtConcurrent::run([this]{
         emit scanStarted();
+        
+        providers::SearchContext sctx;
+        sctx.enable_network();
 
         // Custom step for Conjure download
         Log::info("Running ConjureHttpPullGames.py -update");
         system("python3 python_script\\ConjureHttpPullGames.py -update");
-        
-        providers::SearchContext sctx;
-        sctx.enable_network();
 
         QElapsedTimer run_timer;
         run_timer.start();
@@ -191,7 +191,6 @@ void ProviderManager::runWithDownload()
 
             Log::info(LOGMSG("Waiting for online sources took %1ms").arg(network_timer.elapsed()));
         }
-
 
         QElapsedTimer finalize_timer;
         finalize_timer.start();

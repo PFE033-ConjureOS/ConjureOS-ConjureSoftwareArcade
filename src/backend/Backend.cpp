@@ -232,6 +232,7 @@ Backend::Backend(const CliArgs &args)
 void Backend::start() {
     m_api_private->settings().postInit();
     onProcessFinished();
+//    onSimpleScanRequest();
     onScanRequested();
 }
 

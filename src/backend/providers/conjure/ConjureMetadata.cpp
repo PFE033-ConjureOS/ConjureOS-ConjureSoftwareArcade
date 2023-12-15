@@ -631,6 +631,9 @@ bool apply_json_C(model::Game &game, const QJsonDocument &json) {
 
 void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
 
+    if(!sctx.has_network())
+        return;
+
     const QString domain = sctx.conjure_domain;
 
     model::Game *const game_ptr = &game;

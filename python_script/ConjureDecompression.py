@@ -91,13 +91,15 @@ def extract_conj(zip_file, output_folder):
                     else:
                         destination.write(source.read())
 
-    os.remove(f"{nested_folder}.zip")
+    if os.path.exists(f"{nested_folder}.zip"):
+        os.remove(f"{nested_folder}.zip")
 
 
 def unzip_conj(conj_dir_path, conj):
     conj_path = os.path.join(conj_dir_path, conj)
 
-    collection_name = read_game_metadata_in_zip(conj_path, MetadataProperties.COLLECTION.value) or default_collection_name
+    collection_name = read_game_metadata_in_zip(conj_path,
+                                                MetadataProperties.COLLECTION.value) or default_collection_name
 
     dir_path = os.path.join(conjure_default_library_dir, collection_name, os.path.splitext(conj)[0])
 
@@ -157,8 +159,8 @@ def game_to_update(conj_dir, conj, ids):
 
 def print_usage():
     print('\033[93m', f"Usage of {os.path.basename(__file__)} :"
-          f"\n  [with path in param] --> extract game at specified path"
-          f"\n  [no param]           --> extract game at default path: {conjure_default_conj_dir}")
+                      f"\n  [with path in param] --> extract game at specified path"
+                      f"\n  [no param]           --> extract game at default path: {conjure_default_conj_dir}")
 
 
 def main():
