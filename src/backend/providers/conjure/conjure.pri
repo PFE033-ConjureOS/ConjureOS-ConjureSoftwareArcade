@@ -1,3 +1,7 @@
+ENABLED_COMPATS += Conjure
+
+DEFINES *= WITH_COMPAT_CONJURE
+
 HEADERS += \
     $$PWD/ConjureFilter.h \
     $$PWD/ConjureMetadata.h \

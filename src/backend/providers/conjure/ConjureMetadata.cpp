@@ -603,9 +603,12 @@ std::vector<FileFilter> Metadata::apply_metafile(const QString &metafile_path, S
 bool apply_json_C(model::Game &game, const QJsonDocument &json) {
 
     if (json.isNull()) {
+        Log::warning("leaderboard:",LOGMSG("apply_json_C -json.isNull()"));
         return false;
     }
+
     QJsonObject jsonObject = json.object();
+
 
     const QJsonArray scoresArray = jsonObject["scores"].toArray();
 
@@ -631,16 +634,23 @@ bool apply_json_C(model::Game &game, const QJsonDocument &json) {
 
 void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
 
-    if(!sctx.has_network())
-        return;
+    QString log_tag = m_log_tag;
 
     const QString domain = sctx.conjure_domain;
 
     model::Game *const game_ptr = &game;
 
+    if (!sctx.has_network()){
+        Log::warning(log_tag,LOGMSG("Fetching scores for `%1` failed: has_network = false").arg(game_ptr->title()));
+        return;
+    }else{
+        Log::info(log_tag,LOGMSG("Fetching scores for `%1` : has_network = true").arg(game_ptr->title()));
+    }
+
     const QString gameId = game_ptr->id();
 
     const QString url_str = QStringLiteral("http://%1/games/%2/scores/detailed").arg(domain, gameId);
+
 
     const QUrl url(url_str, QUrl::StrictMode);
 
@@ -653,7 +663,7 @@ void Metadata::fetch_leaderboard(model::Game &game, SearchContext &sctx) const {
 
     const std::tuple<QUrl, JsonCallback> request = std::make_tuple(url, apply_json_C);
 
-    QString log_tag = m_log_tag;
+
     QString json_cache_dir = m_json_cache_dir;
 
     const JsonCallback &json_callback = std::get<1>(request);

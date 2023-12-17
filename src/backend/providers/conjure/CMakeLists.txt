@@ -1,9 +1,9 @@
 pegasus_add_provider(
         NAME "Conjure"
-        CXXID STEAM
+        CXXID CONJURE
         SOURCES
-        ConjureGamelist.cpp
-        ConjureGamelist.h
+        ConjureFilter.cpp
+        ConjureFilter.h
         ConjureMetadata.cpp
         ConjureMetadata.h
         ConjureProvider.cpp

@@ -289,7 +289,7 @@ SearchContext &SearchContext::enable_network() {
 
     if (!QSslSocket::supportsSsl()) {
         Log::warning(LOGMSG("Secure connection (SSL) support not available, downloading metadata is not possible"));
-        return *this;
+//        return *this;
     }
 
     // TODO: C++14

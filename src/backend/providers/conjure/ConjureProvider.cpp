@@ -77,8 +77,7 @@ std::vector <QString> find_all_metafiles(const QStringList &gamedirs) {
 namespace providers {
 namespace conjure {
 ConjureProvider::ConjureProvider(QObject *parent)
-    : Provider(QLatin1String("conjure_metafiles"), QStringLiteral("Conjure Metafiles"),
-               PROVIDER_FLAG_INTERNAL, parent) {}
+    : Provider(QLatin1String("conjure_metafiles"), QStringLiteral("Conjure Metadata"), parent) {}
 
 Provider &ConjureProvider::run(SearchContext &sctx) {
 

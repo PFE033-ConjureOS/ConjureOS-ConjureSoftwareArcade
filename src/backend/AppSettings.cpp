@@ -25,7 +25,9 @@
 #include "providers/pegasus_media/MediaProvider.h"
 #include "providers/pegasus_metadata/PegasusProvider.h"
 #include "providers/pegasus_playtime/PlaytimeStats.h"
-#include "providers/conjure/ConjureProvider.h"
+#ifdef WITH_COMPAT_CONJURE
+    #include "providers/conjure/ConjureProvider.h"
+#endif
 #ifdef WITH_COMPAT_ES2
   #include "providers/es2/Es2Provider.h"
 #endif
@@ -103,7 +105,9 @@ std::vector<std::unique_ptr<providers::Provider>> create_providers()
     std::vector<std::unique_ptr<providers::Provider>> out;
         MKENTRY(pegasus::PegasusProvider)
         MKENTRY(media::MediaProvider)
+#ifdef WITH_COMPAT_CONJURE
         MKENTRY(conjure::ConjureProvider)
+#endif
 #ifdef WITH_COMPAT_STEAM
         MKENTRY(steam::SteamProvider)
 #endif

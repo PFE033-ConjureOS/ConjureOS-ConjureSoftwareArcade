@@ -63,6 +63,7 @@ add_subdirectory(pegasus_playtime)
 add_subdirectory(playnite)
 add_subdirectory(skraper)
 add_subdirectory(steam)
+add_subdirectory(conjure)
 
 
 if(USE_JSON_CACHE)
