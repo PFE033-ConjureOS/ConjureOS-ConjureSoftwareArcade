@@ -1,0 +1,77 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+namespace model {
+	class GameFile {
+		+GameFile(QString, model::Game &)
+		+Q_PROPERTY(QString name READ name CONSTANT ) Q_PROPERTY ( QString path READ path CONSTANT ) int playCount () {query}
+		+Q_PROPERTY(int playCount READ playCount NOTIFY playStatsChanged ) Q_PROPERTY ( int playTime READ playTime NOTIFY playStatsChanged ) Q_PROPERTY ( QDateTime lastPlayed READ lastPlayed NOTIFY playStatsChanged ) const QFileInfo& fileinfo () {query}
+		+setName(QString val) : GameFile&
+		-m_data : GameFileData
+		+lastPlayed() : QDateTime& {query}
+		+path() : QString {query}
+		+name() : QString& {query}
+		+launch() : Q_INVOKABLE void
+		+parentGame() : model::Game* {query}
+		+playTime() : qint64 {query}
+		+launchRequested() : signals : void
+		+playStatsChanged() : void
+		+update_playstats(int playcount, qint64 playtime, QDateTime last_played) : void
+	}
+
+	class GameFileData {
+		+GameFileData(QString)
+		+playstats : PlayStats
+		+name : QString
+		+operator==(const GameFileData &) : bool {query}
+		+fileinfo : const QFileInfo
+		+path : const QString
+	}
+
+	class GameFileData::PlayStats {
+		+last_played : QDateTime
+		+play_count : int
+		+play_time : qint64
+	}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+model.GameFile *-- model.GameFileData
+
+
+
+
+
+
+/' Dependency relationships '/
+
+model.GameFileData <.. model.GameFileData
+
+
+
+
+
+
+/' Nested objects '/
+
+model.GameFileData +-- model.GameFileData::PlayStats
+
+
+
+
+@enduml

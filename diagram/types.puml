@@ -1,0 +1,131 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+enum AppCloseType {
+	QUIT
+	REBOOT
+	SHUTDOWN
+	SUSPEND
+}
+
+
+enum AssetType {
+	ARCADE_BEZEL
+	ARCADE_CABINET_L
+	ARCADE_CABINET_R
+	ARCADE_MARQUEE
+	ARCADE_PANEL
+	BACKGROUND
+	BOX_BACK
+	BOX_FRONT
+	BOX_FULL
+	BOX_SPINE
+	CARTRIDGE
+	LOGO
+	MUSIC
+	POSTER
+	SCREENSHOT
+	TITLESCREEN
+	UI_BANNER
+	UI_STEAMGRID
+	UI_TILE
+	UNKNOWN
+	VIDEO
+}
+
+
+enum GamepadAxis {
+	INVALID
+	LEFTX
+	LEFTY
+	RIGHTX
+	RIGHTY
+}
+
+
+enum GamepadButton {
+	DOWN
+	EAST
+	GUIDE
+	INVALID
+	L1
+	L2
+	L3
+	LEFT
+	NORTH
+	R1
+	R2
+	R3
+	RIGHT
+	SELECT
+	SOUTH
+	START
+	UP
+	WEST
+}
+
+
+enum GamepadKeyId {
+	A
+	B
+	GUIDE
+	L1
+	L2
+	L3
+	R1
+	R2
+	R3
+	SELECT
+	START
+	X
+	Y
+}
+
+
+enum KeyEvent {
+	ACCEPT
+	CANCEL
+	DETAILS
+	DOWN
+	FILTERS
+	LEFT
+	MAIN_MENU
+	NEXT_PAGE
+	PAGE_DOWN
+	PAGE_UP
+	PREV_PAGE
+	RIGHT
+	UP
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+
+
+
+
+/' Dependency relationships '/
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml

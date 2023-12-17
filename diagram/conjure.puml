@@ -1,0 +1,144 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+namespace providers {
+	namespace conjure {
+		class ConjureProvider {
+			+ConjureProvider(QObject* parent)
+			+run(SearchContext &) : Provider&
+		}
+
+		class Metadata {
+			+Metadata(QString)
+			-assetline_to_url(ParserState &, const metafile::Entry &, const QString &) : QString {query}
+			-first_line_of(ParserState &, const metafile::Entry &) : QString& {query}
+			-apply_asset_entry_maybe(ParserState &, const metafile::Entry &) : bool {query}
+			-apply_extra_entry_maybe(ParserState &, const metafile::Entry &) : bool {query}
+			-m_coll_attribs : const HashMap<QString, CollAttrib>
+			-m_game_attribs : const HashMap<QString, GameAttrib>
+			-m_primary_key_collection : const QLatin1String
+			-m_primary_key_game : const QLatin1String
+			-rx_asset_key : const QRegularExpression
+			-rx_count_range : const QRegularExpression
+			-rx_date : const QRegularExpression
+			-rx_float : const QRegularExpression
+			-rx_percent : const QRegularExpression
+			-rx_unescaped_newline : const QRegularExpression
+			-rx_uri : const QRegularExpression
+			-m_json_cache_dir : const QString
+			-m_json_suffix : const QString
+			-m_log_tag : const QString
+			+apply_metafile(const QString &, SearchContext &) : std::vector<FileFilter> {query}
+			-apply_collection_entry(ParserState &, const metafile::Entry &) : void {query}
+			-apply_entry(ParserState &, const metafile::Entry &, SearchContext &) : void {query}
+			-apply_game_entry(ParserState &, const metafile::Entry &, SearchContext &) : void {query}
+			+fetch_leaderboard(model::Game &, SearchContext &) : void {query}
+			-print_error(ParserState &, const metafile::Error &) : void {query}
+			-print_warning(ParserState &, const metafile::Entry &, const QString &) : void {query}
+			-replace_newlines(QString &) : void {query}
+		}
+
+		enum CollAttrib {
+		}
+
+		enum GameAttrib {
+		}
+
+		class FileFilter {
+			+FileFilter(model::Collection* const, QString)
+			+exclude : FileFilterGroup
+			+include : FileFilterGroup
+			+collection : model::Collection*
+			+directories : std::vector<QString>
+		}
+
+		class FileFilterGroup {
+			+FileFilterGroup()
+			+regex : QRegularExpression
+			+extensions : std::vector<QString>
+			+files : std::vector<QString>
+		}
+
+		class ParserState {
+			+ParserState(const QString &)
+			+dir : const QDir
+			+path : const QString&
+			+cur_coll : model::Collection*
+			+cur_game : model::Game*
+			+found_issues : size_t
+			+filters : std::vector<FileFilter>
+			+all_colls : std::vector<model::Collection*>
+		}
+	}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+providers.conjure.FileFilter "2" *-- providers.conjure.FileFilterGroup
+
+
+providers.conjure.Metadata *-- providers.conjure.CollAttrib
+
+
+providers.conjure.Metadata *-- providers.conjure.GameAttrib
+
+
+providers.conjure.ParserState *-- providers.conjure.FileFilter
+
+
+
+
+
+
+/' Dependency relationships '/
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+providers.conjure.ParserState <.. providers.conjure.Metadata
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml

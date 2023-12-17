@@ -1,0 +1,101 @@
+@startuml
+
+hide circle
+hide empty method
+hide empty member
+allow_mixing
+
+class FrontendLayer {
+	-m_api_private : QObject* const
+	-m_api_public : QObject* const
+	+clearCache() : void
+	+rebuild() : void
+}
+
+class QQmlApplicationEngine
+
+
+class ProcessLauncher {
+	-m_process : QProcess*
+	+onLaunchRequested(const model::GameFile*) : void
+	-onProcessFinished(int, QProcess::ExitStatus) : void
+	-onProcessStarted() : void
+	-runProcess(const QString &, const QStringList &, const QString &) : void
+}
+
+
+namespace backend {
+
+	class Backend {
+		-m_providerman : ProviderManager*
+		-m_args : const CliArgs
+		-m_api_public : model::ApiObject*
+		-m_api_private : model::Internal*
+		-onScanFinished() : void
+		-onScanRequested() : void
+		-onSimpleScanRequest() : void
+		+start() : void
+	}
+
+	namespace providers{
+
+	    class ProviderManager {
+        	-m_found_games : std::vector<model::Game*>
+        	+run() : void
+        }
+
+	    class pegasus_metadata.PegasusProvider {
+            +PegasusProvider(QObject* parent)
+            +run(SearchContext &) : Provider&
+        }
+        class pegasus_metadata.Metadata
+
+        class steam.SteamProvider {
+        	+SteamProvider(QObject* parent)
+        	+run(SearchContext &) : Provider&
+        }
+        class steam.SteamMetadata
+
+        class Provider {
+        		+run(SearchContext &) : Provider&
+        		+setEnabled(bool) : Provider&
+        }
+	}
+	namespace "model.gaming" as modelGaming{
+	    class Game{
+	        -m_data : GameData
+	    }
+	    class GameFile {
+        		-m_data : GameFileData
+        		+path() : QString {query}
+        		+launch() : Q_INVOKABLE void
+        }
+	}
+
+}
+
+
+
+'namespace frontend {
+'    artifact "main.qml" as MainQml
+'    artifact "MenuLayer.qml" as MenuLayer
+'    artifact "theme.qml"  as theme
+'}
+
+pegasus_metadata -[hidden]- steam
+
+steam -[hidden]- modelGaming
+
+Provider -[hidden]- ProviderManager
+
+
+backend.Backend o-- .FrontendLayer
+
+backend.Backend o-up- .ProcessLauncher
+
+QQmlApplicationEngine --o .FrontendLayer
+
+
+
+
+@enduml

@@ -1,0 +1,62 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+namespace providers {
+	namespace steam {
+		class Gamelist {
+			+Gamelist(QString)
+			+find_in(const QString &, const QString &, model::Collection &, SearchContext &) : HashMap<QString , model::Game*> {query}
+			-m_rx_acf_appid : const QRegularExpression
+			-m_rx_acf_title : const QRegularExpression
+			-m_log_tag : const QString
+			-m_name_filters : const QStringList
+			-m_ignored_manifests : const std::vector<QLatin1String>
+			-read_manifest_file(const QString &) : std::pair<QString , QString> {query}
+		}
+
+		class Metadata {
+			+Metadata(QString)
+			+fill_from_cache(const QString &, model::Game &) : bool {query}
+			-m_json_cache_dir : const QString
+			-m_log_tag : const QString
+			+fill_from_network(const QString &, model::Game &, SearchContext &) : void {query}
+		}
+
+		class SteamProvider {
+			+SteamProvider(QObject* parent)
+			+run(SearchContext &) : Provider&
+		}
+	}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+
+
+
+
+/' Dependency relationships '/
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml

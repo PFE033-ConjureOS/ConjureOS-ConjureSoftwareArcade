@@ -1,0 +1,130 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class ProviderManager {
+	+ProviderManager(QObject* parent)
+	-m_future : QFuture<void>
+	-m_current_stage : QString
+	-m_current_progress : float
+	-m_progress_step : float
+	+scanStarted() : signals : void
+	-m_found_collections : std::vector<model::Collection*>
+	+foundCollections() : std::vector<model::Collection*>&
+	-m_found_games : std::vector<model::Game*>
+	+foundGames() : std::vector<model::Game*>&
+	-finalize() : void
+	+onFavoritesChanged(const std::vector<model::Game*> &) : void {query}
+	+onGameFinished(model::GameFile* const) : void {query}
+	+onGameLaunched(model::GameFile* const) : void {query}
+	-onProviderProgressChanged(float) : void
+	+run() : void
+	+runWithDownload() : void
+	+scanFinished() : void
+	+scanProgressChanged(float, QString) : void
+}
+
+
+namespace providers {
+	class Provider {
+		+Provider(QLatin1String codename, QString display_name, uint8_t flags, QObject* parent)
+		+Provider(QLatin1String codename, QString display_name, QObject* parent)
+		+~Provider()
+		+options() : HashMap<QString , std::vector<QString>>& {query}
+		-m_options : HashMap<QString, std::vector<QString>>
+		+run(SearchContext &) : Provider&
+		+setEnabled(bool) : Provider&
+		+setOption(const QString &, QString) : Provider&
+		+setOption(const QString &, std::vector<QString>) : Provider&
+		+codename() : QLatin1String& {query}
+		+display_name() : QString& {query}
+		+enabled() : bool {query}
+		-m_enabled : bool
+		-m_codename : const QLatin1String
+		-m_display_name : const QString
+		-m_flags : const uint8_t
+		+progressChanged(float) : signals : void
+		+flags() : uint8_t {query}
+		+onGameFavoriteChanged(const std::vector<model::Game*> &) : void
+		+onGameFinished(model::GameFile* const) : void
+		+onGameLaunched(model::GameFile* const) : void
+	}
+
+	class SearchContext {
+		+NO_COPY_NO_MOVE(SearchContext ) model::Collection* get_or_create_collection ( const QString &)
+		+SearchContext(QObject* parent)
+		+SearchContext(QStringList, QObject* parent)
+		+current_filepath_to_entry_map() : HashMap<QString , model::GameFile*>& {query}
+		-m_collections : HashMap<QString, model::Collection*>
+		-m_filepath_to_gamefile : HashMap<QString, model::GameFile*>
+		-m_uri_to_gamefile : HashMap<QString, model::GameFile*>
+		-m_collection_games : HashMap<model::Collection*, std::vector<model::Game*>>
+		-m_game_entries : HashMap<model::Game*, std::vector<model::GameFile*>>
+		-m_netman : QNetworkAccessManager*
+		-m_pegasus_game_dirs : QStringList
+		+pegasus_game_dirs() : QStringList& {query}
+		+root_game_dirs() : QStringList& {query}
+		+enable_network() : SearchContext&
+		+game_add_to(model::Game &, model::Collection &) : SearchContext&
+		+pegasus_add_game_dir(QString) : SearchContext&
+		+schedule_download(const QUrl &, const std::function<void ( QNetworkReply* const )> &) : SearchContext&
+		+schedule_download_conjure(const QUrl& url, const std::function<void ( QNetworkReply* const )>& on_finish_callback) : SearchContext&
+		+has_network() : bool {query}
+		+has_pending_downloads() : bool {query}
+		+conjure_domain : const QString
+		-m_root_game_dirs : const QStringList
+		+create_game() : model::Game*
+		+create_game_for(model::Collection &) : model::Game*
+		+game_by_filepath(const QString &) : model::Game* {query}
+		+game_by_uri(const QString &) : model::Game* {query}
+		+game_add_filepath(model::Game &, QString) : model::GameFile*
+		+game_add_uri(model::Game &, QString) : model::GameFile*
+		+gamefile_by_filepath(const QString &) : model::GameFile* {query}
+		+gamefile_by_uri(const QString &) : model::GameFile* {query}
+		+downloadScheduled() : signals : void
+		-m_pending_downloads : std::atomic<size_t>
+		+finalize(QObject* const parent) : std::pair<std::vector<model::Collection*>, std::vector<model::Game*>>
+		-m_parentless_games : std::vector<model::Game*>
+		+downloadCompleted() : void
+		-finalize_apply_lists() : void
+		-finalize_cleanup_collections() : void
+		-finalize_cleanup_games() : void
+	}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+
+
+
+
+/' Dependency relationships '/
+
+providers.SearchContext <.. providers.Provider
+
+
+providers.SearchContext <.. providers.SearchContext
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
