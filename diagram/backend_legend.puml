@@ -1,0 +1,28 @@
+@startuml
+title Légende
+hide circle
+hide empty method
+hide empty member
+skinparam linetype ortho
+
+namespace "namespace" as myNamespace {
+
+	class "classe" as myClass{
+		-variable_membre : type
+		-method() : type
+		+{static} static_method() : type
+	}
+
+     class classeB #yellow
+     class classeC
+     class classeD
+
+}
+
+classeB --up-|> myClass : généralisation
+
+classeB "1" *-- "*" classeC : compositon
+classeD --> myClass : relation
+
+
+@enduml

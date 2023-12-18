@@ -60,6 +60,15 @@ namespace backend {
         		+run(SearchContext &) : Provider&
         		+setEnabled(bool) : Provider&
         }
+        class SearchContext {
+
+            -m_game_entries : HashMap<model::Game*, std::vector<model::GameFile*>>
+            -m_netman : QNetworkAccessManager*
+            -m_pegasus_game_dirs : QStringList
+            +pegasus_add_game_dir(QString) : SearchContext&
+            +create_game() : model::Game*
+            +game_add_filepath(model::Game &, QString) : model::GameFile*
+        }
 	}
 	namespace "model.gaming" as modelGaming{
 	    class Game{
@@ -87,6 +96,8 @@ pegasus_metadata -[hidden]- steam
 steam -[hidden]- modelGaming
 
 Provider -[hidden]- ProviderManager
+
+ProviderManager -[hidden]- SearchContext
 
 
 backend.Backend o-- .FrontendLayer

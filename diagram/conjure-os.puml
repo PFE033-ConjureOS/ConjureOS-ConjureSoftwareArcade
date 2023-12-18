@@ -1,0 +1,59 @@
+@startuml
+
+hide circle
+hide empty method
+hide empty member
+skinparam linetype ortho
+
+namespace backend {
+
+	class Backend {
+		-m_providerman : ProviderManager*
+		-onScanRequested() : void
+		+start() : void
+	}
+
+	class AppSettings {
+		+{static} providers() : void
+    }
+
+	namespace providers{
+
+		class ProviderManager {
+			-m_found_games : std::vector<model::Game*>
+			+run() : void
+        }
+
+        class Provider {
+			+run(SearchContext &) : Provider&
+			+setEnabled(bool) : Provider&
+        }
+        class SearchContext {
+            -m_game_entries : HashMap<model::Game*, std::vector<model::GameFile*>>
+            +pegasus_add_game_dir(QString) : SearchContext&
+            +create_game() : model::Game*
+            +game_add_filepath(model::Game &, QString) : model::GameFile*
+        }
+        class PegasusProvider #yellow
+        class SteamProvider #yellow
+	}
+}
+
+
+Backend "1" *-- "1" ProviderManager
+
+AppSettings "1" *--- "*" Provider
+
+ProviderManager "1" o---- "1" SearchContext
+note of link : Create and use\nSearchContext in every run()
+
+ProviderManager --->  Provider : run(SearchContext)
+
+ProviderManager --> AppSettings : provider()
+
+PegasusProvider --|> Provider
+
+SteamProvider --|> Provider
+
+
+@enduml

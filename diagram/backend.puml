@@ -1,0 +1,216 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class FrontendLayer {
+	+FrontendLayer(QObject* const api_public, QObject* const api_private, QObject* parent)
+	-m_api_private : QObject* const
+	-m_api_public : QObject* const
+	-m_engine : QQmlApplicationEngine*
+	+rebuildComplete() : signals : void
+	+clearCache() : void
+	+rebuild() : void
+	+teardown() : void
+	+teardownComplete() : void
+}
+
+
+class Log {
+	+NO_COPY_NO_MOVE(Log ) static void init ( bool silent)
+	-{static} m_sinks : static std::vector<std::unique_ptr<LogSink>>
+	+{static} close() : void
+	+{static} error(const QString& message) : void
+	+{static} error(const QString& tag, const QString& message) : void
+	+{static} info(const QString& message) : void
+	+{static} info(const QString& tag, const QString& message) : void
+	+{static} init_qttest() : void
+	+{static} warning(const QString& message) : void
+	+{static} warning(const QString& tag, const QString& message) : void
+}
+
+
+abstract class LogSink {
+	+LogSink()
+	+{abstract} NO_COPY_NO_MOVE(LogSink ) virtual void info ( const QString &)
+	+~LogSink()
+	+{abstract} error(const QString &) : void
+	+{abstract} warning(const QString &) : void
+}
+
+
+class ProcessLauncher {
+	+ProcessLauncher(QObject* parent)
+	-m_process : QProcess*
+	+processLaunchOk() : signals : void
+	-afterRun() : void
+	-beforeRun(const QString &) : void
+	+onLaunchRequested(const model::GameFile*) : void
+	-onProcessError(QProcess::ProcessError) : void
+	-onProcessFinished(int, QProcess::ExitStatus) : void
+	-onProcessStarted() : void
+	+onTeardownComplete() : void
+	+processFinished() : void
+	+processLaunchError(QString) : void
+	+processRuntimeError(QString) : void
+	-runProcess(const QString &, const QStringList &, const QString &) : void
+}
+
+
+class ScriptRunner {
+	+{static} run(ScriptEvent) : void
+	+{static} run(ScriptEvent, const QStringList &) : void
+}
+
+
+enum AssetType {
+}
+
+
+enum ScriptEvent {
+	CONFIG_CHANGED
+	CONTROLS_CHANGED
+	PROCESS_FINISHED
+	PROCESS_STARTED
+	QUIT
+	REBOOT
+	SETTINGS_CHANGED
+	SHUTDOWN
+}
+
+
+class AppSettings {
+	+{static} general : static appsettings::General
+	+{static} keys : static appsettings::Keys
+	+{static} gamepadButtonNames : static const std::map<QKeySequence, QString>
+	+{static} providers() : std::vector<std::unique_ptr<providers::Provider>>&
+	+{static} load_config() : void
+	+{static} load_providers() : void
+	+{static} parse_gamedirs(const std::function<void ( const QString& )> &) : void
+	+{static} save_config() : void
+}
+
+
+namespace backend {
+	class Backend {
+		+Backend()
+		+Backend(const CliArgs &)
+		+~Backend()
+		-m_frontend : FrontendLayer*
+		-m_launcher : ProcessLauncher*
+		-m_providerman : ProviderManager*
+		-m_args : const CliArgs
+		-m_api_public : model::ApiObject*
+		-m_api_private : model::Internal*
+		-onFavoritesChanged() : void
+		-onProcessFinished() : void
+		-onProcessLaunched() : void
+		-onScanFinished() : void
+		-onScanRequested() : void
+		-onSimpleScanRequest() : void
+		+start() : void
+	}
+
+	class CliArgs {
+		+enable_gamepad_autoconfig : bool
+		+enable_menu_appclose : bool
+		+enable_menu_reboot : bool
+		+enable_menu_settings : bool
+		+enable_menu_shutdown : bool
+		+enable_menu_suspend : bool
+		+portable : bool
+		+silent : bool
+	}
+}
+
+
+namespace appsettings {
+	class Keys {
+		+Keys()
+		+NO_COPY_NO_MOVE(Keys ) void add_key ( KeyEvent, QKeySequence)
+		-m_event_keymap : HashMap<KeyEvent, QVector<QKeySequence>, EnumHash>
+		+at(KeyEvent) : QVector<QKeySequence>& {query}
+		+operator[](KeyEvent) : QVector<QKeySequence>& {query}
+		+clear(KeyEvent) : void
+		+del_key(KeyEvent, const QKeySequence &) : void
+		+resetAll() : void
+	}
+
+	class General {
+		+General()
+		+locale : QString
+		+theme : QString
+		+fullscreen : bool
+		+mouse_support : bool
+		+portable : bool
+		+verify_files : bool
+		+DEFAULT_LOCALE : const QString
+		+DEFAULT_THEME : const QString
+	}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+
+
+
+/' Aggregation relationships '/
+
+.AppSettings *-- appsettings.General
+
+
+.AppSettings *-- appsettings.Keys
+
+
+backend.Backend *-- backend.CliArgs
+
+
+backend.Backend o-- .FrontendLayer
+
+
+backend.Backend o-- .ProcessLauncher
+
+
+.Log *-- .LogSink
+
+
+
+
+
+
+/' Dependency relationships '/
+
+backend.CliArgs <.. backend.Backend
+
+
+appsettings.Keys <.. appsettings.Keys
+
+
+.Log <.. .Log
+
+
+.LogSink <.. .LogSink
+
+
+.ScriptEvent <.. .ScriptRunner
+
+
+.ScriptEvent <.. .ScriptRunner
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
